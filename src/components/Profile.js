@@ -1,5 +1,5 @@
 // import socketIO from "socket.io-client"
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
 import Header from "./Header";
 import { Box, Avatar, Grid, Paper, Typography } from "@mui/material";
@@ -162,7 +162,7 @@ const Profile = ({ curUser, setAuth }) => {
 						<Grid item xs={12} md={6} mb={2}>
 							<Item>
 								<Box width="30%" color="black" textAlign="right">
-									Roll:
+									Role:
 								</Box>
 								<Box width="66%" textAlign="center">
 									{roll}

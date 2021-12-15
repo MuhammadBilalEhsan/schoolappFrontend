@@ -11,7 +11,7 @@ import appSetting from "./appSetting/appSetting"
 import { BrowserRouter as Router, Switch, Redirect } from "react-router-dom";
 import {
 	curUserFun,/* getUsers,*/ getCourseFunc, getStudentCourseFunc, updateCourses,
-	updateCurrentCourse, updateAllAssignments, editAvailAbleCourses
+	updateCurrentCourse, updateAllAssignments, editAvailAbleCourses, currentConversationRedux, UpdatecurrentConversation
 } from "./redux/actions/index";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
@@ -93,6 +93,12 @@ const App = () => {
 			})
 			socket.on("messageAddedStream", (course) => {
 				dispatch(updateCurrentCourse(course))
+			})
+			socket.on("CHANGE_IN_CONVERSATION", (conversation) => {
+				const findConversation = currentUser?.conversations?.find(converse => converse === conversation._id)
+				if (findConversation) {
+					dispatch(UpdatecurrentConversation(conversation))
+				}
 			})
 			socket.on("ASSIGNMENT_ADDED", (allAssignment) => {
 				dispatch(updateAllAssignments(allAssignment))

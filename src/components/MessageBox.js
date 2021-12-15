@@ -11,7 +11,7 @@ const MessageBox = ({ color, timeColor, nameFirestLetter, name, time, message })
                         <Avatar sx={{ bgcolor: color, textTransform: "capitalize" }}>{nameFirestLetter}</Avatar>
                     </Box>
                     <Box flexGrow={1}>
-                        <Typography variant="subtitle1" color={color}><b>{name}</b></Typography>
+                        <Typography variant="subtitle1" color={color} sx={{ textTransform: "capitalize" }}><b>{name}</b></Typography>
                         <Typography variant="body2" color={timeColor}> {time}</Typography>
                     </Box>
                 </Box>

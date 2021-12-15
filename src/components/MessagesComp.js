@@ -1,23 +1,30 @@
 import React, { useEffect, useState } from 'react'
 import Header from './Header'
 import { Avatar, Box, Typography } from "@mui/material"
-import SendingMessageInputComp from './SendingMessageInputComp'
-import MessageBox from './MessageBox'
+// import SendingMessageInputComp from './SendingMessageInputComp'
+// import MessageBox from './MessageBox'
 import PrivateConversation from './PrivateConversation.js'
-import moment from 'moment'
+// import moment from 'moment'
 import axios from 'axios'
-import { socket } from '../App'
+// import { socket } from '../App'
 import { useHistory } from 'react-router-dom'
 import appSetting from '../appSetting/appSetting'
+import { allConversationsRedux } from '../redux/actions'
+import { useDispatch, useSelector } from 'react-redux'
+// import MuiSnacks from './MuiSnacks'
 // import PrivateConversation from './PrivateConversation'
 
 const MessagesComp = ({ curUser, setAuth }) => {
-    const [allConversationsArray, setAllConversationsArray] = useState()
+    const allConversations = useSelector(state => state.usersReducer.allConversations)
+    const [allConversationsArray, setAllConversationsArray] = useState(allConversations)
     const [conversationID, setConversationID] = useState("")
-    const [message, setMessage] = useState("")
+    // const [openSnack, setOpenSnack] = useState("");
+    // const [severity, setSeverity] = useState("");
+    // const [message, setMessage] = useState("")
     const [recieverID, setRecieverID] = useState("")
     const [recieverName, setRecieverName] = useState("")
     const history = useHistory()
+    const dispatch = useDispatch()
     const setIDfun = (id, name) => {
         if (recieverID) {
             setRecieverID("")
@@ -28,27 +35,7 @@ const MessagesComp = ({ curUser, setAuth }) => {
         }
     }
     const { _id, fname, lname } = curUser || {}
-    const sendMsgFunc = async () => {
-        try {
-            const newMessage = message.trim()
 
-            if (newMessage) {
-                const name = `${fname} ${lname}`
-                let time = moment().format('hh:mm:ss A')
-                const messageObj = {
-                    senderID: _id, name, time, message: newMessage, recieverID
-                }
-                await axios.post(`${appSetting.severHostedUrl}/user/sendmsg`, messageObj)
-                setMessage("")
-                setRecieverID("")
-            } else {
-                alert("write something")
-            }
-
-        } catch (error) {
-            console.log(error)
-        }
-    }
     // useEffect(() => {
     // socket.on()
     // })
@@ -56,9 +43,8 @@ const MessagesComp = ({ curUser, setAuth }) => {
         try {
             const res = await axios.get(`${appSetting.severHostedUrl}/user/myallconversations/${curUser?._id}`)
             if (res) {
+                dispatch(allConversationsRedux(res.data.allConversations))
                 setAllConversationsArray(res.data.allConversations)
-
-                // dispatch(allConversationsFunc(res.data.allConversations))
             }
         } catch (error) {
 
@@ -66,10 +52,12 @@ const MessagesComp = ({ curUser, setAuth }) => {
     }, [])
     return (
         <Box className={`msgs`}>
+            {/* {openSnack ? <MuiSnacks openSnack={openSnack} severity={severity} text={openSnack} setOpenSnack={setOpenSnack} /> : ""} */}
+
             <Header curUser={curUser} setAuth={setAuth} />
             {
                 conversationID ?
-                    <PrivateConversation id={conversationID} /> :
+                    <PrivateConversation id={conversationID} allConversationsArray={allConversationsArray} curUser={curUser} /> :
                     <Box mx="auto" px={2} maxHeight="85vh" sx={{ overflowY: "auto" }} maxWidth="900px" display="flex" flexDirection="column" alignItems="center" justifyContent="space-between">
                         <Box mt={5} display="flex" borderBottom="1px solid #00800085" justifyContent="flex-start" pb={1} px={2} width="100%" >
                             <Typography variant="h5" color="green">

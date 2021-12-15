@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { Box, } from "@mui/material";
 import { makeStyles } from '@mui/styles';
 import Header from "./Header";
@@ -7,10 +7,10 @@ import Stream from './Stream';
 import Announcement from './Announcement';
 import CourseStudentsComp from './CourseStudentsComp';
 import AssignmentComp from './AssignmentComp';
-import { useHistory, useParams } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom';
 import Spinner from './Spinner';
-import appSetting from '../appSetting/appSetting'
-import axios from 'axios'
+import appSetting from '../appSetting/appSetting';
+import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { currentCourseFunc } from '../redux/actions';
 import { socket } from '../App';
@@ -61,7 +61,7 @@ const ClassMaterials = ({ curUser, setAuth }) => {
 				dispatch(currentCourseFunc(course))
 			}
 		})
-	})
+	}, [])
 
 	if (spinner) { return <Spinner /> }
 	return (

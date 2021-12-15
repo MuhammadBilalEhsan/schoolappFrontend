@@ -35,7 +35,7 @@ const AssignmentComp = ({ curUser, isTeacher, currentCourse }) => {
         } catch (error) {
             console.log(error)
         }
-    }, [allAssignments])
+    }, [])
     return (
         <Box sx={{ maxWidth: "760px", margin: "0 auto" }}>
             {openSnack ? <MuiSnacks openSnack={openSnack} severity={severity} text={openSnack} setOpenSnack={setOpenSnack} /> : ""}

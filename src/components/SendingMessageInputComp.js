@@ -23,7 +23,7 @@ const SendingMessageInputComp = ({ userName, autoFocus, placeholder, value, setV
                             multiline
                             color={color}
                             InputProps={{
-                                endAdornment: (<AiOutlineSend onClick={(e) => submitFunc(e)} size="26px" color="green" style={{ margin: "auto 1 0 0" }} />)
+                                endAdornment: (<AiOutlineSend onClick={(e) => submitFunc(e)} size="26px" color="green" style={{ margin: "auto 1 0 0", cursor: "pointer" }} />)
                             }}
                         />
                     </Box>

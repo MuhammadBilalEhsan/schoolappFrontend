@@ -75,3 +75,21 @@ export const checkedAssignmentsRedux = (data) => {
     payload: data
   }
 }
+export const allConversationsRedux = (data) => {
+  return {
+    type: "ALL_CONVERSATIONS",
+    payload: data
+  }
+}
+export const currentConversationRedux = (data) => {
+  return {
+    type: "CURRENT_CONVERSATION",
+    payload: data
+  }
+}
+export const UpdatecurrentConversation = (data) => {
+  return {
+    type: "UPDATE_CURRENT_CONVERSATION",
+    payload: data
+  }
+}

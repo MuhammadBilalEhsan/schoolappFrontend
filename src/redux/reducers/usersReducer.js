@@ -6,9 +6,10 @@ const initialState = {
   currentCourse: null,
   currentAssignment: null,
   allAssignments: null,
-  checkedAssignments: null
+  checkedAssignments: null,
+  allConversations: [],
+  currentConversation: null
 };
-
 const usersReducer = (state = initialState, action) => {
   switch (action.type) {
     case "GET_USERS":
@@ -50,12 +51,24 @@ const usersReducer = (state = initialState, action) => {
       return { ...state, currentAssignment: action.payload };
     case "CHECKED_ASSIGNMENTS":
       return { ...state, checkedAssignments: action.payload };
-
     case "UPDATE_ALL_ASSIGNMENTS":
       if (state.allAssignments && state.allAssignments[0].courseID === action.payload[0].courseID) {
         return { ...state, allAssignments: action.payload }
       } else {
         return state
+      }
+    case "ALL_CONVERSATIONS":
+      return { ...state, allConversations: action.payload };
+    case "CURRENT_CONVERSATION":
+      return { ...state, currentConversation: action.payload };
+    case "UPDATE_CURRENT_CONVERSATION":
+      let filter = state.allConversations?.filter(convers => convers._id !== action.payload._id)
+      // return { ...state, allConversations: [...filter, action.payload] }
+      if (state.currentConversation?._id === action.payload._id) {
+        // state.currentConversation = action.payload
+        return { ...state, allConversations: [...filter, action.payload], currentConversation: action.payload }
+      } else {
+        return { ...state, allConversations: [...filter, action.payload] }
       }
     case "LOG_OUT":
       return state = initialState;

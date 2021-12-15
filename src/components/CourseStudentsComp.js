@@ -6,7 +6,8 @@ import moment from "moment";
 import axios from "axios";
 import { socket } from '../App';
 import MuiSnacks from './MuiSnacks';
-import appSetting from '../appSetting/appSetting'
+import appSetting from '../appSetting/appSetting';
+
 
 const CourseStudentsComp = ({ currentCourse, curUser, }) => {
     const [courseStudents, setCourseStudents] = useState(currentCourse?.students);
