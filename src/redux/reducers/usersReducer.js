@@ -63,9 +63,7 @@ const usersReducer = (state = initialState, action) => {
       return { ...state, currentConversation: action.payload };
     case "UPDATE_CURRENT_CONVERSATION":
       let filter = state.allConversations?.filter(convers => convers._id !== action.payload._id)
-      // return { ...state, allConversations: [...filter, action.payload] }
       if (state.currentConversation?._id === action.payload._id) {
-        // state.currentConversation = action.payload
         return { ...state, allConversations: [...filter, action.payload], currentConversation: action.payload }
       } else {
         return { ...state, allConversations: [...filter, action.payload] }

@@ -139,11 +139,6 @@ const StudentTab2 = ({ curCor, ind }) => {
                                     </Box>
                                 );
                             })}
-                            {/* <AccordionActions>
-                                <Tooltip title="Delete Course">
-                                    <Button color="error" onClick={(e) => delCourse(e)}> <IoTrashBinSharp color="red" size="22px" /></Button>
-                                </Tooltip>
-                            </AccordionActions> */}
                         </Grid>
                     </Grid>
                 </AccordionDetails>

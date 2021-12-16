@@ -10,18 +10,21 @@ import MessagesComp from "./components/MessagesComp";
 import appSetting from "./appSetting/appSetting"
 import { BrowserRouter as Router, Switch, Redirect } from "react-router-dom";
 import {
-	curUserFun,/* getUsers,*/ getCourseFunc, getStudentCourseFunc, updateCourses,
-	updateCurrentCourse, updateAllAssignments, editAvailAbleCourses, currentConversationRedux, UpdatecurrentConversation
+	curUserFun, getUsers, getCourseFunc, getStudentCourseFunc, updateCourses,
+	updateCurrentCourse, updateAllAssignments, editAvailAbleCourses, UpdatecurrentConversation
 } from "./redux/actions/index";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import "./App.css";
 
 import PrivateRoute from "./PrivateRoute";
+import AdminRoutes from './redux/AdminRoutes';
+import Dashboard from './components/admin/Dashboard';
 
 const ENDPOINT = appSetting.severHostedUrl
 export const socket = socketIO(ENDPOINT, { transports: ["websocket"] })
 const App = () => {
+	const [isAdmin, setIsAdmin] = useState(false)
 	const [auth, setAuth] = useState(null)
 	const _id = localStorage.getItem("uid");
 
@@ -50,24 +53,28 @@ const App = () => {
 						setUid(false);
 					} else {
 						dispatch(curUserFun(currentUser));
-						if (currentUser.roll === "teacher") {
-							axios.post(`${appSetting.severHostedUrl}/course/mycourse`, { teacher_id: currentUser._id })
-								.then((resp) => {
-									const course = resp.data.course;
-									dispatch(getCourseFunc(course))
-								}).catch(err => console.log(err))
+						if (currentUser?.isAdmin) {
+							setIsAdmin(true)
+							dispatch(getUsers(data));
+						} else {
+							if (currentUser.roll === "teacher") {
+								axios.post(`${appSetting.severHostedUrl}/course/mycourse`, { teacher_id: currentUser._id })
+									.then((resp) => {
+										const course = resp.data.course;
+										dispatch(getCourseFunc(course))
+									}).catch(err => console.log(err))
+							}
+							if (currentUser.roll === "student" && currentUser.atClass) {
+								axios.post(`${appSetting.severHostedUrl}/course/forstudent`, { studentClass: currentUser.atClass, studentID: _id })
+									.then((resp) => {
+										const courses = resp.data.courses;
+										dispatch(getStudentCourseFunc(courses))
+									}).catch(err => console.log(err))
+							}
 						}
-						if (currentUser.roll === "student" && currentUser.atClass) {
-							axios.post(`${appSetting.severHostedUrl}/course/forstudent`, { studentClass: currentUser.atClass, studentID: _id })
-								.then((resp) => {
-									const courses = resp.data.courses;
-									dispatch(getStudentCourseFunc(courses))
-								}).catch(err => console.log(err))
-						}
-						setUid(true);
-						setSpinner(false);
 					}
-					// dispatch(getUsers(data));
+					setUid(true);
+					setSpinner(false);
 				})
 				.catch((error) => console.log(error));
 			socket.on("connect", () => {
@@ -78,14 +85,6 @@ const App = () => {
 					dispatch(editAvailAbleCourses(newCourse))
 				}
 			})
-
-			// socket.on("ENROLLEDiNcOURSE", (course) => {
-			// 	if (currentUser?._id === course.teacher_id) {
-			// 		console.log("enrolled")
-			// 		dispatch(getCourseFunc(course))
-			// 	} else { console.log("not Enrolled") }
-			// 	console.log("course", course)
-			// })
 			socket.on("courseEditedByTeacher", (course) => {
 				if (currentUser?.roll === "student" && currentUser?.atClass == course?.teacherClass) {
 					dispatch(updateCourses(course))
@@ -95,8 +94,8 @@ const App = () => {
 				dispatch(updateCurrentCourse(course))
 			})
 			socket.on("CHANGE_IN_CONVERSATION", (conversation) => {
-				const findConversation = currentUser?.conversations?.find(converse => converse === conversation._id)
-				if (findConversation) {
+				// console.log("App.js con", conversation)
+				if (currentUser?._id === conversation.user1ID || conversation.user2ID) {
 					dispatch(UpdatecurrentConversation(conversation))
 				}
 			})
@@ -113,57 +112,75 @@ const App = () => {
 				<Switch>
 					<PrivateRoute
 						auth={auth}
+						isAdmin={isAdmin}
 						exact
 						path="/"
+						AdminComp={<Redirect to="/dashboard" curUser={curUser} setAuth={setAuth} />}
 						SuccessComp={<Redirect to="/profile" curUser={curUser} setAuth={setAuth} />}
 						FailComp={<Login setAuth={setAuth} />}
 					/>
+					{/* Admin Routes Start */}
 					<PrivateRoute
 						auth={auth}
+						isAdmin={isAdmin}
+						AdminComp={<Dashboard setAuth={setAuth} />}
+						path="/dashboard"
+						SuccessComp={<Redirect to="/dashboard" />}
+						FailComp={<Redirect to="/" />}
+					/>
+					{/* Admin Routes End */}
+					{/* <AdminRoutes
+						auth={auth}
+						isAdmin={isAdmin}
+						AdminComp={}
+						path="/dashboard"
+						SuccessComp={<Dashboard curUser={curUser} setAuth={setAuth} />}
+						FailComp={<Redirect to="/" />}
+					/> */}
+					<PrivateRoute
+						auth={auth}
+						isAdmin={isAdmin}
+						AdminComp={<Redirect to="/" />}
 						path="/profile"
 						SuccessComp={<Profile curUser={curUser} setAuth={setAuth} />}
 						FailComp={<Redirect to="/" />}
 					/>
 					<PrivateRoute
 						auth={auth}
+						isAdmin={isAdmin}
+						AdminComp={<Redirect to="/" />}
 						path="/attendance"
 						SuccessComp={<Attendance curUser={curUser} setAuth={setAuth} />}
 						FailComp={<Redirect to="/" />}
 					/>
 					<PrivateRoute
 						auth={auth}
+						isAdmin={isAdmin}
+						AdminComp={<Redirect to="/" />}
 						path="/coursedetails"
 						SuccessComp={<CourseDetails curUser={curUser} setAuth={setAuth} />}
 						FailComp={<Redirect to="/" />}
 					/>
 					<PrivateRoute
 						auth={auth}
+						isAdmin={isAdmin}
+						AdminComp={<Redirect to="/" />}
 						path="/messages"
 						SuccessComp={<MessagesComp curUser={curUser} setAuth={setAuth} />}
 						FailComp={<Redirect to="/" />}
 					/>
-					{/* <PrivateRoute
-						auth={auth}
-						path="/messages/:id"
-						SuccessComp={<PrivateConversation curUser={curUser} setAuth={setAuth} />}
-						FailComp={<Redirect to="/" />}
-					/> */}
 					<PrivateRoute
 						auth={auth}
+						isAdmin={isAdmin}
+						AdminComp={<Redirect to="/" />}
 						path="/classmaterials"
 						SuccessComp={<Redirect to="/profile" curUser={curUser} />}
 						FailComp={<Redirect to="/" />}
 					/>
-
-					{/* <PrivateRoute
-						auth={auth}
-						path="/logout"
-						SuccessComp={<Redirect to="/" />}
-						FailComp={<Redirect to="/" />}
-					/> */}
-
 					<PrivateRoute
 						auth={auth}
+						isAdmin={isAdmin}
+						AdminComp={<Redirect to="/" />}
 						path="/:id"
 						SuccessComp={<ClassMaterials curUser={curUser} setAuth={setAuth} />}
 						FailComp={<Redirect to="/" />}
@@ -171,6 +188,8 @@ const App = () => {
 
 					<PrivateRoute
 						auth={auth}
+						isAdmin={isAdmin}
+						AdminComp={<Redirect to="/" />}
 						path="/*"
 						SuccessComp={<Redirect to="/profile" />}
 						FailComp={<Redirect to="/" />}

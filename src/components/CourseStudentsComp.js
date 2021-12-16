@@ -89,6 +89,7 @@ const CourseStudentsComp = ({ currentCourse, curUser, }) => {
                 const res = await axios.post(`${appSetting.severHostedUrl}/user/sendmsg`, messageObj)
                 if (res) {
                     if (res.data.message) {
+                        socket.emit("changeInConversation", res.data.conversation)
                         setOpenSnack(res.data.message)
                         setSeverity("success")
                     } else {

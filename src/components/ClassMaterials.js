@@ -41,17 +41,21 @@ const ClassMaterials = ({ curUser, setAuth }) => {
 	const dispatch = useDispatch()
 
 	useEffect(async () => {
-
-		const res = await axios.post(`${appSetting.severHostedUrl}/course/specific`, { id: params.id })
-		if (res.data.currentCourse) {
-			dispatch(currentCourseFunc(res.data.currentCourse))
-			// setCurrentCourse(res.data.currentCourse)
-			setShowClass(true)
-			setSpinner(false)
-		} else {
-			console.log(res.data.error)
-			setShowClass(false)
-			setSpinner(false)
+		try {
+			const res = await axios.post(`${appSetting.severHostedUrl}/course/specific`, { id: params.id })
+			if (res.data.currentCourse) {
+				dispatch(currentCourseFunc(res.data.currentCourse))
+				// setCurrentCourse(res.data.currentCourse)
+				setShowClass(true)
+				setSpinner(false)
+			} else {
+				console.log(res.data.error)
+				setShowClass(false)
+				setSpinner(false)
+				history.push("/")
+			}
+		} catch (error) {
+			history.push("/")
 		}
 	}, [])
 	useEffect(() => {

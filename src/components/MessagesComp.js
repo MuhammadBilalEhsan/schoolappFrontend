@@ -1,44 +1,35 @@
 import React, { useEffect, useState } from 'react'
 import Header from './Header'
 import { Avatar, Box, Typography } from "@mui/material"
-// import SendingMessageInputComp from './SendingMessageInputComp'
-// import MessageBox from './MessageBox'
 import PrivateConversation from './PrivateConversation.js'
-// import moment from 'moment'
 import axios from 'axios'
-// import { socket } from '../App'
-import { useHistory } from 'react-router-dom'
+// import { useHistory } from 'react-router-dom'
 import appSetting from '../appSetting/appSetting'
-import { allConversationsRedux } from '../redux/actions'
+import { allConversationsRedux, UpdatecurrentConversation } from '../redux/actions'
 import { useDispatch, useSelector } from 'react-redux'
-// import MuiSnacks from './MuiSnacks'
-// import PrivateConversation from './PrivateConversation'
+import { socket } from "../App"
 
 const MessagesComp = ({ curUser, setAuth }) => {
     const allConversations = useSelector(state => state.usersReducer.allConversations)
     const [allConversationsArray, setAllConversationsArray] = useState(allConversations)
     const [conversationID, setConversationID] = useState("")
-    // const [openSnack, setOpenSnack] = useState("");
-    // const [severity, setSeverity] = useState("");
-    // const [message, setMessage] = useState("")
     const [recieverID, setRecieverID] = useState("")
-    const [recieverName, setRecieverName] = useState("")
-    const history = useHistory()
+    // const [recieverName, setRecieverName] = useState("")
+    // const history = useHistory()
     const dispatch = useDispatch()
     const setIDfun = (id, name) => {
         if (recieverID) {
             setRecieverID("")
-            setRecieverName("")
+            // setRecieverName("")
         } else {
             setRecieverID(id)
-            setRecieverName(name)
+            // setRecieverName(name)
         }
     }
-    const { _id, fname, lname } = curUser || {}
-
-    // useEffect(() => {
-    // socket.on()
-    // })
+    useEffect(() => {
+        setAllConversationsArray(allConversations)
+        console.log("changedallConversations", allConversations)
+    }, [allConversations])
     useEffect(async () => {
         try {
             const res = await axios.get(`${appSetting.severHostedUrl}/user/myallconversations/${curUser?._id}`)
@@ -47,7 +38,6 @@ const MessagesComp = ({ curUser, setAuth }) => {
                 setAllConversationsArray(res.data.allConversations)
             }
         } catch (error) {
-
         }
     }, [])
     return (
@@ -70,7 +60,7 @@ const MessagesComp = ({ curUser, setAuth }) => {
                                     allConversationsArray.map((conversation, ind) => {
                                         const isUser1 = curUser?._id === conversation.user1ID
                                         return (
-                                            <Box onClick={() => setConversationID(conversation._id)} mt={2} key={ind} width="100%" display="flex" justifyContent="space-between" alignItems="center">
+                                            <Box sx={{ cursor: "pointer" }} onClick={() => setConversationID(conversation._id)} mt={2} key={ind} width="100%" display="flex" justifyContent="space-between" alignItems="center">
                                                 <Box display="flex" justifyContent="center" alignItems="center">
                                                     <Box minWidth="65px" >
                                                         <Avatar sizes="50px" sx={{ bgcolor: "green", textTransform: "capitalize" }}>{isUser1 ? conversation.user2Name[0] : conversation.user1Name[0]}</Avatar>
@@ -98,45 +88,6 @@ const MessagesComp = ({ curUser, setAuth }) => {
                         </Box>
                     </Box>
             }
-
-
-            {/* {curUser?.messages?.length > 0 ?
-                    curUser?.messages.map((msg, index) => {
-                        return (
-                            <Box width="100%" key={index} onClick={() => setIDfun(msg.senderID, msg.name)}>
-                                <MessageBox
-                                    color={curUser?._id === msg?.id ? "#ba000d" : "green"}
-                                    timeColor={curUser?._id === msg?.id ? "#ba000db8" : "#2e7d32de"}
-                                    curUser={curUser}
-                                    nameFirestLetter={msg.name[0]}
-                                    name={curUser?._id === msg?.id ? "Me" : msg.name}
-                                    time={msg.time}
-                                    message={msg.message}
-                                />
-                            </Box>
-                        )
-                    }) : <Box pt={9} borderTop="1px solid green" width="100%"
-                        textAlign="center"
-                    >
-                        <Typography variant="h6" color="green">
-                            Currently You Have No Messages
-                        </Typography>
-                    </Box>
-                }
-                {
-                    recieverID ? <SendingMessageInputComp
-                        name="message"
-                        autoFocus={true}
-                        value={message}
-                        setValue={setMessage}
-                        type="text"
-                        placeholder={`Write Message for ${recieverName}`}
-                        color="success"
-                        submitFunc={sendMsgFunc}
-                        userName={curUser?.fname[0]}
-                    /> : ""
-                } */}
-
         </Box>
     )
 }
