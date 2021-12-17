@@ -31,7 +31,7 @@ const MobMenuComp = styled("div")(({ theme }) => ({
 		display: "flex",
 	},
 }));
-const Header = ({ setAuth }) => {
+const Header = ({ setAuth, curUser }) => {
 	const [mobMenuAnchor, setMobMenuAnchor] = useState(null);
 	const isMobMenuOpen = Boolean(mobMenuAnchor);
 
@@ -59,45 +59,67 @@ const Header = ({ setAuth }) => {
 			open={isMobMenuOpen}
 			onClose={closeMobMenu}
 		>
-			<MenuItem
-				component={Link}
-				onClick={closeMobMenu}
-				to="/profile"
-				sx={{
-					backgroundColor: "#fff",
-					color: "green",
-					width: "100%",
-					paddingBottom: 2,
-				}}
-			>
-				Profile
-			</MenuItem>
-			<MenuItem
-				component={Link}
-				onClick={closeMobMenu}
-				to="/attendance"
-				sx={{
-					backgroundColor: "#fff",
-					color: "green",
-					width: "100%",
-					paddingBottom: 2,
-				}}
-			>
-				Attendance
-			</MenuItem>
-			<MenuItem
-				component={Link}
-				onClick={closeMobMenu}
-				to="/coursedetails"
-				sx={{
-					backgroundColor: "#fff",
-					color: "green",
-					width: "100%",
-					paddingBottom: 2,
-				}}
-			>
-				Course Details
-			</MenuItem>
+			{curUser?.isAdmin ?
+				<>
+					<MenuItem
+						component={Link}
+						onClick={closeMobMenu}
+						to="/dashboard"
+						sx={{
+							backgroundColor: "#fff",
+							color: "green",
+							width: "100%",
+							paddingBottom: 2,
+						}}
+					>
+						Dashboard
+					</MenuItem>
+
+				</>
+				: !curUser?.isAdmin ?
+					<>
+						<MenuItem
+							component={Link}
+							onClick={closeMobMenu}
+							to="/profile"
+							sx={{
+								backgroundColor: "#fff",
+								color: "green",
+								width: "100%",
+								paddingBottom: 2,
+							}}
+						>
+							Profile
+						</MenuItem>
+						<MenuItem
+							component={Link}
+							onClick={closeMobMenu}
+							to="/attendance"
+							sx={{
+								backgroundColor: "#fff",
+								color: "green",
+								width: "100%",
+								paddingBottom: 2,
+							}}
+						>
+							Attendance
+						</MenuItem>
+						<MenuItem
+							component={Link}
+							onClick={closeMobMenu}
+							to="/coursedetails"
+							sx={{
+								backgroundColor: "#fff",
+								color: "green",
+								width: "100%",
+								paddingBottom: 2,
+							}}
+						>
+							Course Details
+						</MenuItem>
+					</>
+					: ""
+			}
 			<MenuItem
 				component={Link}
 				onClick={closeMobMenu}
@@ -125,7 +147,7 @@ const Header = ({ setAuth }) => {
 			>
 				Log Out
 			</MenuItem>
-		</Menu>
+		</Menu >
 	);
 	return (
 		<>

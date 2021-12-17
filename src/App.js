@@ -10,16 +10,16 @@ import MessagesComp from "./components/MessagesComp";
 import appSetting from "./appSetting/appSetting"
 import { BrowserRouter as Router, Switch, Redirect } from "react-router-dom";
 import {
-	curUserFun, getUsers, getCourseFunc, getStudentCourseFunc, updateCourses,
-	updateCurrentCourse, updateAllAssignments, editAvailAbleCourses, UpdatecurrentConversation
+	curUserFun, getUsers, getCourseFunc, getStudentCourseFunc, updateCourses, updateCurrentCourse,
+	updateAllAssignments, editAvailAbleCourses, UpdatecurrentConversation
 } from "./redux/actions/index";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import "./App.css";
 
 import PrivateRoute from "./PrivateRoute";
-import AdminRoutes from './redux/AdminRoutes';
 import Dashboard from './components/admin/Dashboard';
+// import Drawer from './components/admin/Dashboard';
 
 const ENDPOINT = appSetting.severHostedUrl
 export const socket = socketIO(ENDPOINT, { transports: ["websocket"] })
@@ -110,6 +110,32 @@ const App = () => {
 		<>
 			<Router>
 				<Switch>
+					{/* Admin Routes Start */}
+					<PrivateRoute
+						auth={auth}
+						isAdmin={isAdmin}
+						path="/dashboard"
+						AdminComp={<Dashboard setAuth={setAuth} currentUser={curUser} />}
+						SuccessComp={<Redirect to="/profile" />}
+						FailComp={<Redirect to="/" />}
+					/>
+					<PrivateRoute
+						auth={auth}
+						isAdmin={isAdmin}
+						path="/teachers"
+						AdminComp={<Dashboard setAuth={setAuth} currentUser={curUser} />}
+						SuccessComp={<Redirect to="/profile" />}
+						FailComp={<Redirect to="/" />}
+					/>
+					<PrivateRoute
+						auth={auth}
+						isAdmin={isAdmin}
+						path="/students"
+						AdminComp={<Dashboard setAuth={setAuth} currentUser={curUser} />}
+						SuccessComp={<Redirect to="/profile" />}
+						FailComp={<Redirect to="/" />}
+					/>
+					{/* Admin Routes End */}
 					<PrivateRoute
 						auth={auth}
 						isAdmin={isAdmin}
@@ -119,69 +145,53 @@ const App = () => {
 						SuccessComp={<Redirect to="/profile" curUser={curUser} setAuth={setAuth} />}
 						FailComp={<Login setAuth={setAuth} />}
 					/>
-					{/* Admin Routes Start */}
 					<PrivateRoute
 						auth={auth}
 						isAdmin={isAdmin}
-						AdminComp={<Dashboard setAuth={setAuth} />}
-						path="/dashboard"
-						SuccessComp={<Redirect to="/dashboard" />}
-						FailComp={<Redirect to="/" />}
-					/>
-					{/* Admin Routes End */}
-					{/* <AdminRoutes
-						auth={auth}
-						isAdmin={isAdmin}
-						AdminComp={}
-						path="/dashboard"
-						SuccessComp={<Dashboard curUser={curUser} setAuth={setAuth} />}
-						FailComp={<Redirect to="/" />}
-					/> */}
-					<PrivateRoute
-						auth={auth}
-						isAdmin={isAdmin}
-						AdminComp={<Redirect to="/" />}
 						path="/profile"
+						AdminComp={<Redirect to="/dashboard" />}
 						SuccessComp={<Profile curUser={curUser} setAuth={setAuth} />}
 						FailComp={<Redirect to="/" />}
 					/>
 					<PrivateRoute
 						auth={auth}
 						isAdmin={isAdmin}
-						AdminComp={<Redirect to="/" />}
-						path="/attendance"
-						SuccessComp={<Attendance curUser={curUser} setAuth={setAuth} />}
-						FailComp={<Redirect to="/" />}
-					/>
-					<PrivateRoute
-						auth={auth}
-						isAdmin={isAdmin}
-						AdminComp={<Redirect to="/" />}
 						path="/coursedetails"
+						AdminComp={<Redirect to="/dashboard" />}
 						SuccessComp={<CourseDetails curUser={curUser} setAuth={setAuth} />}
 						FailComp={<Redirect to="/" />}
 					/>
+					{/* All Users Routes started */}
 					<PrivateRoute
 						auth={auth}
 						isAdmin={isAdmin}
-						AdminComp={<Redirect to="/" />}
 						path="/messages"
+						AdminComp={<MessagesComp curUser={curUser} setAuth={setAuth} />}
 						SuccessComp={<MessagesComp curUser={curUser} setAuth={setAuth} />}
 						FailComp={<Redirect to="/" />}
 					/>
 					<PrivateRoute
 						auth={auth}
 						isAdmin={isAdmin}
-						AdminComp={<Redirect to="/" />}
+						path="/attendance"
+						AdminComp={<Redirect to="/dashboard" />}
+						SuccessComp={<Attendance curUser={curUser} setAuth={setAuth} />}
+						FailComp={<Redirect to="/" />}
+					/>
+					{/* All Users Routes Ended */}
+					<PrivateRoute
+						auth={auth}
+						isAdmin={isAdmin}
 						path="/classmaterials"
+						AdminComp={<Redirect to="/dashboard" />}
 						SuccessComp={<Redirect to="/profile" curUser={curUser} />}
 						FailComp={<Redirect to="/" />}
 					/>
 					<PrivateRoute
 						auth={auth}
 						isAdmin={isAdmin}
-						AdminComp={<Redirect to="/" />}
 						path="/:id"
+						AdminComp={<Redirect to="/dashboard" />}
 						SuccessComp={<ClassMaterials curUser={curUser} setAuth={setAuth} />}
 						FailComp={<Redirect to="/" />}
 					/>
@@ -189,8 +199,8 @@ const App = () => {
 					<PrivateRoute
 						auth={auth}
 						isAdmin={isAdmin}
-						AdminComp={<Redirect to="/" />}
 						path="/*"
+						AdminComp={<Redirect to="/dashboard" />}
 						SuccessComp={<Redirect to="/profile" />}
 						FailComp={<Redirect to="/" />}
 					/>
