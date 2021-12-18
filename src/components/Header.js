@@ -59,67 +59,45 @@ const Header = ({ setAuth, curUser }) => {
 			open={isMobMenuOpen}
 			onClose={closeMobMenu}
 		>
-			{curUser?.isAdmin ?
-				<>
-					<MenuItem
-						component={Link}
-						onClick={closeMobMenu}
-						to="/dashboard"
-						sx={{
-							backgroundColor: "#fff",
-							color: "green",
-							width: "100%",
-							paddingBottom: 2,
-						}}
-					>
-						Dashboard
-					</MenuItem>
-
-				</>
-				: !curUser?.isAdmin ?
-					<>
-						<MenuItem
-							component={Link}
-							onClick={closeMobMenu}
-							to="/profile"
-							sx={{
-								backgroundColor: "#fff",
-								color: "green",
-								width: "100%",
-								paddingBottom: 2,
-							}}
-						>
-							Profile
-						</MenuItem>
-						<MenuItem
-							component={Link}
-							onClick={closeMobMenu}
-							to="/attendance"
-							sx={{
-								backgroundColor: "#fff",
-								color: "green",
-								width: "100%",
-								paddingBottom: 2,
-							}}
-						>
-							Attendance
-						</MenuItem>
-						<MenuItem
-							component={Link}
-							onClick={closeMobMenu}
-							to="/coursedetails"
-							sx={{
-								backgroundColor: "#fff",
-								color: "green",
-								width: "100%",
-								paddingBottom: 2,
-							}}
-						>
-							Course Details
-						</MenuItem>
-					</>
-					: ""
-			}
+			<MenuItem
+				component={Link}
+				onClick={closeMobMenu}
+				to="/profile"
+				sx={{
+					backgroundColor: "#fff",
+					color: "green",
+					width: "100%",
+					paddingBottom: 2,
+				}}
+			>
+				Profile
+			</MenuItem>
+			<MenuItem
+				component={Link}
+				onClick={closeMobMenu}
+				to="/attendance"
+				sx={{
+					backgroundColor: "#fff",
+					color: "green",
+					width: "100%",
+					paddingBottom: 2,
+				}}
+			>
+				Attendance
+			</MenuItem>
+			<MenuItem
+				component={Link}
+				onClick={closeMobMenu}
+				to="/coursedetails"
+				sx={{
+					backgroundColor: "#fff",
+					color: "green",
+					width: "100%",
+					paddingBottom: 2,
+				}}
+			>
+				Course Details
+			</MenuItem>
 			<MenuItem
 				component={Link}
 				onClick={closeMobMenu}

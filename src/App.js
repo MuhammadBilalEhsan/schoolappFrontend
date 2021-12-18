@@ -8,18 +8,28 @@ import CourseDetails from "./components/CourseDetails";
 import ClassMaterials from "./components/ClassMaterials";
 import MessagesComp from "./components/MessagesComp";
 import appSetting from "./appSetting/appSetting"
-import { BrowserRouter as Router, Switch, Redirect } from "react-router-dom";
 import {
-	curUserFun, getUsers, getCourseFunc, getStudentCourseFunc, updateCourses, updateCurrentCourse,
-	updateAllAssignments, editAvailAbleCourses, UpdatecurrentConversation
+	BrowserRouter as Router, Switch, Redirect
+} from "react-router-dom";
+import {
+	curUserFun, getUsers, getCourseFunc, getStudentCourseFunc,
+	updateCourses, updateCurrentCourse, updateAllAssignments,
+	editAvailAbleCourses, UpdatecurrentConversation,
 } from "./redux/actions/index";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import "./App.css";
 
 import PrivateRoute from "./PrivateRoute";
+
+// Admin Components Importing
 import Dashboard from './components/admin/Dashboard';
-// import Drawer from './components/admin/Dashboard';
+import Teachers from './components/admin/Teachers';
+import Students from './components/admin/Students';
+import AttendanceForAdmin from './components/admin/AttendanceForAdmin';
+import Courses from './components/admin/Courses';
+import Inbox from './components/admin/Inbox';
+import Blocked from './components/admin/Blocked';
 
 const ENDPOINT = appSetting.severHostedUrl
 export const socket = socketIO(ENDPOINT, { transports: ["websocket"] })
@@ -114,16 +124,9 @@ const App = () => {
 					<PrivateRoute
 						auth={auth}
 						isAdmin={isAdmin}
-						path="/dashboard"
-						AdminComp={<Dashboard setAuth={setAuth} currentUser={curUser} />}
-						SuccessComp={<Redirect to="/profile" />}
-						FailComp={<Redirect to="/" />}
-					/>
-					<PrivateRoute
-						auth={auth}
-						isAdmin={isAdmin}
 						path="/teachers"
-						AdminComp={<Dashboard setAuth={setAuth} currentUser={curUser} />}
+						AdminComp={<Dashboard setAuth={setAuth}
+							Component={<Teachers currentUser={curUser} key="teachers" />} />}
 						SuccessComp={<Redirect to="/profile" />}
 						FailComp={<Redirect to="/" />}
 					/>
@@ -131,17 +134,55 @@ const App = () => {
 						auth={auth}
 						isAdmin={isAdmin}
 						path="/students"
-						AdminComp={<Dashboard setAuth={setAuth} currentUser={curUser} />}
+						AdminComp={<Dashboard setAuth={setAuth}
+							Component={<Students currentUser={curUser} key="students" />} />}
 						SuccessComp={<Redirect to="/profile" />}
 						FailComp={<Redirect to="/" />}
 					/>
+					{/* <PrivateRoute
+						auth={auth}
+						isAdmin={isAdmin}
+						path="/attendances"
+						AdminComp={<Dashboard setAuth={setAuth}
+							Component={<AttendanceForAdmin currentUser={curUser} key="teachers"/>} />}
+						SuccessComp={<Redirect to="/profile" />}
+						FailComp={<Redirect to="/" />}
+					/> */}
+					<PrivateRoute
+						auth={auth}
+						isAdmin={isAdmin}
+						path="/courses"
+						AdminComp={<Dashboard setAuth={setAuth}
+							Component={<Courses currentUser={curUser} key="courses" />} />}
+						SuccessComp={<Redirect to="/profile" />}
+						FailComp={<Redirect to="/" />}
+					/>
+					<PrivateRoute
+						auth={auth}
+						isAdmin={isAdmin}
+						path="/inbox"
+						AdminComp={<Dashboard setAuth={setAuth}
+							Component={<Inbox currentUser={curUser} key="inbox" />} />}
+						SuccessComp={<Redirect to="/profile" />}
+						FailComp={<Redirect to="/" />}
+					/>
+					<PrivateRoute
+						auth={auth}
+						isAdmin={isAdmin}
+						path="/blocked"
+						AdminComp={<Dashboard setAuth={setAuth}
+							Component={<Blocked currentUser={curUser} key="blocked" />} />}
+						SuccessComp={<Redirect to="/profile" />}
+						FailComp={<Redirect to="/" />}
+					/>
+
 					{/* Admin Routes End */}
 					<PrivateRoute
 						auth={auth}
 						isAdmin={isAdmin}
 						exact
 						path="/"
-						AdminComp={<Redirect to="/dashboard" curUser={curUser} setAuth={setAuth} />}
+						AdminComp={<Redirect to="/teachers" curUser={curUser} setAuth={setAuth} />}
 						SuccessComp={<Redirect to="/profile" curUser={curUser} setAuth={setAuth} />}
 						FailComp={<Login setAuth={setAuth} />}
 					/>
@@ -149,7 +190,7 @@ const App = () => {
 						auth={auth}
 						isAdmin={isAdmin}
 						path="/profile"
-						AdminComp={<Redirect to="/dashboard" />}
+						AdminComp={<Redirect to="/teachers" />}
 						SuccessComp={<Profile curUser={curUser} setAuth={setAuth} />}
 						FailComp={<Redirect to="/" />}
 					/>
@@ -157,7 +198,7 @@ const App = () => {
 						auth={auth}
 						isAdmin={isAdmin}
 						path="/coursedetails"
-						AdminComp={<Redirect to="/dashboard" />}
+						AdminComp={<Redirect to="/teachers" />}
 						SuccessComp={<CourseDetails curUser={curUser} setAuth={setAuth} />}
 						FailComp={<Redirect to="/" />}
 					/>
@@ -174,7 +215,7 @@ const App = () => {
 						auth={auth}
 						isAdmin={isAdmin}
 						path="/attendance"
-						AdminComp={<Redirect to="/dashboard" />}
+						AdminComp={<Redirect to="/teachers" />}
 						SuccessComp={<Attendance curUser={curUser} setAuth={setAuth} />}
 						FailComp={<Redirect to="/" />}
 					/>
@@ -183,7 +224,7 @@ const App = () => {
 						auth={auth}
 						isAdmin={isAdmin}
 						path="/classmaterials"
-						AdminComp={<Redirect to="/dashboard" />}
+						AdminComp={<Redirect to="/teachers" />}
 						SuccessComp={<Redirect to="/profile" curUser={curUser} />}
 						FailComp={<Redirect to="/" />}
 					/>
@@ -191,7 +232,7 @@ const App = () => {
 						auth={auth}
 						isAdmin={isAdmin}
 						path="/:id"
-						AdminComp={<Redirect to="/dashboard" />}
+						AdminComp={<Redirect to="/teachers" />}
 						SuccessComp={<ClassMaterials curUser={curUser} setAuth={setAuth} />}
 						FailComp={<Redirect to="/" />}
 					/>
@@ -200,7 +241,7 @@ const App = () => {
 						auth={auth}
 						isAdmin={isAdmin}
 						path="/*"
-						AdminComp={<Redirect to="/dashboard" />}
+						AdminComp={<Redirect to="/teachers" />}
 						SuccessComp={<Redirect to="/profile" />}
 						FailComp={<Redirect to="/" />}
 					/>

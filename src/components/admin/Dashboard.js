@@ -17,30 +17,23 @@ import { GiTeacher } from 'react-icons/gi';
 import { MdVerifiedUser } from 'react-icons/md';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-// import drawerBGimg from '../../images/abc1.jpg'
-// import headerBGimg from '../../images/drawerBGimg5.jpg'
-// import headerBGimg from '../../images/abc1.jpg'
+import { Link } from "react-router-dom"
 
-// const drawerWidth = 240;
-const drawerWidth = 232;
+const drawerWidth = 240;
+// const drawerWidth = 232;
 
 function Dashboard(props) {
     const { window } = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
-    const [component, setComponent] = React.useState("");
+    const [activeComponent, setActiveComponent] = React.useState(props.Component?.key);
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
     };
 
-
-
-    React.useEffect(() => {
-        console.log("component", component)
-    })
     const drawer = (
         <div>
-            <Toolbar sx={{ textAlign: "center", backgroundColor: "#000" }}>
+            <Toolbar sx={{ textAlign: "center" }}>
                 <Typography variant="h6" color="#fff" sx={{
                     // textDecoration: "underline",
                     cursor: "pointer",
@@ -50,28 +43,43 @@ function Dashboard(props) {
                     {/* </strong> */}
                 </Typography>
             </Toolbar>
-            <Divider sx={{ backgroundColor: "white" }} />
-            <List sx={{ color: "#16c516", textTransform: "capitalize" }}>
+            {/* <Divider sx={{ backgroundColor: "white" }} /> */}
+            <List sx={{ color: "#fff", textTransform: "capitalize", py: 0 }}>
                 {[
                     { label: 'teachers', icon: <GiTeacher color='#fff' size="24px" /> },
                     { label: 'students', icon: <FaBookReader color='#fff' size="24px" /> },
-                    { label: 'attendance', icon: <MdVerifiedUser color='#fff' size="24px" /> },
+                    // { label: 'attendances', icon: <MdVerifiedUser color='#fff' size="24px" /> },
                     { label: 'courses', icon: <ImBooks color='#fff' size="24px" /> }
                 ].map((item, index) => (
-                    <ListItem button key={index} onClick={() => setComponent(item.label)}>
+                    <ListItem button key={index}
+                        component={Link} to={`${item.label}`}
+                        onClick={() => setActiveComponent(item.label)}
+                        sx={{
+                            backgroundColor: item.label === activeComponent ? "darkgreen" : "",
+                            "&:hover": { backgroundColor: "darkgreen" }
+                        }}
+                    >
+                        {/* {console.log("check", item.label, item.label === activeComponent)} */}
                         <ListItemIcon>{item.icon}</ListItemIcon>
                         <ListItemText primary={item.label} />
                     </ListItem>
                 ))}
             </List>
             <Divider sx={{ backgroundColor: "white" }} />
-            <List sx={{ color: "#16c516", textTransform: "capitalize" }}>
+            <List sx={{ color: "#fff", textTransform: "capitalize", py: 0 }}>
                 {
                     [
                         { label: 'inbox', icon: <FiMail color='#fff' size="24px" /> },
                         { label: 'blocked', icon: <ImBlocked color='#fff' size="24px" /> }
                     ].map((item, index) => (
-                        <ListItem button key={index} onClick={() => setComponent(item.label)}>
+                        <ListItem button key={index}
+                            component={Link} to={`${item.label}`}
+                            onClick={() => setActiveComponent(item.label)}
+                            sx={{
+                                backgroundColor: item.label === activeComponent ? "darkgreen" : "",
+                                "&:hover": { backgroundColor: "darkgreen" }
+                            }}
+                        >
                             <ListItemIcon>{item.icon}</ListItemIcon>
                             <ListItemText primary={item.label} />
                         </ListItem>
@@ -128,10 +136,8 @@ function Dashboard(props) {
                         display: { xs: 'block', sm: 'none' },
                         '& .MuiDrawer-paper': {
                             boxSizing: 'border-box', width: drawerWidth,
-                            // backgroundImage: `url(${drawerBGimg})`,
-                            backgroundColor: "#2c482c"
+                            backgroundColor: "#2e7d32"
                         },
-                        // backgroundSize: "cover",
                     }}
                 >
                     {drawer}
@@ -142,10 +148,8 @@ function Dashboard(props) {
                         display: { xs: 'none', sm: 'block' },
                         '& .MuiDrawer-paper': {
                             boxSizing: 'border-box', width: drawerWidth,
-                            // backgroundImage: `url(${drawerBGimg})`,
-                            backgroundColor: "#2c482c"
+                            backgroundColor: "#2e7d32"
                         },
-                        // backgroundImage: `url(${drawerBGimg})`
                     }}
                     open
                 >
@@ -154,9 +158,9 @@ function Dashboard(props) {
             </Box>
             <Box
                 component="main"
-                sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
+                sx={{ flexGrow: 1, p: 2, mt: "40px", width: { sm: `calc(100% - ${drawerWidth}px)` } }}
             >
-
+                {props.Component}
             </Box>
         </Box >
     );
