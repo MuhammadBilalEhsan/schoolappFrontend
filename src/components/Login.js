@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
-import { Box, Button, TextField, Typography, Divider } from "@mui/material"
+import Box from "@mui/material/Box"
+// import Button from "@mui/material/Button"
+import TextField from "@mui/material/TextField"
+import Typography from "@mui/material/Typography"
+import Divider from "@mui/material/Divider"
+import LoadingButton from '@mui/lab/LoadingButton';
 import { FaUserAlt } from "react-icons/fa";
 import { FiLogIn } from "react-icons/fi";
 import Spinner from "./Spinner";
@@ -9,12 +14,13 @@ import "../css/login.css";
 import appSetting from '../appSetting/appSetting'
 import MuiSnacks from "./MuiSnacks"
 
+
 const Login = ({ setAuth }) => {
 	const [loginData, setLoginData] = useState({
 		email: "",
 		password: "",
 	});
-	const [loader, setLoader] = useState(false);
+	const [loadBtn, setLoadBtn] = useState(false);
 
 	const [openSnack, setOpenSnack] = useState("");
 	const [severity, setSeverity] = useState("");
@@ -31,35 +37,33 @@ const Login = ({ setAuth }) => {
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		setLoader(true);
+		setLoadBtn(true);
 
 		let { email, password } = loginData;
 		if (!email) {
-			setLoader(false);
+			setLoadBtn(false);
 			setOpenSnack("Please write Valid Email!");
 			setSeverity("error");
 		} else if (!password || password.length < 8) {
 			setOpenSnack("Password! contains at least 8 characters !");
 			setSeverity("error");
-			setLoader(false);
+			setLoadBtn(false);
 		} else {
 			axios
 				.post(`${appSetting.severHostedUrl}/user/login`, loginData)
 				.then((res) => {
 					localStorage.setItem("uid", res.data.curUser._id);
-					setLoader(false);
+					setLoadBtn(false);
 					setAuth(true)
 					history.push("/profile");
 				})
 				.catch((err) => {
-					setLoader(false);
+					setLoadBtn(false);
 					setOpenSnack("Invalid Credentials");
 					setSeverity("error");
 				});
 		}
 	};
-
-	if (loader) return <Spinner />;
 	return (
 		<Box className={`_main`} display="flex" alignItems="center">
 			{openSnack ? <MuiSnacks openSnack={openSnack} severity={severity} text={openSnack} setOpenSnack={setOpenSnack} /> : ""}
@@ -98,7 +102,26 @@ const Login = ({ setAuth }) => {
 						inputProps={{ maxLength: 32 }}
 						sx={{ marginBottom: 2 }}
 					/>
-					<Button size="large" type="submit" mt={2} variant="contained" color="success" startIcon={<FiLogIn size="22px" color="#fff" />} fullWidth>LOGIN</Button>
+					{/* <Button
+						size="large" type="submit"
+						mt={2} variant="contained"
+						color="success"
+						startIcon={<FiLogIn size="22px" color="#fff" />}
+						fullWidth
+					>LOGIN</Button> */}
+					<LoadingButton
+						size="large"
+						type="submit"
+						mt={2}
+						variant="contained"
+						color="success"
+						startIcon={<FiLogIn size="22px" color="#fff" />}
+						fullWidth
+						loading={loadBtn}
+						loadingPosition="end"
+					>
+						Login
+					</LoadingButton>
 				</form>
 			</Box>
 		</Box>

@@ -2,9 +2,16 @@
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
 import Header from "./Header";
-import { Box, Avatar, Grid, Paper, Typography } from "@mui/material";
+import Box from "@mui/material/Box";
+import Avatar from "@mui/material/Avatar";
+import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
+import Typography from "@mui/material/Typography";
+// import Input from "@mui/material/Input";
+// import IconButton from "@mui/material/IconButton";
 import EditProfile from "./EditProfile";
 import ChangeProfilePic from "./ChangeProfilePic";
+// import { BsCameraFill } from "react-icons/bs";
 import MuiSnacks from "./MuiSnacks"
 import "../App.css";
 
@@ -60,6 +67,15 @@ const Profile = ({ curUser, setAuth }) => {
 					bottom="13px"
 					zIndex={1}
 				>
+					{/* <label htmlFor="icon-button-file">
+						<input hidden name="myImg"
+							type="file" accept="image/png, image/jpeg"
+							onChange={(e) => handleChange(e.target.files[0])}
+						/>
+						<IconButton color="success" size="small" aria-label="upload picture" component="span">
+							<BsCameraFill />
+						</IconButton>
+					</label> */}
 					<ChangeProfilePic
 						curUser={curUser}
 						setImgURL={setImgURL}
