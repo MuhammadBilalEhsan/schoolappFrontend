@@ -11,13 +11,14 @@ import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { FiMenu, FiMail } from 'react-icons/fi';
-import { FaBookReader } from 'react-icons/fa';
+import { FaBookReader, FaUsers } from 'react-icons/fa';
 import { ImBlocked, ImBooks } from 'react-icons/im';
-import { GiTeacher } from 'react-icons/gi';
-import { MdVerifiedUser } from 'react-icons/md';
+import { GiClassicalKnowledge, GiFiles, GiTeacher } from "react-icons/gi"
+import { MdOutlineDashboardCustomize } from 'react-icons/md';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import { Link } from "react-router-dom"
+import { Link, useHistory } from "react-router-dom"
+import { CgLogOff } from 'react-icons/cg';
 
 const drawerWidth = 240;
 // const drawerWidth = 232;
@@ -30,7 +31,14 @@ function Dashboard(props) {
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
     };
-
+    const history = useHistory()
+    const logoutFunction = () => {
+        localStorage.removeItem("uid");
+        props.setAuth(false)
+        window.location.reload(false);
+        history.push("/");
+    }
+    React.useEffect(() => { setActiveComponent(props.Component?.key) })
     const drawer = (
         <div>
             <Toolbar sx={{ textAlign: "center" }}>
@@ -46,14 +54,15 @@ function Dashboard(props) {
             {/* <Divider sx={{ backgroundColor: "white" }} /> */}
             <List sx={{ color: "#fff", textTransform: "capitalize", py: 0 }}>
                 {[
-                    { label: 'teachers', icon: <GiTeacher color='#fff' size="24px" /> },
-                    { label: 'students', icon: <FaBookReader color='#fff' size="24px" /> },
+                    { label: 'dashboard', icon: <MdOutlineDashboardCustomize color='#fff' size="24px" /> },
+                    { label: 'users', icon: <FaUsers color='#fff' size="24px" /> },
+                    { label: 'classes', icon: <GiClassicalKnowledge color='#fff' size="24px" /> },
                     // { label: 'attendances', icon: <MdVerifiedUser color='#fff' size="24px" /> },
                     { label: 'courses', icon: <ImBooks color='#fff' size="24px" /> }
                 ].map((item, index) => (
                     <ListItem button key={index}
                         component={Link} to={`${item.label}`}
-                        onClick={() => setActiveComponent(item.label)}
+                        onClick={() => setMobileOpen(false)}
                         sx={{
                             backgroundColor: item.label === activeComponent ? "darkgreen" : "",
                             "&:hover": { backgroundColor: "darkgreen" }
@@ -74,7 +83,10 @@ function Dashboard(props) {
                     ].map((item, index) => (
                         <ListItem button key={index}
                             component={Link} to={`${item.label}`}
-                            onClick={() => setActiveComponent(item.label)}
+                            onClick={() => {
+                                setActiveComponent(item.label);
+                                setMobileOpen(false)
+                            }}
                             sx={{
                                 backgroundColor: item.label === activeComponent ? "darkgreen" : "",
                                 "&:hover": { backgroundColor: "darkgreen" }
@@ -113,9 +125,16 @@ function Dashboard(props) {
                     >
                         <FiMenu size="22px" color="white" />
                     </IconButton>
-                    <Typography variant="h6" noWrap component="div">
+                    <Typography variant="h6" flexGrow={1} noWrap component="div">
                         <strong> Admin Dashboard</strong>
                     </Typography>
+
+                    <IconButton
+                        color="inherit"
+                        onClick={logoutFunction}
+                    >
+                        <CgLogOff size="24px" color="white" />
+                    </IconButton>
                 </Toolbar>
             </AppBar>
             <Box
@@ -158,7 +177,7 @@ function Dashboard(props) {
             </Box>
             <Box
                 component="main"
-                sx={{ flexGrow: 1, p: 2, mt: "40px", width: { sm: `calc(100% - ${drawerWidth}px)` } }}
+                sx={{ flexGrow: 1, mt: "40px", width: { sm: `calc(100% - ${drawerWidth}px)` } }}
             >
                 {props.Component}
             </Box>

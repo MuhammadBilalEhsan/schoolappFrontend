@@ -9,7 +9,7 @@ import Divider from "@mui/material/Divider"
 import LoadingButton from '@mui/lab/LoadingButton';
 import { FaUserAlt } from "react-icons/fa";
 import { FiLogIn } from "react-icons/fi";
-import Spinner from "./Spinner";
+// import Spinner from "./Spinner";
 import "../css/login.css";
 import appSetting from '../appSetting/appSetting'
 import MuiSnacks from "./MuiSnacks"
@@ -115,12 +115,14 @@ const Login = ({ setAuth }) => {
 						mt={2}
 						variant="contained"
 						color="success"
-						startIcon={<FiLogIn size="22px" color="#fff" />}
+						startIcon={loadBtn ? "" : <FiLogIn size="22px" color="#fff" />}
 						fullWidth
 						loading={loadBtn}
 						loadingPosition="end"
+						sx={{ py: loadBtn ? 2 : 1 }}
+
 					>
-						Login
+						{loadBtn ? "" : "Login"}
 					</LoadingButton>
 				</form>
 			</Box>

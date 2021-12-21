@@ -93,3 +93,9 @@ export const UpdatecurrentConversation = (data) => {
     payload: data
   }
 }
+export const allCoursesRedux = (data) => {
+  return {
+    type: "ALL_COURSES",
+    payload: data
+  }
+}

@@ -7,14 +7,14 @@ import Attendance from "./components/Attendance";
 import CourseDetails from "./components/CourseDetails";
 import ClassMaterials from "./components/ClassMaterials";
 import MessagesComp from "./components/MessagesComp";
-import appSetting from "./appSetting/appSetting"
+import appSetting from "./appSetting/appSetting";
 import {
 	BrowserRouter as Router, Switch, Redirect
 } from "react-router-dom";
 import {
 	curUserFun, getUsers, getCourseFunc, getStudentCourseFunc,
 	updateCourses, updateCurrentCourse, updateAllAssignments,
-	editAvailAbleCourses, UpdatecurrentConversation,
+	editAvailAbleCourses, UpdatecurrentConversation, allCoursesRedux
 } from "./redux/actions/index";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
@@ -24,12 +24,14 @@ import PrivateRoute from "./PrivateRoute";
 
 // Admin Components Importing
 import Dashboard from './components/admin/Dashboard';
-import Teachers from './components/admin/Teachers';
-import Students from './components/admin/Students';
-import AttendanceForAdmin from './components/admin/AttendanceForAdmin';
+import DashBoardBox from './components/admin/DashBoardBox';
+import Users from './components/admin/Users.js';
+import Classes from './components/admin/Classes';
 import Courses from './components/admin/Courses';
 import Inbox from './components/admin/Inbox';
 import Blocked from './components/admin/Blocked';
+// import Teachers from './components/admin/Teachers';
+// import Students from './components/admin/Students';
 
 const ENDPOINT = appSetting.severHostedUrl
 export const socket = socketIO(ENDPOINT, { transports: ["websocket"] })
@@ -65,7 +67,13 @@ const App = () => {
 						dispatch(curUserFun(currentUser));
 						if (currentUser?.isAdmin) {
 							setIsAdmin(true)
-							dispatch(getUsers(data));
+							const allUsers = data.filter(user => user._id !== currentUser?._id)
+							dispatch(getUsers(allUsers));
+							axios.get(`${appSetting.severHostedUrl}/course/getall`)
+								.then(res => {
+									const allCourses = res.data.allCourses
+									dispatch(allCoursesRedux(allCourses))
+								}).catch(err => console.log(err))
 						} else {
 							if (currentUser.roll === "teacher") {
 								axios.post(`${appSetting.severHostedUrl}/course/mycourse`, { teacher_id: currentUser._id })
@@ -124,18 +132,27 @@ const App = () => {
 					<PrivateRoute
 						auth={auth}
 						isAdmin={isAdmin}
-						path="/teachers"
+						path="/dashboard"
 						AdminComp={<Dashboard setAuth={setAuth}
-							Component={<Teachers currentUser={curUser} key="teachers" />} />}
+							Component={<DashBoardBox currentUser={curUser} key="dashboard" />} />}
 						SuccessComp={<Redirect to="/profile" />}
 						FailComp={<Redirect to="/" />}
 					/>
 					<PrivateRoute
 						auth={auth}
 						isAdmin={isAdmin}
-						path="/students"
+						path="/users"
 						AdminComp={<Dashboard setAuth={setAuth}
-							Component={<Students currentUser={curUser} key="students" />} />}
+							Component={<Users currentUser={curUser} key="users" />} />}
+						SuccessComp={<Redirect to="/profile" />}
+						FailComp={<Redirect to="/" />}
+					/>
+					<PrivateRoute
+						auth={auth}
+						isAdmin={isAdmin}
+						path="/classes"
+						AdminComp={<Dashboard setAuth={setAuth}
+							Component={<Classes currentUser={curUser} key="classes" />} />}
 						SuccessComp={<Redirect to="/profile" />}
 						FailComp={<Redirect to="/" />}
 					/>
@@ -182,7 +199,7 @@ const App = () => {
 						isAdmin={isAdmin}
 						exact
 						path="/"
-						AdminComp={<Redirect to="/teachers" curUser={curUser} setAuth={setAuth} />}
+						AdminComp={<Redirect to="/dashboard" curUser={curUser} setAuth={setAuth} />}
 						SuccessComp={<Redirect to="/profile" curUser={curUser} setAuth={setAuth} />}
 						FailComp={<Login setAuth={setAuth} />}
 					/>
@@ -190,7 +207,7 @@ const App = () => {
 						auth={auth}
 						isAdmin={isAdmin}
 						path="/profile"
-						AdminComp={<Redirect to="/teachers" />}
+						AdminComp={<Redirect to="/dashboard" />}
 						SuccessComp={<Profile curUser={curUser} setAuth={setAuth} />}
 						FailComp={<Redirect to="/" />}
 					/>
@@ -198,7 +215,7 @@ const App = () => {
 						auth={auth}
 						isAdmin={isAdmin}
 						path="/coursedetails"
-						AdminComp={<Redirect to="/teachers" />}
+						AdminComp={<Redirect to="/dashboard" />}
 						SuccessComp={<CourseDetails curUser={curUser} setAuth={setAuth} />}
 						FailComp={<Redirect to="/" />}
 					/>
@@ -215,7 +232,7 @@ const App = () => {
 						auth={auth}
 						isAdmin={isAdmin}
 						path="/attendance"
-						AdminComp={<Redirect to="/teachers" />}
+						AdminComp={<Redirect to="/dashboard" />}
 						SuccessComp={<Attendance curUser={curUser} setAuth={setAuth} />}
 						FailComp={<Redirect to="/" />}
 					/>
@@ -224,7 +241,7 @@ const App = () => {
 						auth={auth}
 						isAdmin={isAdmin}
 						path="/classmaterials"
-						AdminComp={<Redirect to="/teachers" />}
+						AdminComp={<Redirect to="/dashboard" />}
 						SuccessComp={<Redirect to="/profile" curUser={curUser} />}
 						FailComp={<Redirect to="/" />}
 					/>
@@ -232,7 +249,7 @@ const App = () => {
 						auth={auth}
 						isAdmin={isAdmin}
 						path="/:id"
-						AdminComp={<Redirect to="/teachers" />}
+						AdminComp={<Redirect to="/dashboard" />}
 						SuccessComp={<ClassMaterials curUser={curUser} setAuth={setAuth} />}
 						FailComp={<Redirect to="/" />}
 					/>
@@ -241,7 +258,7 @@ const App = () => {
 						auth={auth}
 						isAdmin={isAdmin}
 						path="/*"
-						AdminComp={<Redirect to="/teachers" />}
+						AdminComp={<Redirect to="/dashboard" />}
 						SuccessComp={<Redirect to="/profile" />}
 						FailComp={<Redirect to="/" />}
 					/>

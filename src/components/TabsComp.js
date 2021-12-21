@@ -59,7 +59,7 @@ function TabPanel(props) {
     const { children, value, index } = props;
     return (
         <Box width="100%" sx={{ marginX: "auto", padding: "5px" }}>
-            {value === index && <> {children} </>}
+            {value === index && <Box> {children} </Box>}
         </Box>
     );
 }

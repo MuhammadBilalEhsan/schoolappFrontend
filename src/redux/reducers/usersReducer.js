@@ -8,7 +8,8 @@ const initialState = {
   allAssignments: null,
   checkedAssignments: null,
   allConversations: [],
-  currentConversation: null
+  currentConversation: null,
+  allCourses: []
 };
 const usersReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -68,6 +69,8 @@ const usersReducer = (state = initialState, action) => {
       } else {
         return { ...state, allConversations: [...filter, action.payload] }
       }
+    case "ALL_COURSES":
+      return { ...state, allCourses: action.payload }
     case "LOG_OUT":
       return state = initialState;
     default:

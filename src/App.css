@@ -9,7 +9,7 @@ body div::-webkit-scrollbar {
   display: none;
 }
 body {
-  overflow-x: hidden !important;
+  /* overflow-x: hidden !important; */
 }
 ._main {
   background-image: linear-gradient(#fff, rgba(0, 128, 0, 0.247));
