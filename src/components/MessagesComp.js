@@ -17,15 +17,15 @@ const MessagesComp = ({ curUser, setAuth }) => {
     // const [recieverName, setRecieverName] = useState("")
     // const history = useHistory()
     const dispatch = useDispatch()
-    const setIDfun = (id, name) => {
-        if (recieverID) {
-            setRecieverID("")
-            // setRecieverName("")
-        } else {
-            setRecieverID(id)
-            // setRecieverName(name)
-        }
-    }
+    // const setIDfun = (id, name) => {
+    //     if (recieverID) {
+    //         setRecieverID("")
+    //         // setRecieverName("")
+    //     } else {
+    //         setRecieverID(id)
+    //         // setRecieverName(name)
+    //     }
+    // }
     useEffect(() => {
         setAllConversationsArray(allConversations)
         console.log("changedallConversations", allConversations)

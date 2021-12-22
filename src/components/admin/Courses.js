@@ -22,14 +22,14 @@ const Courses = () => {
                                 return (
                                     <Grid
                                         key={index}
-                                        item xs={6} sm={6} lg={4}
+                                        item xs={12} sm={6} lg={4}
                                     >
                                         <CourseBox course={course} />
                                     </Grid>
                                 )
                             }) :
                             <Box width="100%" pt={14} textAlign="center">
-                                <Typography variant="h5" color="#041d04">
+                                <Typography variant="h5" color="#014201">
                                     Currently No Course Available
                                 </Typography>
                             </Box>

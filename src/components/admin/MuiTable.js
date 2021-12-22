@@ -16,7 +16,7 @@ import { RiInformationLine } from 'react-icons/ri';
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
 
     [`&.${tableCellClasses.head}`]: {
-        backgroundColor: "#041d04",
+        backgroundColor: "#014201",
         color: theme.palette.common.white,
     },
     [`&.${tableCellClasses.body}`]: {
@@ -40,7 +40,7 @@ export default function MuiTable({ tableBody }) {
                 size='small'
                 sx={{
                     minWidth: 700, maxWidth: 1000, position: "absolute", cursor: "pointer",
-                    overflowX: "scroll", border: "1px solid #041d04",
+                    overflowX: "scroll", border: "1px solid #014201",
                 }}
                 aria-label="customized table">
                 <TableHead>
@@ -76,14 +76,14 @@ export default function MuiTable({ tableBody }) {
                                     <StyledTableCell align="center">
                                         <Tooltip title="View" arrow>
                                             <IconButton>
-                                                <RiInformationLine color="#041d04" size="22px" />
+                                                <RiInformationLine color="#014201" size="22px" />
                                             </IconButton>
                                         </Tooltip>
                                     </StyledTableCell>
                                     <StyledTableCell align="center">
                                         <Tooltip title="Send Message" arrow>
                                             <IconButton>
-                                                <BsChatDotsFill color="#041d04" size="18px" />
+                                                <BsChatDotsFill color="#014201" size="18px" />
                                             </IconButton>
                                         </Tooltip>
                                     </StyledTableCell>

@@ -14,63 +14,67 @@ const CourseBox = ({ course }) => {
                 cursor: "pointer",
                 "&:hover": { backgroundColor: "#0cff0017" }
             }}
-            pt={2}
         >
-            <Typography variant="subtitle1" color="#041d04"
-                pl={4}>
-                <strong>
-                    Name:
-                </strong>
-                <br />
-                <span style={{ marginLeft: "16px" }}
+            <Box p={2}>
+                <Typography variant="subtitle1" color="#014201"
+                    pl={4}>
+                    <strong>
+                        Name:
+                    </strong>
+                    <br />
+                    <span style={{ marginLeft: "32px" }}
+                    >
+                        {courseName}
+                    </span>
+                </Typography>
+                <Typography variant="subtitle1" color="#014201"
+                    pl={4}>
+                    <strong>
+                        Duration:
+                    </strong>
+                    <br />
+                    <span style={{ marginLeft: "32px" }}
+                    >
+                        {duration} Week/Weeks
+                    </span>
+                </Typography>
+                <Typography variant="subtitle1" color="#014201"
+                    pl={4}>
+                    <strong>
+                        Assignments:
+                    </strong>
+                    <span style={{ marginLeft: "16px" }}
+                    >
+                        {assignments.length > 0 ? assignments.length : "0"}
+                    </span>
+                    {/* <br />
+                <span style={{ marginLeft: "52px" }}
                 >
-                    {courseName}
-                </span>
-            </Typography>
-            <Typography variant="subtitle1" color="#041d04"
-                pl={4}>
-                <strong>
-                    Duration:
-                </strong>
-                <br />
-                <span style={{ marginLeft: "16px" }}
-                >
-                    {duration} Week/Weeks
-                </span>
-            </Typography>
-            <Typography variant="subtitle1" color="#041d04"
-                pl={4}>
-                <strong>
-                    Assignments:
-                </strong>
-                <br />
-                <span style={{ marginLeft: "16px" }}
-                >
-                    {assignments.length > 0 ? assignments.length : "0"}
-                </span>
-            </Typography>
-            <Typography variant="subtitle1" color="#041d04"
-                pl={4}>
-                <strong>
-                    Students:
-                </strong>
-                <br />
-                <span style={{ marginLeft: "16px" }}
-                >
-                    {students.length > 0 ? students.length : "0"}
-                </span>
-            </Typography>
+                {assignments.length > 0 ? assignments.length : "0"}
+                </span> */}
+                </Typography>
+                <Typography variant="subtitle1" color="#014201"
+                    pl={4}>
+                    <strong>
+                        Students:
+                    </strong>
+                    <span style={{ marginLeft: "16px" }}
+                    >
+                        {students.length > 0 ? students.length : "0"}
+                    </span>
+                </Typography>
+            </Box>
             <Button
                 variant="contained"
                 sx={{
-                    backgroundColor: "#041d04",
+                    backgroundColor: "#014201", py: 1.5,
                     "&:hover": { backgroundColor: "#021002" }
                 }}
                 fullWidth
             >
                 View Course
             </Button>
-        </Box>
+        </Box >
     )
 }
 

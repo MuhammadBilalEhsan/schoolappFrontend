@@ -13,7 +13,7 @@ import ListItemText from '@mui/material/ListItemText';
 import { FiMenu, FiMail } from 'react-icons/fi';
 import { FaBookReader, FaUsers } from 'react-icons/fa';
 import { ImBlocked, ImBooks } from 'react-icons/im';
-import { GiClassicalKnowledge, GiFiles, GiTeacher } from "react-icons/gi"
+import { GiClassicalKnowledge, } from "react-icons/gi"
 import { MdOutlineDashboardCustomize } from 'react-icons/md';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -155,7 +155,7 @@ function Dashboard(props) {
                         display: { xs: 'block', sm: 'none' },
                         '& .MuiDrawer-paper': {
                             boxSizing: 'border-box', width: drawerWidth,
-                            backgroundColor: "#2e7d32"
+                            backgroundColor: "#2e7d32",
                         },
                     }}
                 >

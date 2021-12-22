@@ -11,7 +11,7 @@ const Blocked = () => {
         <Box width="100%" p={2}>
             {blockedUsers?.length > 0 ? <MuiTable tableBody={blockedUsers} />
                 : <Box width="100%" pt={14} textAlign="center">
-                    <Typography variant="h5" color="#041d04">
+                    <Typography variant="h5" color="#014201">
                         Currently No User Blocked
                     </Typography>
                 </Box>

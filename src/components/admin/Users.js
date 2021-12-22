@@ -38,10 +38,10 @@ const Users = () => {
                     <ToggleButton
                         size="small"
                         sx={{
-                            "&:hover": { backgroundColor: "#041d04", color: "#fff" },
+                            "&:hover": { backgroundColor: "#014201", color: "#fff" },
                             backgroundColor: activeBtnValue === "all" ?
-                                "#041d04" : "white",
-                            color: activeBtnValue === "all" ? "#fff" : "#041d04",
+                                "#014201" : "white",
+                            color: activeBtnValue === "all" ? "#fff" : "#014201",
                         }}
                         value="all"
                         onClick={() => setActiveBtnValue("all")}
@@ -52,10 +52,10 @@ const Users = () => {
                     <ToggleButton
                         size="small"
                         sx={{
-                            "&:hover": { backgroundColor: "#041d04", color: "#fff" },
+                            "&:hover": { backgroundColor: "#014201", color: "#fff" },
                             backgroundColor: activeBtnValue === "teachers" ?
-                                "#041d04" : "white",
-                            color: activeBtnValue === "teachers" ? "#fff" : "#041d04"
+                                "#014201" : "white",
+                            color: activeBtnValue === "teachers" ? "#fff" : "#014201"
                         }}
                         value="teachers"
                         onClick={() => setActiveBtnValue("teachers")}
@@ -66,10 +66,10 @@ const Users = () => {
                     <ToggleButton
                         size="small"
                         sx={{
-                            "&:hover": { backgroundColor: "#041d04", color: "#fff" },
+                            "&:hover": { backgroundColor: "#014201", color: "#fff" },
                             backgroundColor: activeBtnValue === "students" ?
-                                "#041d04" : "white",
-                            color: activeBtnValue === "students" ? "#fff" : "#041d04",
+                                "#014201" : "white",
+                            color: activeBtnValue === "students" ? "#fff" : "#014201",
                         }}
                         value="students"
                         onClick={() => setActiveBtnValue("students")}

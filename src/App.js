@@ -7,6 +7,7 @@ import Attendance from "./components/Attendance";
 import CourseDetails from "./components/CourseDetails";
 import ClassMaterials from "./components/ClassMaterials";
 import MessagesComp from "./components/MessagesComp";
+import Abc from "./components/Abc";
 import appSetting from "./appSetting/appSetting";
 import {
 	BrowserRouter as Router, Switch, Redirect
@@ -179,7 +180,8 @@ const App = () => {
 						isAdmin={isAdmin}
 						path="/inbox"
 						AdminComp={<Dashboard setAuth={setAuth}
-							Component={<Inbox currentUser={curUser} key="inbox" />} />}
+							// Component={<Inbox curUser={curUser} key="inbox" />} />}
+							Component={<Abc curUser={curUser} key="inbox" />} />}
 						SuccessComp={<Redirect to="/profile" />}
 						FailComp={<Redirect to="/" />}
 					/>

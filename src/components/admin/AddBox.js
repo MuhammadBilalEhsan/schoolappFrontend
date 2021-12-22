@@ -21,12 +21,12 @@ const AddBox = ({ title }) => {
                     boxShadow: 1,
                 }}
             >
-                <HiPlus size="80px" color="#041d04" style={{ margin: "32px 0px" }} />
+                <HiPlus size="80px" color="#014201" style={{ margin: "32px 0px" }} />
                 <Divider />
                 <Button
                     variant="contained"
                     sx={{
-                        backgroundColor: "#041d04",
+                        backgroundColor: "#014201",
                         "&:hover": { backgroundColor: "#021002" }
                     }}
                     fullWidth
