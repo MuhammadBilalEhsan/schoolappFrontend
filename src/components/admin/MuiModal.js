@@ -4,11 +4,16 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import Avatar from '@mui/material/Avatar';
 import ListItem from '@mui/material/ListItem';
+import Button from '@mui/material/Button';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import defaultDP from "../../images/defaultDP.jpg"
 import { GoPlus } from 'react-icons/go';
-import { useSelector } from 'react-redux';
+import {
+    useSelector,
+    //  useDispatch 
+} from 'react-redux';
+// import { currentConversationRedux } from '../../redux/actions';
 
 const style = {
     position: 'absolute',
@@ -20,35 +25,56 @@ const style = {
     borderRadius: 1,
     boxShadow: 24,
     p: 4,
-    width: 400,
+    minWidth: 300,
+    maxWidth: 400,
     maxHeight: 500,
     overflowY: "auto"
 };
 
-export default function MuiModal({ setRecieverObject }) {
+export default function MuiModal({ setRecieverID, setRecieverName, setConversationID }) {
     const users = useSelector(state => state.usersReducer.users)
     // const users = []
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+    // const dispatch = useDispatch();
 
     return (
         <div>
-            {/* <Button start onClick={handleOpen}>Open modal</Button> */}
-            <ListItem button
+            <Button
+                onClick={handleOpen}
+                fullWidth
+                startIcon={<GoPlus color="#fff" />}
+                sx={{
+                    color: "#fff",
+                    backgroundColor: "darkgreen",
+                    "&:hover": { backgroundColor: "#014201", },
+                    borderRadius: 1,
+                    boxShadow: 5,
+                    py: 1.5
+                }}
+            >
+                {/* <ListItemIcon> */}
+                {/* <GoPlus color="#fff" /> */}
+                {/* </ListItemIcon> */}
+                {/* <ListItemText primary="New Conversation" /> */}
+                Conversation
+            </Button>
+            {/* <ListItem button
                 onClick={handleOpen}
                 sx={{
                     color: "#fff",
                     backgroundColor: "darkgreen",
                     "&:hover": { backgroundColor: "#014201", },
                     borderRadius: 1,
-                    boxShadow: 5
+                    boxShadow: 5,
+                    mb: 2
                 }}>
                 <ListItemIcon>
                     <GoPlus color="#fff" />
                 </ListItemIcon>
                 <ListItemText primary="New Conversation" />
-            </ListItem>
+            </ListItem> */}
             <Modal
                 open={open}
                 onClose={handleClose}
@@ -73,7 +99,9 @@ export default function MuiModal({ setRecieverObject }) {
                                         }}
                                         onClick={
                                             () => {
-                                                setRecieverObject(user)
+                                                setRecieverID(user._id)
+                                                setRecieverName(`${user.fname} ${user.lname}`)
+                                                setConversationID("")
                                                 handleClose()
                                             }
                                         }

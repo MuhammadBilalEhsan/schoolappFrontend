@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import SendingMessageInputComp from './SendingMessageInputComp';
 import SubSpinner from './SubSpinner';
-import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { currentConversationRedux } from '../redux/actions';
-import MessageBox from './MessageBox';
-import { BiArrowBack } from "react-icons/bi";
 import MuiSnacks from './MuiSnacks';
 import axios from 'axios';
 import appSetting from '../appSetting/appSetting';
@@ -15,14 +12,19 @@ import { socket } from '../App';
 
 
 
-const PrivateConversation = ({ curUser, id, allConversationsArray }) => {
+const PrivateConversation = ({
+    curUser, id,
+    allConversationsArray,
+    recieverID,
+    recieverName
+}) => {
     const curConversation = useSelector(state => state.usersReducer.currentConversation)
     const [currentConversation, setCurrentConversation] = useState({})
     const [openSnack, setOpenSnack] = useState("");
     const [severity, setSeverity] = useState("");
     const [message, setMessage] = useState("")
     const [spinner, setSpinner] = useState(true)
-    const history = useHistory()
+    // const history = useHistory()
     const dispatch = useDispatch()
     // ngrok
 
@@ -36,8 +38,16 @@ const PrivateConversation = ({ curUser, id, allConversationsArray }) => {
                 const name = `${fname} ${lname}`
                 let time = moment().format('hh:mm:ss A')
                 const messageObj = {
-                    _id: currentConversation?._id, senderID: _id, name, time, message: newMessage, recieverID: curUser?._id === currentConversation?.user1ID ?
-                        currentConversation?.user2ID : currentConversation?.user1ID
+                    senderID: _id, senderName: name, time, message: newMessage,
+                    // recieverID: recieverObject?._id ? recieverObject?._id :
+                    //     curUser?._id === currentConversation?.user1ID ?
+                    //         currentConversation?.user2ID : currentConversation?.user1ID,
+                    recieverID,
+                    recieverName,
+                    // recieverName: `${recieverObject?.fname} ${recieverObject?.lname}`,
+                    // curUser?._id === currentConversation?.user1ID ?
+                    //     currentConversation?.user2ID : currentConversation?.user1ID
+                    _id: id ? id : null
                 }
 
                 const res = await axios.post(`${appSetting.severHostedUrl}/user/sendmsg`, messageObj)
@@ -67,52 +77,62 @@ const PrivateConversation = ({ curUser, id, allConversationsArray }) => {
         dispatch(currentConversationRedux(findCurrentConversation))
         setCurrentConversation(findCurrentConversation)
         setSpinner(false)
-    }, [])
+    }, [id])
+    // useEffect(() => {
+    //     const findCurrentConversation = allConversationsArray?.find(convers => convers._id === id)
+    //     dispatch(currentConversationRedux(findCurrentConversation))
+    //     setCurrentConversation(findCurrentConversation)
+    //     setSpinner(false)
+    // }, [])
     useEffect(() => {
         setCurrentConversation(curConversation)
-    }, [curConversation])
+    }, [curConversation, allConversationsArray])
 
     return (
-        <Box mx="auto" maxHeight="80vh"
-            sx={{ overflowY: "auto" }}
-
-            maxWidth="900px"
+        <Box mx="auto"
+            sx={{ overflowY: "auto", boxShadow: 3 }}
             display="flex"
             flexDirection="column"
             alignItems="center"
             justifyContent="space-between"
+            width="100%"
+            mt={1}
             // mt={5}
-            sx={{ backgroundColor: "red" }}
+            sx={{ backgroundColor: "#fff" }}
         >
             {openSnack ? <MuiSnacks openSnack={openSnack} severity={severity} text={openSnack} setOpenSnack={setOpenSnack} /> : ""}
 
             <Box width="100%" display="flex" flexDirection={"column"}
-                minHeight="71vh" px={1.5}
+                minHeight="85vh" px={1.5}
             >
-                <Box width="100%" flexGrow={1}>
+                <Box width="100%" flexGrow={1} pt={1}
+                    display="flex"
+                    flexDirection="column"
+                >
                     {spinner ?
                         <SubSpinner /> :
-                        currentConversation?.chat.map((messageObj, ind) => {
-                            return (
-                                // {user1ID, user1Name, user2ID, user2Name}
-                                <MessageBox key={ind}
-                                    color={curUser?._id === messageObj?.senderID ? "green" : "#ba000d"
-                                    }
-                                    timeColor={curUser?._id === messageObj?.senderID ? "#2e7d32de" : "#ba000db8"}
-                                    // curUser={curUser}
-                                    nameFirestLetter={messageObj?.senderID === currentConversation.user1ID ?
-                                        currentConversation.user1Name[0]
-                                        : currentConversation.user2Name[0]
-                                    }
-                                    name={curUser?._id === messageObj?.senderID ? "Me" : messageObj?.senderID === currentConversation.user1ID ?
-                                        currentConversation.user1Name
-                                        : currentConversation.user2Name
-                                    }
-                                    time={messageObj.time}
-                                    message={messageObj.message}
-                                />
-                            )
-                        })
+                        currentConversation?.chat.length > 0 ?
+                            currentConversation?.chat.map((messageObj, ind) => {
+                                return (
+                                    // {user1ID, user1Name, user2ID, user2Name}
+                                    <PersonalMessageBox key={ind}
+                                        bgColor={curUser?._id === messageObj?.senderID ? "darkgreen" :
+                                            "#fff"
+                                        }
+                                        textColor={curUser?._id === messageObj?.senderID ? "#fff" : "darkgreen"
+                                        }
+                                        position={curUser?._id === messageObj?.senderID ? "flex-end" :
+                                            "flex-start"}
+                                        message={messageObj.message}
+                                        time={messageObj.time}
+                                    />
+                                )
+                            }) :
+                            <Box pt={5} width="100%" textAlign="center">
+                                <Typography variant="subtitle1" color="darkgreen">
+                                    Currently No Chats
+                                </Typography>
+                            </Box>
                     }
                 </Box>
                 <SendingMessageInputComp
@@ -121,7 +141,7 @@ const PrivateConversation = ({ curUser, id, allConversationsArray }) => {
                     value={message}
                     setValue={setMessage}
                     type="text"
-                    placeholder={`Write Message...`}
+                    placeholder={`Write ...`}
                     color="success"
                     submitFunc={sendMsgFunc}
                     userName={curUser?.fname[0]}
@@ -130,5 +150,41 @@ const PrivateConversation = ({ curUser, id, allConversationsArray }) => {
         </Box>
     )
 }
+
+const PersonalMessageBox = ({
+    bgColor,
+    textColor,
+    position,
+    time,
+    message
+}) => {
+
+    return (
+        <Box
+            mb={1}
+            sx={{ display: "flex", justifyContent: position }}
+        >
+            <Box>
+                <Box
+                    maxWidth="350px"
+                    width="fit-content"
+                    // minWidth="1px"
+                    border="1px solid darkgreen"
+                    borderRadius={0.4}
+                    mb={0.5}
+                    p="8px 16px"
+                    sx={{ backgroundColor: bgColor, color: textColor, alignSelf: position }}
+                >
+                    {message}
+                </Box>
+                <span style={{ fontSize: "12px", }}>
+                    {time}
+                </span>
+            </Box>
+
+        </Box>
+    )
+}
+
 
 export default PrivateConversation

@@ -7,7 +7,7 @@ import Attendance from "./components/Attendance";
 import CourseDetails from "./components/CourseDetails";
 import ClassMaterials from "./components/ClassMaterials";
 import MessagesComp from "./components/MessagesComp";
-import Abc from "./components/Abc";
+import Inbox from "./components/Inbox";
 import appSetting from "./appSetting/appSetting";
 import {
 	BrowserRouter as Router, Switch, Redirect
@@ -29,7 +29,6 @@ import DashBoardBox from './components/admin/DashBoardBox';
 import Users from './components/admin/Users.js';
 import Classes from './components/admin/Classes';
 import Courses from './components/admin/Courses';
-import Inbox from './components/admin/Inbox';
 import Blocked from './components/admin/Blocked';
 // import Teachers from './components/admin/Teachers';
 // import Students from './components/admin/Students';
@@ -181,7 +180,7 @@ const App = () => {
 						path="/inbox"
 						AdminComp={<Dashboard setAuth={setAuth}
 							// Component={<Inbox curUser={curUser} key="inbox" />} />}
-							Component={<Abc curUser={curUser} key="inbox" />} />}
+							Component={<Inbox curUser={curUser} key="inbox" />} />}
 						SuccessComp={<Redirect to="/profile" />}
 						FailComp={<Redirect to="/" />}
 					/>

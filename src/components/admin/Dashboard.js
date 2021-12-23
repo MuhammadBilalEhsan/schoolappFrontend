@@ -11,7 +11,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { FiMenu, FiMail } from 'react-icons/fi';
-import { FaBookReader, FaUsers } from 'react-icons/fa';
+import { FaUsers } from 'react-icons/fa';
 import { ImBlocked, ImBooks } from 'react-icons/im';
 import { GiClassicalKnowledge, } from "react-icons/gi"
 import { MdOutlineDashboardCustomize } from 'react-icons/md';
@@ -52,7 +52,7 @@ function Dashboard(props) {
                 </Typography>
             </Toolbar>
             {/* <Divider sx={{ backgroundColor: "white" }} /> */}
-            <List sx={{ color: "#fff", textTransform: "capitalize", py: 0 }}>
+            <List sx={{ color: "#fff", textTransform: "capitalize", py: 0, px: 1 }}>
                 {[
                     { label: 'dashboard', icon: <MdOutlineDashboardCustomize color='#fff' size="24px" /> },
                     { label: 'users', icon: <FaUsers color='#fff' size="24px" /> },
@@ -64,6 +64,7 @@ function Dashboard(props) {
                         component={Link} to={`${item.label}`}
                         onClick={() => setMobileOpen(false)}
                         sx={{
+                            borderRadius: 1.5, mb: 1,
                             backgroundColor: item.label === activeComponent ? "darkgreen" : "",
                             "&:hover": { backgroundColor: "darkgreen" }
                         }}
@@ -75,7 +76,7 @@ function Dashboard(props) {
                 ))}
             </List>
             <Divider sx={{ backgroundColor: "white" }} />
-            <List sx={{ color: "#fff", textTransform: "capitalize", py: 0 }}>
+            <List sx={{ color: "#fff", textTransform: "capitalize", p: 1 }}>
                 {
                     [
                         { label: 'inbox', icon: <FiMail color='#fff' size="24px" /> },
@@ -88,6 +89,7 @@ function Dashboard(props) {
                                 setMobileOpen(false)
                             }}
                             sx={{
+                                borderRadius: 1.5, mb: 1,
                                 backgroundColor: item.label === activeComponent ? "darkgreen" : "",
                                 "&:hover": { backgroundColor: "darkgreen" }
                             }}
