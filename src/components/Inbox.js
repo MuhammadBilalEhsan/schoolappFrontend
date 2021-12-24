@@ -21,29 +21,32 @@ import appSetting from '../appSetting/appSetting';
 import MuiModal from './admin/MuiModal';
 import { AiOutlineWechat } from 'react-icons/ai';
 import PrivateConvers from './PrivateConvers';
+import { useParams, useLocation } from 'react-router-dom';
 
 const drawerWidth = 240;
 
 function Inbox(props) {
     const allConversations = useSelector(state => state.usersReducer.allConversations)
+    const { search } = useLocation()
     const [mobileOpen, setMobileOpen] = useState(false);
     const { window } = props;
     const [allConversationsArray, setAllConversationsArray] = useState(allConversations)
     const [conversationID, setConversationID] = useState("")
-    const [recieverID, setRecieverID] = useState(null)
+    const [recieverID, setRecieverID] = useState("")
     const [recieverName, setRecieverName] = useState(null)
 
     const dispatch = useDispatch()
+    // const params = useParams()
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
     };
-    useEffect(() => {
-        // if (props.curUser?._id && recieverID?._id) {
-        //     setConversationID(`${props.curUser?._id}_${recieverID?._id}`)
-        // }
-        console.log("recieverID", recieverID)
-    }, [recieverID])
+    // useEffect(() => {
+    // if (props.curUser?._id && recieverID?._id) {
+    //     setConversationID(`${props.curUser?._id}_${recieverID?._id}`)
+    // }
+    // console.log("recieverID", recieverID)
+    // }, [recieverID])
     useEffect(() => {
         setAllConversationsArray(allConversations)
         // console.log("changedallConversations", allConversations)
@@ -58,6 +61,17 @@ function Inbox(props) {
             }
         } catch (error) {
         }
+        // if{search}
+        if (search) {
+            const split1 = search.split("?")
+            const split2 = split1[2].split("_")
+            if (split1) {
+                setRecieverID(split1[1])
+            }
+            if (split2) {
+                setRecieverName(`${split2[0]} ${split2[1]}`)
+            }
+        }
     }, [])
     const drawer = (
         <div style={{ padding: "8px" }}>
@@ -65,12 +79,10 @@ function Inbox(props) {
                 setRecieverID={setRecieverID}
                 setRecieverName={setRecieverName}
                 setConversationID={setConversationID}
+                allConversationsArray={allConversationsArray}
+                curUser={props.curUser}
             />
             <List sx={{ textTransform: "capitalize", py: 0, mt: 2 }}>
-                {/* <MuiModal
-                    setRecieverID={setRecieverID}
-                    setRecieverName={setRecieverName}
-                /> */}
                 {allConversationsArray?.length > 0 ?
                     allConversationsArray.map((chat, index) => (
                         <ListItem button key={index}

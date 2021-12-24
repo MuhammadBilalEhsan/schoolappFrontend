@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -12,6 +12,15 @@ import { IconButton } from '@mui/material';
 import { ImBlocked } from 'react-icons/im';
 import { BsChatDotsFill } from 'react-icons/bs';
 import { RiInformationLine } from 'react-icons/ri';
+import { socket } from '../../App';
+import moment from 'moment';
+import axios from 'axios';
+import appSetting from '../../appSetting/appSetting';
+import MuiSnacks from '../MuiSnacks';
+import SendingMessageInputComp from '../SendingMessageInputComp';
+import { Box } from '@mui/system';
+import { useHistory, Link } from 'react-router-dom';
+
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
 
@@ -33,76 +42,139 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     },
 }));
 
-export default function MuiTable({ tableBody }) {
-    return (
-        <TableContainer component={Paper} >
-            <Table
-                size='small'
-                sx={{
-                    minWidth: 700, maxWidth: 1000, position: "absolute", cursor: "pointer",
-                    overflowX: "scroll", border: "1px solid #014201",
-                }}
-                aria-label="customized table">
-                <TableHead>
-                    <TableRow>
-                        <StyledTableCell sx={{ width: "5%" }}>Index No.</StyledTableCell>
-                        <StyledTableCell sx={{ width: "15%" }}>Full Name</StyledTableCell>
-                        <StyledTableCell align="left" sx={{ width: "5%" }}>Age</StyledTableCell>
-                        <StyledTableCell align="left" sx={{ width: "15%" }}>Son of</StyledTableCell>
-                        <StyledTableCell align="left" sx={{ width: "10%" }}>Class</StyledTableCell>
-                        <StyledTableCell align="center" colSpan={3} sx={{ width: "50%" }}>Actions</StyledTableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {
-                        tableBody?.map((user, index) => {
-                            return (
-                                <StyledTableRow key={index}>
-                                    <StyledTableCell>
-                                        {index + 1}.
-                                    </StyledTableCell>
-                                    <StyledTableCell >
-                                        {`${user.fname} ${user.lname}`}
-                                    </StyledTableCell>
-                                    <StyledTableCell align="left">
-                                        {user.age ? user.age : "-"}
-                                    </StyledTableCell>
-                                    <StyledTableCell align="left">
-                                        {user.fatherName ? user.fatherName : "-"}
-                                    </StyledTableCell>
-                                    <StyledTableCell align="left">
-                                        {user.atClass}
-                                    </StyledTableCell>
-                                    <StyledTableCell align="center">
-                                        <Tooltip title="View" arrow>
-                                            <IconButton>
-                                                <RiInformationLine color="#014201" size="22px" />
-                                            </IconButton>
-                                        </Tooltip>
-                                    </StyledTableCell>
-                                    <StyledTableCell align="center">
-                                        <Tooltip title="Send Message" arrow>
-                                            <IconButton>
-                                                <BsChatDotsFill color="#014201" size="18px" />
-                                            </IconButton>
-                                        </Tooltip>
-                                    </StyledTableCell>
-                                    <StyledTableCell align="center">
-                                        <Tooltip title={user.blocked ? "Unblock" : "Block User"} arrow>
-                                            <IconButton>
-                                                <ImBlocked
-                                                    size="18px"
-                                                    color={user.blocked ? "red" : ""}
-                                                />
-                                            </IconButton>
-                                        </Tooltip>
-                                    </StyledTableCell>
-                                </StyledTableRow>
-                            )
-                        })
+export default function MuiTable({ tableBody, curUser }) {
+
+    const [recieverID, setRecieverID] = useState("")
+    const [recieverName, setRecieverName] = useState("")
+    const [message, setMessage] = useState("")
+    const [openSnack, setOpenSnack] = useState("")
+    const [severity, setSeverity] = useState("")
+
+    const history = useHistory()
+
+    const sendMsgFunc = async (e) => {
+        try {
+            const newMessage = message.trim()
+
+            if (newMessage) {
+                const senderName = `${curUser?.fname} ${curUser?.lname}`
+                let time = moment().format('dd-mm-yyyy hh:mm:ss A')
+                const messageObj = {
+                    senderID: curUser?._id, senderName, time,
+                    message: newMessage, recieverID,
+                    recieverName
+                }
+                const res = await axios.post(`${appSetting.severHostedUrl}/user/sendmsg`, messageObj)
+                if (res) {
+                    if (res.data.message) {
+                        socket.emit("changeInConversation", res.data.conversation)
+                        setOpenSnack(res.data.message)
+                        setSeverity("success")
+                    } else {
+                        setOpenSnack(res.data.error)
+                        setSeverity("error")
                     }
-                </TableBody>
-            </Table>
-        </TableContainer>
+                    setMessage("")
+                    setRecieverID("")
+                    setRecieverName("")
+                }
+            } else {
+                setOpenSnack("write something")
+                setSeverity("error")
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    return (
+        <Box>
+            {recieverID ? <SendingMessageInputComp
+                name="message"
+                autoFocus={true}
+                value={message}
+                setValue={setMessage}
+                type="text"
+                placeholder={`Write Message here...`}
+                color="success"
+                submitFunc={sendMsgFunc}
+                userName={curUser?.fname[0]}
+            /> : ""
+            }
+            <TableContainer component={Paper} >
+                {openSnack ? <MuiSnacks openSnack={openSnack} severity={severity} text={openSnack} setOpenSnack={setOpenSnack} /> : ""}
+
+                <Table
+                    size='small'
+                    sx={{
+                        minWidth: 700, maxWidth: 1000, position: "absolute", cursor: "pointer",
+                        overflowX: "scroll", border: "1px solid #014201",
+                    }}
+                    aria-label="customized table">
+                    <TableHead>
+                        <TableRow>
+                            <StyledTableCell sx={{ width: "5%" }}>Index No.</StyledTableCell>
+                            <StyledTableCell sx={{ width: "15%" }}>Full Name</StyledTableCell>
+                            <StyledTableCell align="left" sx={{ width: "5%" }}>Age</StyledTableCell>
+                            <StyledTableCell align="left" sx={{ width: "15%" }}>Son of</StyledTableCell>
+                            <StyledTableCell align="left" sx={{ width: "10%" }}>Class</StyledTableCell>
+                            <StyledTableCell align="center" colSpan={3} sx={{ width: "50%" }}>Actions</StyledTableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {
+                            tableBody?.map((user, index) => {
+                                return (
+                                    <StyledTableRow key={index}>
+                                        <StyledTableCell>
+                                            {index + 1}.
+                                        </StyledTableCell>
+                                        <StyledTableCell >
+                                            {`${user.fname} ${user.lname}`}
+                                        </StyledTableCell>
+                                        <StyledTableCell align="left">
+                                            {user.age ? user.age : "-"}
+                                        </StyledTableCell>
+                                        <StyledTableCell align="left">
+                                            {user.fatherName ? user.fatherName : "-"}
+                                        </StyledTableCell>
+                                        <StyledTableCell align="left">
+                                            {user.atClass}
+                                        </StyledTableCell>
+                                        <StyledTableCell align="center">
+                                            <Tooltip title={`View ${user.fname} ${user.lname}`} arrow>
+                                                <IconButton>
+                                                    <RiInformationLine color="#014201" size="22px" />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </StyledTableCell>
+                                        <StyledTableCell align="center">
+                                            <Tooltip title={`Message to ${user.fname} ${user.lname}`} arrow>
+                                                <IconButton
+                                                    component={Link}
+                                                    to={`/inbox?${user._id}?${user.fname ? user.fname : user.email}_${user.fname && user.lname ? user.lname : ""}`}
+                                                >
+                                                    <BsChatDotsFill color="#014201" size="18px" />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </StyledTableCell>
+                                        <StyledTableCell align="center">
+                                            <Tooltip title={user.blocked ? `Unblock ${user.fname} ${user.lname}` : `Block ${user.fname} ${user.lname}`} arrow>
+                                                <IconButton>
+                                                    <ImBlocked
+                                                        size="18px"
+                                                        color={user.blocked ? "red" : ""}
+                                                    />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </StyledTableCell>
+                                    </StyledTableRow>
+                                )
+                            })
+                        }
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        </Box>
     );
 }

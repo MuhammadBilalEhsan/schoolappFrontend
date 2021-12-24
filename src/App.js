@@ -184,6 +184,7 @@ const App = () => {
 						SuccessComp={<Redirect to="/profile" />}
 						FailComp={<Redirect to="/" />}
 					/>
+
 					<PrivateRoute
 						auth={auth}
 						isAdmin={isAdmin}
@@ -252,6 +253,16 @@ const App = () => {
 						path="/:id"
 						AdminComp={<Redirect to="/dashboard" />}
 						SuccessComp={<ClassMaterials curUser={curUser} setAuth={setAuth} />}
+						FailComp={<Redirect to="/" />}
+					/>
+					<PrivateRoute
+						auth={auth}
+						isAdmin={isAdmin}
+						path="/inbox/:id"
+						AdminComp={<Dashboard setAuth={setAuth}
+							// Component={<Inbox curUser={curUser} key="inbox" />} />}
+							Component={<Inbox curUser={curUser} key="inbox" />} />}
+						SuccessComp={<Redirect to="/profile" />}
 						FailComp={<Redirect to="/" />}
 					/>
 

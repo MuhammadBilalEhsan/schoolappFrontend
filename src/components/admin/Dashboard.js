@@ -66,6 +66,7 @@ function Dashboard(props) {
                         sx={{
                             borderRadius: 1.5, mb: 1,
                             backgroundColor: item.label === activeComponent ? "darkgreen" : "",
+                            boxShadow: item.label === activeComponent ? 5 : 0,
                             "&:hover": { backgroundColor: "darkgreen" }
                         }}
                     >
@@ -91,6 +92,7 @@ function Dashboard(props) {
                             sx={{
                                 borderRadius: 1.5, mb: 1,
                                 backgroundColor: item.label === activeComponent ? "darkgreen" : "",
+                                boxShadow: item.label === activeComponent ? 5 : 0,
                                 "&:hover": { backgroundColor: "darkgreen" }
                             }}
                         >

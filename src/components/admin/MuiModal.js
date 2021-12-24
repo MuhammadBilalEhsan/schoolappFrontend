@@ -1,12 +1,9 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import Avatar from '@mui/material/Avatar';
-import ListItem from '@mui/material/ListItem';
 import Button from '@mui/material/Button';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
 import defaultDP from "../../images/defaultDP.jpg"
 import { GoPlus } from 'react-icons/go';
 import {
@@ -24,21 +21,36 @@ const style = {
     border: '2px solid #000',
     borderRadius: 1,
     boxShadow: 24,
-    p: 4,
+    px: 2,
+    py: 4,
     minWidth: 300,
     maxWidth: 400,
     maxHeight: 500,
     overflowY: "auto"
 };
 
-export default function MuiModal({ setRecieverID, setRecieverName, setConversationID }) {
+export default function MuiModal({
+    curUser,
+    setRecieverID,
+    setRecieverName,
+    setConversationID,
+    allConversationsArray
+}) {
     const users = useSelector(state => state.usersReducer.users)
+    // const allConversations = useSelector(state => state.usersReducer.allConversations)
     // const users = []
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
+    const [filterUsers, setFilterUsers] = useState([]);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-    // const dispatch = useDispatch();
-
+    useEffect(() => {
+        let conversations = [];
+        allConversationsArray.map((conversation) =>
+            conversations.push(curUser?._id === conversation.user1ID ? conversation.user2ID : conversation.user1ID)
+        );
+        let newUsers = users?.filter((user) => !conversations.includes(user._id));
+        setFilterUsers(newUsers)
+    }, [open])
     return (
         <div>
             <Button
@@ -54,27 +66,8 @@ export default function MuiModal({ setRecieverID, setRecieverName, setConversati
                     py: 1.5
                 }}
             >
-                {/* <ListItemIcon> */}
-                {/* <GoPlus color="#fff" /> */}
-                {/* </ListItemIcon> */}
-                {/* <ListItemText primary="New Conversation" /> */}
                 Conversation
             </Button>
-            {/* <ListItem button
-                onClick={handleOpen}
-                sx={{
-                    color: "#fff",
-                    backgroundColor: "darkgreen",
-                    "&:hover": { backgroundColor: "#014201", },
-                    borderRadius: 1,
-                    boxShadow: 5,
-                    mb: 2
-                }}>
-                <ListItemIcon>
-                    <GoPlus color="#fff" />
-                </ListItemIcon>
-                <ListItemText primary="New Conversation" />
-            </ListItem> */}
             <Modal
                 open={open}
                 onClose={handleClose}
@@ -83,14 +76,14 @@ export default function MuiModal({ setRecieverID, setRecieverName, setConversati
             >
                 <Box sx={style}>
                     {
-                        users?.length > 0 ?
-                            users?.map((user, ind) => {
+                        filterUsers?.length > 0 ?
+                            filterUsers?.map((user, ind) => {
                                 return (
                                     <Box
                                         key={ind} display="flex"
                                         justifyContent="space-around"
                                         alignItems="center" py={1} mb={1}
-                                        border="3px solid #033c030d "
+                                        border="3px solid #033c030d"
                                         boxShadow={4}
                                         borderRadius={1}
                                         sx={{

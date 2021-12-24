@@ -6,9 +6,10 @@ import ToggleButton from '@mui/material/ToggleButton'
 // import Typography from '@mui/material/Typography'
 import { useSelector } from 'react-redux'
 
-const Users = () => {
+const Users = ({ currentUser }) => {
     const [tableBody, setTableBody] = useState(null);
     const [activeBtnValue, setActiveBtnValue] = useState("all");
+
 
     const users = useSelector(state => state.usersReducer.users)
     const teachers = users?.filter(user => user.roll === "teacher")
@@ -78,7 +79,7 @@ const Users = () => {
                     </ToggleButton>
                 </ToggleButtonGroup>
             </Box>
-            <MuiTable tableBody={tableBody} />
+            <MuiTable tableBody={tableBody} curUser={currentUser} />
         </Box>
     )
 }
