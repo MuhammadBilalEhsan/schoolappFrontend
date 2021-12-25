@@ -71,6 +71,16 @@ const usersReducer = (state = initialState, action) => {
       }
     case "ALL_COURSES":
       return { ...state, allCourses: action.payload }
+    case "UPDATE_SINGLE_USER":
+      let newUsers = []
+      const abc = state.users.filter(user => {
+        if (user._id === action.payload._id) {
+          newUsers.push(action.payload)
+        } else {
+          newUsers.push(user)
+        }
+      })
+      return { ...state, users: newUsers };
     case "LOG_OUT":
       return state = initialState;
     default:

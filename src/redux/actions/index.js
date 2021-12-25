@@ -99,3 +99,9 @@ export const allCoursesRedux = (data) => {
     payload: data
   }
 }
+export const updateSingleUser = (user) => {
+  return {
+    type: "UPDATE_SINGLE_USER",
+    payload: user
+  }
+}

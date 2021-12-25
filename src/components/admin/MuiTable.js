@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -51,7 +51,24 @@ export default function MuiTable({ tableBody, curUser }) {
     const [severity, setSeverity] = useState("")
 
     const history = useHistory()
+    const blockUser = async (e, userID) => {
+        try {
+            const res = await axios.get(`${appSetting.severHostedUrl}/user/block/${userID}`)
+            if (res) {
+                if (res.data.message) {
+                    socket.emit("changeInUser", res.data.user)
+                    setOpenSnack(res.data.message)
+                    setSeverity("success")
+                } else {
+                    setOpenSnack(res.data.error)
+                    setSeverity("error")
+                }
+            }
 
+        } catch (error) {
+            console.log("errorr", error)
+        }
+    }
     const sendMsgFunc = async (e) => {
         try {
             const newMessage = message.trim()
@@ -113,7 +130,7 @@ export default function MuiTable({ tableBody, curUser }) {
                     aria-label="customized table">
                     <TableHead>
                         <TableRow>
-                            <StyledTableCell sx={{ width: "5%" }}>Index No.</StyledTableCell>
+                            <StyledTableCell sx={{ width: "5%" }}>Sr. No.</StyledTableCell>
                             <StyledTableCell sx={{ width: "15%" }}>Full Name</StyledTableCell>
                             <StyledTableCell align="left" sx={{ width: "5%" }}>Age</StyledTableCell>
                             <StyledTableCell align="left" sx={{ width: "15%" }}>Son of</StyledTableCell>
@@ -160,7 +177,7 @@ export default function MuiTable({ tableBody, curUser }) {
                                         </StyledTableCell>
                                         <StyledTableCell align="center">
                                             <Tooltip title={user.blocked ? `Unblock ${user.fname} ${user.lname}` : `Block ${user.fname} ${user.lname}`} arrow>
-                                                <IconButton>
+                                                <IconButton onClick={(e) => blockUser(e, user._id)}>
                                                     <ImBlocked
                                                         size="18px"
                                                         color={user.blocked ? "red" : ""}

@@ -35,33 +35,38 @@ const Login = ({ setAuth }) => {
 	};
 
 
-	const handleSubmit = (e) => {
-		e.preventDefault();
-		setLoadBtn(true);
+	const handleSubmit = async (e) => {
+		try {
+			e.preventDefault();
+			setLoadBtn(true);
 
-		let { email, password } = loginData;
-		if (!email) {
+			let { email, password } = loginData;
+			if (!email) {
+				setLoadBtn(false);
+				setOpenSnack("Please write Valid Email!");
+				setSeverity("error");
+			} else if (!password || password.length < 8) {
+				setOpenSnack("Password! contains at least 8 characters !");
+				setSeverity("error");
+				setLoadBtn(false);
+			} else {
+				const res = await axios.post(`${appSetting.severHostedUrl}/user/login`, loginData)
+				if (res) {
+					if (res.data.message) {
+						localStorage.setItem("uid", res.data.user._id);
+						setLoadBtn(false);
+						setAuth(true)
+						history.push("/profile");
+					} else {
+						setLoadBtn(false);
+						setOpenSnack(res.data.error);
+						setSeverity("error");
+					}
+				}
+			}
+		} catch (error) {
 			setLoadBtn(false);
-			setOpenSnack("Please write Valid Email!");
-			setSeverity("error");
-		} else if (!password || password.length < 8) {
-			setOpenSnack("Password! contains at least 8 characters !");
-			setSeverity("error");
-			setLoadBtn(false);
-		} else {
-			axios
-				.post(`${appSetting.severHostedUrl}/user/login`, loginData)
-				.then((res) => {
-					localStorage.setItem("uid", res.data.curUser._id);
-					setLoadBtn(false);
-					setAuth(true)
-					history.push("/profile");
-				})
-				.catch((err) => {
-					setLoadBtn(false);
-					setOpenSnack("Invalid Credentials");
-					setSeverity("error");
-				});
+			console.log(error)
 		}
 	};
 	return (
@@ -115,7 +120,7 @@ const Login = ({ setAuth }) => {
 						mt={2}
 						variant="contained"
 						color="success"
-						startIcon={loadBtn ? "" : <FiLogIn size="22px" color="#fff" />}
+						endIcon={loadBtn ? "" : <FiLogIn size="22px" color="#fff" />}
 						fullWidth
 						loading={loadBtn}
 						loadingPosition="end"

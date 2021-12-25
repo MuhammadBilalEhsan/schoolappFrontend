@@ -26,7 +26,7 @@ const Users = ({ currentUser }) => {
     }
     useEffect(() => {
         setTableBody(users)
-    }, [])
+    }, [users])
     return (
         <Box width="100%" p={2}>
             <Box>

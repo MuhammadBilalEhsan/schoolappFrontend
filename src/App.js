@@ -8,6 +8,7 @@ import CourseDetails from "./components/CourseDetails";
 import ClassMaterials from "./components/ClassMaterials";
 import MessagesComp from "./components/MessagesComp";
 import Inbox from "./components/Inbox";
+import UserBlockedPage from "./components/UserBlockedPage";
 import appSetting from "./appSetting/appSetting";
 import {
 	BrowserRouter as Router, Switch, Redirect
@@ -15,7 +16,7 @@ import {
 import {
 	curUserFun, getUsers, getCourseFunc, getStudentCourseFunc,
 	updateCourses, updateCurrentCourse, updateAllAssignments,
-	editAvailAbleCourses, UpdatecurrentConversation, allCoursesRedux
+	editAvailAbleCourses, UpdatecurrentConversation, allCoursesRedux, updateSingleUser
 } from "./redux/actions/index";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
@@ -38,6 +39,7 @@ export const socket = socketIO(ENDPOINT, { transports: ["websocket"] })
 const App = () => {
 	const [isAdmin, setIsAdmin] = useState(false)
 	const [auth, setAuth] = useState(null)
+	const [isBlocked, setIsBlocked] = useState(false)
 	const _id = localStorage.getItem("uid");
 
 	const curUser = useSelector((state) => state.usersReducer.curUser);
@@ -65,6 +67,8 @@ const App = () => {
 						setUid(false);
 					} else {
 						dispatch(curUserFun(currentUser));
+						setIsBlocked(currentUser?.blocked)
+						// setIsBlocked(currentUser?.blocked)
 						if (currentUser?.isAdmin) {
 							setIsAdmin(true)
 							const allUsers = data.filter(user => user._id !== currentUser?._id)
@@ -74,6 +78,7 @@ const App = () => {
 									const allCourses = res.data.allCourses
 									dispatch(allCoursesRedux(allCourses))
 								}).catch(err => console.log(err))
+
 						} else {
 							if (currentUser.roll === "teacher") {
 								axios.post(`${appSetting.severHostedUrl}/course/mycourse`, { teacher_id: currentUser._id })
@@ -96,7 +101,7 @@ const App = () => {
 				})
 				.catch((error) => console.log(error));
 			socket.on("connect", () => {
-				// console.log("Backend Connected..!!")
+				console.log("Backend Connected..!!")
 			})
 			socket.on("courseADDEDByTeacher", (newCourse) => {
 				if (currentUser?.roll === "student" && currentUser?.atClass == newCourse?.teacherClass) {
@@ -120,12 +125,25 @@ const App = () => {
 			socket.on("ASSIGNMENT_ADDED", (allAssignment) => {
 				dispatch(updateAllAssignments(allAssignment))
 			})
+			socket.on("CHANGE_IN_USER", (user) => {
+				if (user._id === currentUser?._id) {
+					dispatch(curUserFun(user));
+					setIsBlocked(user.blocked)
+					console.log("cur", user)
+				}
+				if (currentUser.isAdmin) {
+					dispatch(updateSingleUser(user))
+				}
+			})
 		}
-	}, [auth, ENDPOINT]);
+		// }, [auth, ENDPOINT]);
+	}, [auth]);
 
 	if (spinner) return <Spinner />;
+	if (isBlocked) return <UserBlockedPage />;
 	return (
 		<>
+			{/* {isBlocked ? <UserBlockedPage /> : */}
 			<Router>
 				<Switch>
 					{/* Admin Routes Start */}
@@ -211,6 +229,7 @@ const App = () => {
 						path="/profile"
 						AdminComp={<Redirect to="/dashboard" />}
 						SuccessComp={<Profile curUser={curUser} setAuth={setAuth} />}
+						// SuccessComp={<UserBlockedPage />}
 						FailComp={<Redirect to="/" />}
 					/>
 					<PrivateRoute
@@ -247,6 +266,16 @@ const App = () => {
 						SuccessComp={<Redirect to="/profile" curUser={curUser} />}
 						FailComp={<Redirect to="/" />}
 					/>
+					{/* <PrivateRoute
+						auth={auth}
+						isAdmin={isAdmin}
+						path="/iamblocked"
+						AdminComp={<UserBlockedPage />}
+						SuccessComp={<UserBlockedPage />}
+						FailComp={<Redirect to="/" />}
+						blocked={isBlocked}
+						BlockComp={<UserBlockedPage />}
+					/> */}
 					<PrivateRoute
 						auth={auth}
 						isAdmin={isAdmin}
