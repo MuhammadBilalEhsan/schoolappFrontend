@@ -60,7 +60,7 @@ export default function AddCourse({ curUser, editCourse, course, setSeverity, se
 	const formik = useFormik({
 		initialValues: {
 			teacher_id: uidFromLocalStorage,
-			teacherEmail: curUser?.email,
+			teacherName: `${curUser?.fname} ${curUser?.lname||""}`,
 			teacherClass: curUser?.atClass,
 			courseName: editCourse ? course?.courseName : "",
 			courseDesc: editCourse ? course?.courseDesc : "",
@@ -109,7 +109,7 @@ export default function AddCourse({ curUser, editCourse, course, setSeverity, se
 								}
 							} else {
 								handleClose();
-								console.log("Added", values)
+								// console.log("Added", values)
 								const res = await axios.post(`${appSetting.severHostedUrl}/course/add`, values);
 								if (res) {
 									socket.emit("newCoursesAdded", res.data.newCourse)

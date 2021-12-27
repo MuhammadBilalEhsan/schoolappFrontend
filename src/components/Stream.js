@@ -13,7 +13,7 @@ import { useDispatch } from 'react-redux'
 import appSetting from '../appSetting/appSetting'
 
 
-const Stream = ({ curUser, currentCourse }) => {
+const Stream = ({ curUser, currentCourse, isAdmin }) => {
     const [message, setMessage] = useState("")
     const [isMuted, setIsMuted] = useState(false)
 
@@ -89,18 +89,21 @@ const Stream = ({ curUser, currentCourse }) => {
                 })
             }
             {
-                !isMuted ? <SendingMessageInputComp
-                    name="message"
-                    autoFocus={true}
-                    value={message}
-                    setValue={setMessage}
-                    placeholder="Add comment to All Students"
-                    color="success"
-                    submitFunc={submitFunc}
-                    userName={curUser?.fname[0]}
-                /> : <Box mt={3} border="1px solid red" borderRadius={2} width="100%" py={3} textAlign="center">
-                    <Typography variant="h6" color="red">You Can't send Message Because You're Muted...</Typography>
-                </Box>
+                !isAdmin ? (
+                    !isMuted ? < SendingMessageInputComp
+                        name="message"
+                        autoFocus={true}
+                        value={message}
+                        setValue={setMessage}
+                        placeholder="Add comment to All Students"
+                        color="success"
+                        submitFunc={submitFunc}
+                        userName={curUser?.fname[0]}
+                    />
+                        : <Box mt={3} border="1px solid red" borderRadius={2} width="100%" py={3} textAlign="center">
+                            <Typography variant="h6" color="red">You Can't send Message Because You're Muted...</Typography>
+                        </Box>
+                ) : ""
             }
 
         </Box >

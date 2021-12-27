@@ -6,7 +6,7 @@ import { MdOutlineMoreVert, MdUpload } from "react-icons/md"
 import Assignment from './Assignment'
 
 
-const AssignmentAccordion = ({ curUser, isTeacher, assignment, setCurrentAssignmentID, setChecked }) => {
+const AssignmentAccordion = ({ curUser, isTeacher, isAdmin, assignment, setCurrentAssignmentID, setChecked }) => {
     const [expanded, setExpanded] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
@@ -38,11 +38,12 @@ const AssignmentAccordion = ({ curUser, isTeacher, assignment, setCurrentAssignm
         setChecked(true)
         handleClose()
     }
+    // console.log("assig", assignment)
     return (
         <div>
             <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')} sx={{ marginTop: 1, "&:hover": { boxShadow: 3, cursor: "pointer" } }}  >
                 <AccordionSummary
-                    // expandIcon={<ExpandMoreIcon />}
+                    // expandIcon={assignment?.<ExpandMoreIcon />}
                     aria-controls="panel1bh-content"
                     id="panel1bh-header"
                 >
@@ -69,7 +70,7 @@ const AssignmentAccordion = ({ curUser, isTeacher, assignment, setCurrentAssignm
                             </Tooltip>
                                 : ""
                         }
-                        {isTeacher ? (
+                        {isTeacher || isAdmin ? (
                             <Box>
                                 <Button
                                     sx={{ color: "green", borderRadius: 5 }}
@@ -94,8 +95,8 @@ const AssignmentAccordion = ({ curUser, isTeacher, assignment, setCurrentAssignm
 
                                     {/* <MenuItem onClick={() => history.push(`submitted/${assignment?._id}`)}>Submited</MenuItem> */}
                                     {/* <MenuItem href={`submitted/${assignment?._id}`}>Submited</MenuItem> */}
-                                    <MenuItem onClick={submittedAssignments}>Submited</MenuItem>
-                                    <MenuItem onClick={Checked}>Checked</MenuItem>
+                                    <MenuItem onClick={submittedAssignments}>Non-checked Students</MenuItem>
+                                    <MenuItem onClick={Checked}>Submitted & Checked Students</MenuItem>
                                 </Menu>
                             </Box>
                         ) : (<Assignment

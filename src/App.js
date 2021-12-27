@@ -10,11 +10,12 @@ import MessagesComp from "./components/MessagesComp";
 import Inbox from "./components/Inbox";
 import UserBlockedPage from "./components/UserBlockedPage";
 import appSetting from "./appSetting/appSetting";
+import NewClassMaterials from "./components/admin/NewClassMaterials"
 import {
 	BrowserRouter as Router, Switch, Redirect
 } from "react-router-dom";
 import {
-	curUserFun, getUsers, getCourseFunc, getStudentCourseFunc,
+	curUserFun, getUsers, getCourseFunc, getStudentCourseFunc, addNewCourseForAdmin,
 	updateCourses, updateCurrentCourse, updateAllAssignments,
 	editAvailAbleCourses, UpdatecurrentConversation, allCoursesRedux, updateSingleUser
 } from "./redux/actions/index";
@@ -31,6 +32,7 @@ import Users from './components/admin/Users.js';
 import Classes from './components/admin/Classes';
 import Courses from './components/admin/Courses';
 import Blocked from './components/admin/Blocked';
+import ProfileForAdmin from './components/admin/ProfileForAdmin';
 // import Teachers from './components/admin/Teachers';
 // import Students from './components/admin/Students';
 
@@ -101,11 +103,13 @@ const App = () => {
 				})
 				.catch((error) => console.log(error));
 			socket.on("connect", () => {
-				console.log("Backend Connected..!!")
+				// console.log("Backend Connected..!!")
 			})
 			socket.on("courseADDEDByTeacher", (newCourse) => {
 				if (currentUser?.roll === "student" && currentUser?.atClass == newCourse?.teacherClass) {
 					dispatch(editAvailAbleCourses(newCourse))
+				} else if (currentUser?.isAdmin) {
+					dispatch(addNewCourseForAdmin(newCourse))
 				}
 			})
 			socket.on("courseEditedByTeacher", (course) => {
@@ -129,7 +133,6 @@ const App = () => {
 				if (user._id === currentUser?._id) {
 					dispatch(curUserFun(user));
 					setIsBlocked(user.blocked)
-					console.log("cur", user)
 				}
 				if (currentUser.isAdmin) {
 					dispatch(updateSingleUser(user))
@@ -174,15 +177,6 @@ const App = () => {
 						SuccessComp={<Redirect to="/profile" />}
 						FailComp={<Redirect to="/" />}
 					/>
-					{/* <PrivateRoute
-						auth={auth}
-						isAdmin={isAdmin}
-						path="/attendances"
-						AdminComp={<Dashboard setAuth={setAuth}
-							Component={<AttendanceForAdmin currentUser={curUser} key="teachers"/>} />}
-						SuccessComp={<Redirect to="/profile" />}
-						FailComp={<Redirect to="/" />}
-					/> */}
 					<PrivateRoute
 						auth={auth}
 						isAdmin={isAdmin}
@@ -276,25 +270,37 @@ const App = () => {
 						blocked={isBlocked}
 						BlockComp={<UserBlockedPage />}
 					/> */}
+
+					<PrivateRoute
+						auth={auth}
+						isAdmin={isAdmin}
+						path="/user"
+						AdminComp={<Dashboard setAuth={setAuth}
+						Component={<ProfileForAdmin key="users" />} />}
+						SuccessComp={<Redirect to="/profile" />}
+						FailComp={<Redirect to="/" />}
+					/>
+						<PrivateRoute
+							auth={auth}
+							isAdmin={isAdmin}
+							path="/inbox/:id"
+							AdminComp={<Dashboard setAuth={setAuth}
+								// Component={<Inbox curUser={curUser} key="inbox" />} />}
+								Component={<Inbox curUser={curUser} key="inbox" />} />}
+							SuccessComp={<Redirect to="/profile" />}
+							FailComp={<Redirect to="/" />}
+						/>
 					<PrivateRoute
 						auth={auth}
 						isAdmin={isAdmin}
 						path="/:id"
-						AdminComp={<Redirect to="/dashboard" />}
+						// AdminComp={<NewClassMaterials curUser={curUser} setAuth={setAuth} />}
+
+						AdminComp={<Dashboard setAuth={setAuth}
+							Component={<NewClassMaterials curUser={curUser} key="courses" />} />}
 						SuccessComp={<ClassMaterials curUser={curUser} setAuth={setAuth} />}
 						FailComp={<Redirect to="/" />}
 					/>
-					<PrivateRoute
-						auth={auth}
-						isAdmin={isAdmin}
-						path="/inbox/:id"
-						AdminComp={<Dashboard setAuth={setAuth}
-							// Component={<Inbox curUser={curUser} key="inbox" />} />}
-							Component={<Inbox curUser={curUser} key="inbox" />} />}
-						SuccessComp={<Redirect to="/profile" />}
-						FailComp={<Redirect to="/" />}
-					/>
-
 					<PrivateRoute
 						auth={auth}
 						isAdmin={isAdmin}

@@ -28,7 +28,7 @@ const MessagesComp = ({ curUser, setAuth }) => {
     // }
     useEffect(() => {
         setAllConversationsArray(allConversations)
-        console.log("changedallConversations", allConversations)
+        // console.log("changedallConversations", allConversations)
     }, [allConversations])
     useEffect(async () => {
         try {

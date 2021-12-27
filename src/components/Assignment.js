@@ -84,7 +84,7 @@ const Assignment = ({
                             values = {}
                             if (res.data.message) {
                                 setAllAssignments(res.data.allAssignment)
-                                console.log("res.data.assignment", res.data.allAssignment)
+                                // console.log("res.data.assignment", res.data.allAssignment)
                                 socket.emit("assignmentAdd", res.data.allAssignment)
                                 dispatch(settingAssignments(res.data.allAssignment))
                                 setOpenSnack(res.data.message)

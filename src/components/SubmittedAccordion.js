@@ -14,14 +14,13 @@ import appSetting from '../appSetting/appSetting'
 import axios from 'axios'
 import { socket } from '../App'
 
-const SubmittedAccordion = ({ submitted, assignmentID, checked, setOpenSnack, setSeverity }) => {
+const SubmittedAccordion = ({ submitted, assignmentID, checked, setOpenSnack, setSeverity, isAdmin }) => {
 
     const curUser = useSelector((state) => state.usersReducer.curUser);
     const [showInput, setShowInput] = useState(false)
     const [hideAccordion, setHideAccordion] = useState(false)
     const [marks, setMarks] = useState(Number(0))
     const [expanded, setExpanded] = useState(false);
-    console.log("checkedInSubmittedAccordion", checked)
     const toggle = (event) => {
         event.stopPropagation()
         if (showInput) {
@@ -92,18 +91,21 @@ const SubmittedAccordion = ({ submitted, assignmentID, checked, setOpenSnack, se
                                     </Tooltip>
                                         : ""
                                 }
-                                <Box>
-                                    <Tooltip title="Give Marks">
-                                        <Button
-                                            sx={{ color: "green", borderRadius: 5 }}
-                                            size="small"
-                                            id="basic-button"
-                                            onClick={toggle}
-                                        >
-                                            <ImListNumbered size="23px" style={{ margin: "auto 0px" }} />
-                                        </Button>
-                                    </Tooltip>
-                                </Box>
+                                {
+                                    !isAdmin ? <Box>
+                                        <Tooltip title="Give Marks">
+                                            <Button
+                                                sx={{ color: "green", borderRadius: 5 }}
+                                                size="small"
+                                                id="basic-button"
+                                                onClick={toggle}
+                                            >
+                                                <ImListNumbered size="23px" style={{ margin: "auto 0px" }} />
+                                            </Button>
+                                        </Tooltip>
+                                    </Box> : ""
+                                }
+
 
                             </Box>
                         </AccordionSummary>

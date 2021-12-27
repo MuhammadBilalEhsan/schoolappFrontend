@@ -50,7 +50,7 @@ const PrivateConversation = ({
                     //     currentConversation?.user2ID : currentConversation?.user1ID
                     _id: id ? id : null
                 }
-                console.log("MsgObj", messageObj)
+                // console.log("MsgObj", messageObj)
                 const res = await axios.post(`${appSetting.severHostedUrl}/user/sendmsg`, messageObj)
                 if (res) {
                     if (res.data.message) {

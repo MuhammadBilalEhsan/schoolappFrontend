@@ -49,7 +49,7 @@ const ClassMaterials = ({ curUser, setAuth }) => {
 				setShowClass(true)
 				setSpinner(false)
 			} else {
-				console.log(res.data.error)
+				// console.log(res.data.error)
 				setShowClass(false)
 				setSpinner(false)
 				history.push("/")

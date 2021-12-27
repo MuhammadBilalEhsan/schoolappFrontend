@@ -9,7 +9,7 @@ import MuiSnacks from './MuiSnacks';
 import appSetting from '../appSetting/appSetting';
 
 
-const CourseStudentsComp = ({ currentCourse, curUser, }) => {
+const CourseStudentsComp = ({ currentCourse, curUser, isAdmin }) => {
     const [courseStudents, setCourseStudents] = useState(currentCourse?.students);
     const [anchorEl, setAnchorEl] = useState(null);
     const [message, setMessage] = useState("");
@@ -18,7 +18,6 @@ const CourseStudentsComp = ({ currentCourse, curUser, }) => {
 
     const [openSnack, setOpenSnack] = useState("");
     const [severity, setSeverity] = useState("");
-
     const open = Boolean(anchorEl);
 
     const { _id, fname, lname } = curUser || {}

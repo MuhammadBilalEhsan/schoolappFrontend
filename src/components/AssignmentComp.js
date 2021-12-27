@@ -12,7 +12,7 @@ import MuiSnacks from './MuiSnacks';
 import appSetting from '../appSetting/appSetting'
 
 
-const AssignmentComp = ({ curUser, isTeacher, currentCourse }) => {
+const AssignmentComp = ({ curUser, isTeacher, currentCourse, isAdmin }) => {
     const assignments = useSelector(state => state.usersReducer.allAssignments)
 
     const [allAssignments, setAllAssignments] = useState(assignments)
@@ -39,8 +39,8 @@ const AssignmentComp = ({ curUser, isTeacher, currentCourse }) => {
     return (
         <Box sx={{ maxWidth: "760px", margin: "0 auto" }}>
             {openSnack ? <MuiSnacks openSnack={openSnack} severity={severity} text={openSnack} setOpenSnack={setOpenSnack} /> : ""}
-            {currentAssignmentID && isTeacher ? <SubmittedAndChecked checked={checked} currentAssignmentID={currentAssignmentID} />
-                : !isTeacher && currentCourseID ? <CheckedAssignments currentCourseID={currentCourseID} />
+            {currentAssignmentID && isTeacher || currentAssignmentID && isAdmin ? <SubmittedAndChecked checked={checked} isAdmin={isAdmin} currentAssignmentID={currentAssignmentID} />
+                : !isTeacher && !isAdmin && currentCourseID ? <CheckedAssignments currentCourseID={currentCourseID} />
                     : <Box>
                         <Box display="flex" justifyContent="flex-end" px={2} width="100%" >
                             {isTeacher ? (
@@ -59,18 +59,19 @@ const AssignmentComp = ({ curUser, isTeacher, currentCourse }) => {
                                     setSeverity={setSeverity}
                                     setAllAssignments={setAllAssignments}
                                 />
-                            ) : <Tooltip title="Go to checked Assignments" arrow>
-                                <Button onClick={() => setCurrentCourseID(currentCourse?._id)} color="success" sx={{ marginTop: 3, borderRadius: 5 }} variant="contained">
-                                    Checked
-                                </Button>
+                            ) : isAdmin ? ""
+                                : <Tooltip title="Go to checked Assignments" arrow>
+                                    <Button onClick={() => setCurrentCourseID(currentCourse?._id)} color="success" sx={{ marginTop: 3, borderRadius: 5 }} variant="contained">
+                                        Checked
+                                    </Button>
 
-                            </Tooltip>
+                                </Tooltip>
                             }
                         </Box>
 
-                        <Box display="flex" justifyContent="flex-start" pb={1} px={2} width="100%" >
+                        <Box display="flex" justifyContent="flex-start" mb={2} pb={3} px={2} width="100%" borderBottom="1px solid #009c0052" >
                             <Typography variant="h4" color="green">
-                                {isTeacher ? "" : "Non Submitted "}Assignments
+                                {isTeacher || isAdmin ? "" : "Non Submitted "}Assignments
                             </Typography>
                         </Box>
                         {
@@ -83,13 +84,14 @@ const AssignmentComp = ({ curUser, isTeacher, currentCourse }) => {
                                                 key={index}
                                                 curUser={curUser}
                                                 isTeacher={isTeacher}
+                                                isAdmin={isAdmin}
                                                 assignment={assignment}
                                                 setCurrentAssignmentID={setCurrentAssignmentID}
                                                 setChecked={setChecked}
                                             />
                                         )
                                     }
-                                }) : <Box pt={9} borderTop="1px solid green" width="100%"
+                                }) : <Box pt={9} width="100%"
                                     textAlign="center"
                                 >
                                     <Typography variant="h6" color="green">

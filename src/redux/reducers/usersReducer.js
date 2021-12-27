@@ -71,6 +71,14 @@ const usersReducer = (state = initialState, action) => {
       }
     case "ALL_COURSES":
       return { ...state, allCourses: action.payload }
+    case "ADD_NEW_COURSE_FOR_ADMIN":
+      let findCourseAdmin = state.allCourses.find(course => course._id === action.payload._id)
+      if (!findCourseAdmin) {
+        state.allCourses.push(action.payload)
+        return state
+      } else {
+        return state
+      }
     case "UPDATE_SINGLE_USER":
       let newUsers = []
       const abc = state.users.filter(user => {

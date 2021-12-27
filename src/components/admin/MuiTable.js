@@ -160,7 +160,10 @@ export default function MuiTable({ tableBody, curUser }) {
                                         </StyledTableCell>
                                         <StyledTableCell align="center">
                                             <Tooltip title={`View ${user.fname} ${user.lname}`} arrow>
-                                                <IconButton>
+                                                <IconButton
+                                                    component={Link}
+                                                    to={`/user?${user._id}`}
+                                                >
                                                     <RiInformationLine color="#014201" size="22px" />
                                                 </IconButton>
                                             </Tooltip>

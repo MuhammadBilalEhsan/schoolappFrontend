@@ -11,7 +11,7 @@ import { socket } from '../App'
 import appSetting from '../appSetting/appSetting'
 import MuiSnacks from './MuiSnacks'
 
-const SubmittedAndChecked = ({ currentAssignmentID, checked }) => {
+const SubmittedAndChecked = ({ currentAssignmentID, checked, isAdmin }) => {
     const currentAssignment = useSelector(state => state.usersReducer.currentAssignment)
     const [assignment, setAssignment] = useState(currentAssignment)
 
@@ -74,6 +74,7 @@ const SubmittedAndChecked = ({ currentAssignmentID, checked }) => {
                                     "" :
                                     <SubmittedAccordion
                                         checked={checked}
+                                        isAdmin={isAdmin}
                                         key={ind}
                                         submitted={student}
                                         assignmentID={assignment?._id}
