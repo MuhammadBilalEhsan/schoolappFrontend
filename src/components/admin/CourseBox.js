@@ -15,6 +15,7 @@ const CourseBox = ({ course }) => {
             onClick={() => history.push(`/${_id}`)}
             sx={{
                 boxShadow: 2,
+                backgroundColor: "#00000009",
                 borderRadius: 2,
                 cursor: "pointer",
                 "&:hover": { backgroundColor: "#0cff0017" }

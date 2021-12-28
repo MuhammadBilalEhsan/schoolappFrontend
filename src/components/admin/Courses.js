@@ -16,7 +16,7 @@ const Courses = () => {
                 flexWrap="wrap" gap="12px"
             >
                 {/* <Grid container spacing={2} */}
-                {
+                {/* {
                     allCourses?.length > 0 ?
                         allCourses.map((course, index) => {
                             return (
@@ -28,7 +28,7 @@ const Courses = () => {
                                 Currently No Course Available
                             </Typography>
                         </Box>
-                }
+                } */}
                 {/* </Grid> */}
 
             </Box>
