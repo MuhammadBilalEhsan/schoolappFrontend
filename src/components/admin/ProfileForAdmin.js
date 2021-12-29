@@ -4,22 +4,22 @@ import { useLocation } from 'react-router-dom'
 import Box from "@mui/material/Box"
 import Avatar from "@mui/material/Avatar"
 import Typography from "@mui/material/Typography"
-import Divider from "@mui/material/Divider"
 import defaultDP from "../../images/defaultDP.jpg"
 import MarkAttendance from '../MarkAttendance'
 import BarChart from '../BarChart'
-import CourseBox from './CourseBox'
+import UserCoursesForAdmin from '../UserCoursesForAdmin'
 
 
-const ProfileForAdmin = () => {
+const ProfileForAdmin = ({ curUser }) => {
     const { search } = useLocation()
     const users = useSelector(state => state.usersReducer.users)
     const allCourses = useSelector(state => state.usersReducer.allCourses)
     const [user, setUser] = useState({})
     useEffect(() => {
+        let findUser;
         if (search) {
             const userID = search.split("?")[1]
-            const findUser = users?.find(user => user._id === userID)
+            findUser = users?.find(user => user._id === userID)
             if (findUser) {
                 setUser(findUser)
             }
@@ -64,44 +64,21 @@ const ProfileForAdmin = () => {
                     <MyTypography title="Role:" text={user?.roll || "-"} />
                 </Box>
                 <Box flexGrow={1}>
-                    <Box width="100%">
-                        <MarkAttendance />
-                    </Box>
+                    {
+                        !curUser?.isAdmin ?
+                            <Box width="100%">
+                                <MarkAttendance />
+                            </Box> : ""
+                    }
                     <Box width="100%">
                         <BarChart attendance={user?.attendance} />
                     </Box>
                 </Box>
             </Box >
-            <Divider sx={{ width: "97%", mx: "auto" }} />
-            <Box maxWidth="1024px"
-            >
-                <Box
-                    sx={{
-                        backgroundColor: "#fff",
-                        borderRadius: 1,
-                    }}
-                    mt={2}
-                    width="100%"
-                    pt={2} pl={1} display="flex"
-                    justifyContent="flex-start"
-                    flexWrap="wrap" gap="12px"
-                >
-                    {
-                        allCourses?.length > 0 ?
-                            allCourses.map((course, index) => {
-                                return (
-                                    <CourseBox course={course} key={index} />
-                                )
-                            }) :
-                            <Box width="100%" pt={14} textAlign="center">
-                                <Typography variant="h5" color="#014201">
-                                    Currently No Course Available
-                                </Typography>
-                            </Box>
-                    }
-
-                </Box>
-            </Box>
+            {
+                curUser?.isAdmin ?
+                    <UserCoursesForAdmin user={user} allCourses={allCourses} /> : ""
+            }
         </Box >
     )
 }

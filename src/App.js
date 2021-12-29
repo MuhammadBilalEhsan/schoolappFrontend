@@ -191,7 +191,6 @@ const App = () => {
 						isAdmin={isAdmin}
 						path="/inbox"
 						AdminComp={<Dashboard setAuth={setAuth}
-							// Component={<Inbox curUser={curUser} key="inbox" />} />}
 							Component={<Inbox curUser={curUser} key="inbox" />} />}
 						SuccessComp={<Redirect to="/profile" />}
 						FailComp={<Redirect to="/" />}
@@ -276,20 +275,20 @@ const App = () => {
 						isAdmin={isAdmin}
 						path="/user"
 						AdminComp={<Dashboard setAuth={setAuth}
-						Component={<ProfileForAdmin key="users" />} />}
+							Component={<ProfileForAdmin key="users" curUser={curUser} />} />}
 						SuccessComp={<Redirect to="/profile" />}
 						FailComp={<Redirect to="/" />}
 					/>
-						<PrivateRoute
-							auth={auth}
-							isAdmin={isAdmin}
-							path="/inbox/:id"
-							AdminComp={<Dashboard setAuth={setAuth}
-								// Component={<Inbox curUser={curUser} key="inbox" />} />}
-								Component={<Inbox curUser={curUser} key="inbox" />} />}
-							SuccessComp={<Redirect to="/profile" />}
-							FailComp={<Redirect to="/" />}
-						/>
+					<PrivateRoute
+						auth={auth}
+						isAdmin={isAdmin}
+						path="/inbox/:id"
+						AdminComp={<Dashboard setAuth={setAuth}
+							// Component={<Inbox curUser={curUser} key="inbox" />} />}
+							Component={<Inbox curUser={curUser} key="inbox" />} />}
+						SuccessComp={<Redirect to="/profile" />}
+						FailComp={<Redirect to="/" />}
+					/>
 					<PrivateRoute
 						auth={auth}
 						isAdmin={isAdmin}
