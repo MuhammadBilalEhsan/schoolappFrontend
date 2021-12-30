@@ -17,7 +17,7 @@ import {
 import {
 	curUserFun, getUsers, getCourseFunc, getStudentCourseFunc, addNewCourseForAdmin,
 	updateCourses, updateCurrentCourse, updateAllAssignments,
-	editAvailAbleCourses, UpdatecurrentConversation, allCoursesRedux, updateSingleUser
+	editAvailAbleCourses, UpdatecurrentConversation, allCoursesRedux, updateSingleUser, newUserAdded
 } from "./redux/actions/index";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
@@ -128,6 +128,14 @@ const App = () => {
 			})
 			socket.on("ASSIGNMENT_ADDED", (allAssignment) => {
 				dispatch(updateAllAssignments(allAssignment))
+			})
+			//ITS NOT A BROADCAST
+			socket.on("NEW_USER_ADDED", user => {
+				if (currentUser?.isAdmin) {
+					console.log("user", user)
+					dispatch(newUserAdded(user))
+
+				}
 			})
 			socket.on("CHANGE_IN_USER", (user) => {
 				if (user._id === currentUser?._id) {

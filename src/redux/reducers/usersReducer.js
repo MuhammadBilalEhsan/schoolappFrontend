@@ -79,6 +79,14 @@ const usersReducer = (state = initialState, action) => {
       } else {
         return state
       }
+    case "USER_ADDED":
+      let findUser = state.users?.find(user => user._id === action.payload)
+      if (!findUser) {
+        let newUsersArray = [...state.users, action.payload]
+        return { ...state, users: newUsersArray }
+      } else {
+        return state
+      }
     case "UPDATE_SINGLE_USER":
       let newUsers = []
       const abc = state.users.filter(user => {

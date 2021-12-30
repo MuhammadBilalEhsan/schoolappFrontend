@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -118,13 +118,20 @@ export default function MuiTable({ tableBody, curUser }) {
                 userName={curUser?.fname[0]}
             /> : ""
             }
-            <TableContainer component={Paper} >
+            <TableContainer component={Paper}
+            // sx={{ p: 2 }}
+            >
                 {openSnack ? <MuiSnacks openSnack={openSnack} severity={severity} text={openSnack} setOpenSnack={setOpenSnack} /> : ""}
 
                 <Table
                     size='small'
+                    // width="100%"
                     sx={{
-                        minWidth: 700, maxWidth: 1000, position: "absolute", cursor: "pointer",
+                        // minWidth: 700,
+                        maxWidth: {
+                            sm: `calc(100% - ${272}px)`, xs: "100%"
+                        },
+                        position: "absolute", cursor: "pointer",
                         overflowX: "scroll", border: "1px solid #014201",
                     }}
                     aria-label="customized table">

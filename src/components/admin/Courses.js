@@ -1,26 +1,32 @@
-import React, { useEffect, useState } from 'react'
+
+import React from 'react'
 import { useSelector } from 'react-redux'
 import CourseBox from './CourseBox'
-// import AddBox from './AddBox'
 import Box from "@mui/material/Box"
+import Grid from "@mui/material/Grid"
 import Typography from "@mui/material/Typography"
 
 const Courses = () => {
     const allCourses = useSelector(state => state.usersReducer.allCourses)
     return (
-        <Box width="100%"
+        <Box width="100%" minHeight="100vh" p={2}
+            sx={{ backgroundColor: "#f6f6f6" }}
         >
-            <Box maxWidth="1000px" mx="auto"
-                pt={2} pl={1} display="flex"
-                justifyContent="flex-start"
-                flexWrap="wrap" gap="12px"
+            <Grid
+                container width="100%"
+                m="0px" direction="row" spacing={2}
+                sx={{ backgroundColor: "#fff", boxShadow: 2 }}
+                pr={2} pb={2}
             >
-                {/* <Grid container spacing={2} */}
                 {
                     allCourses?.length > 0 ?
                         allCourses.map((course, index) => {
                             return (
-                                <CourseBox course={course} key={index} />
+                                <Grid key={index}
+                                    item xs={12} md={6} lg={4}
+                                >
+                                    <CourseBox course={course} />
+                                </Grid>
                             )
                         }) :
                         <Box width="100%" pt={14} textAlign="center">
@@ -29,10 +35,9 @@ const Courses = () => {
                             </Typography>
                         </Box>
                 }
-                {/* </Grid> */}
+            </Grid>
+        </Box >
 
-            </Box>
-        </Box>
     )
 }
 

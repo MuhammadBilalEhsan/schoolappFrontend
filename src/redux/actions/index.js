@@ -111,3 +111,9 @@ export const addNewCourseForAdmin = (user) => {
     payload: user
   }
 }
+export const newUserAdded = (user) => {
+  return {
+    type: "USER_ADDED",
+    payload: user
+  }
+}

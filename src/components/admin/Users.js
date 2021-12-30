@@ -5,6 +5,7 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import ToggleButton from '@mui/material/ToggleButton'
 // import Typography from '@mui/material/Typography'
 import { useSelector } from 'react-redux'
+import AddUserDialog from './AddUserDialog'
 
 const Users = ({ currentUser }) => {
     const [tableBody, setTableBody] = useState(null);
@@ -29,12 +30,12 @@ const Users = ({ currentUser }) => {
     }, [users])
     return (
         <Box width="100%" p={2}>
-            <Box>
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
                 <ToggleButtonGroup
                     value={tableBody}
                     exclusive
                     onChange={handleChange}
-                    sx={{ mb: 2 }}
+                // sx={{ mb: 2 }}
                 >
                     <ToggleButton
                         size="small"
@@ -78,6 +79,9 @@ const Users = ({ currentUser }) => {
                         Students
                     </ToggleButton>
                 </ToggleButtonGroup>
+
+                <AddUserDialog classesArray={currentUser?.classes} />
+
             </Box>
             <MuiTable tableBody={tableBody} curUser={currentUser} />
         </Box>

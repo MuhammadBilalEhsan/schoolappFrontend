@@ -10,8 +10,7 @@ const CourseBox = ({ course }) => {
     // console.log("_id", _id)
     return (
         <Box
-            minWidth="248px"
-            maxWidth="348px"
+            width="100%"
             onClick={() => history.push(`/${_id}`)}
             sx={{
                 boxShadow: 2,
