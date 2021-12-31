@@ -7,7 +7,7 @@ import { ImBooks } from "react-icons/im"
 import { GiClassicalKnowledge } from "react-icons/gi"
 import { Link } from "react-router-dom"
 
-const DashBoardBox = () => {
+const DashBoardBox = ({ currentUser }) => {
     const allCourses = useSelector(state => state.usersReducer.allCourses)
     const users = useSelector(state => state.usersReducer.users)
     const blocked = users?.filter(user => user.blocked === true)
@@ -34,7 +34,7 @@ const DashBoardBox = () => {
                     }}>
                     <GiClassicalKnowledge size="72px" color="darkgreen" />
                     <Typography variant="h5" mt={1.5} color="darkgreen">
-                        Classes (5)
+                        Classes ({currentUser?.classes?.length ? currentUser.classes.length : "0"})
                     </Typography>
                 </Box>
             </Box >

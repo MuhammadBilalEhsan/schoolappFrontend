@@ -2,136 +2,172 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
 import Box from "@mui/material/Box"
-// import Button from "@mui/material/Button"
 import TextField from "@mui/material/TextField"
 import Typography from "@mui/material/Typography"
-import Divider from "@mui/material/Divider"
+import IconButton from "@mui/material/IconButton"
+import InputAdornment from "@mui/material/InputAdornment"
 import LoadingButton from '@mui/lab/LoadingButton';
-import { FaUserAlt } from "react-icons/fa";
-import { FiLogIn } from "react-icons/fi";
-// import Spinner from "./Spinner";
+import { BiUser } from "react-icons/bi";
+import { BsExclamationDiamond } from "react-icons/bs";
+import { FaUserCircle } from "react-icons/fa";
+import { RiLockPasswordFill } from "react-icons/ri";
 import "../css/login.css";
 import appSetting from '../appSetting/appSetting'
 import MuiSnacks from "./MuiSnacks"
+import { useFormik } from "formik";
+import * as yup from "yup"
 
 
 const Login = ({ setAuth }) => {
-	const [loginData, setLoginData] = useState({
-		email: "",
-		password: "",
-	});
 	const [loadBtn, setLoadBtn] = useState(false);
 
 	const [openSnack, setOpenSnack] = useState("");
 	const [severity, setSeverity] = useState("");
 
-
 	const history = useHistory();
-	let name, value;
-	const handleChange = (e) => {
-		name = e.target.name;
-		value = e.target.value;
-		setLoginData({ ...loginData, [name]: value });
-	};
+
+	const formik = useFormik({
+		initialValues: {
+			email: "",
+			password: "",
+		},
+		validationSchema: yup.object().shape({
+			email: yup.string().email("Does not looks like an email")
+				.required("Email is Required."),
+			password: yup.string()
+				.required("Pasword is Required.")
+				.min(8, "password contains at least 8 characters.."),
+		}),
 
 
-	const handleSubmit = async (e) => {
-		try {
-			e.preventDefault();
-			setLoadBtn(true);
-
-			let { email, password } = loginData;
-			if (!email) {
-				setLoadBtn(false);
-				setOpenSnack("Please write Valid Email!");
-				setSeverity("error");
-			} else if (!password || password.length < 8) {
-				setOpenSnack("Password! contains at least 8 characters !");
-				setSeverity("error");
-				setLoadBtn(false);
-			} else {
-				const res = await axios.post(`${appSetting.severHostedUrl}/user/login`, loginData)
+		onSubmit: async (values) => {
+			try {
+				setLoadBtn(true);
+				const res = await axios.post(`${appSetting.severHostedUrl}/login`, values)
 				if (res) {
-					if (res.data.message) {
-						localStorage.setItem("uid", res.data.user._id);
-						setLoadBtn(false);
-						setAuth(true)
-						history.push("/profile");
-					} else {
-						setLoadBtn(false);
-						setOpenSnack(res.data.error);
-						setSeverity("error");
-					}
+					localStorage.setItem("uid", res.data.user._id);
+					setLoadBtn(false);
+					setAuth(true)
+					history.push("/profile");
 				}
+
+			} catch (error) {
+				setLoadBtn(false);
+				setOpenSnack(error?.response?.data.error);
+				setSeverity("error");
 			}
-		} catch (error) {
-			setLoadBtn(false);
-			console.log(error)
 		}
-	};
+	});
 	return (
-		<Box className={`_main`} display="flex" alignItems="center">
+		<Box className={`login_main`}
+			display="flex"
+			alignItems="center" justifyContent="center"
+		>
 			{openSnack ? <MuiSnacks openSnack={openSnack} severity={severity} text={openSnack} setOpenSnack={setOpenSnack} /> : ""}
-
-			<Box sx={{ backgroundColor: "#fff" }} maxWidth="400px" borderRadius={1} boxShadow={3} mx="auto" p={4} pt={2} display="flex" justifyContent="center" alignItems="center">
-				<form method="POST" onSubmit={(e) => handleSubmit(e)} style={{ textAlign: "center" }}>
-					<Typography variant="h6" textAlign="center"> CY School App
-						<Divider sx={{ marginBottom: 2 }} />
-					</Typography>
-					<FaUserAlt className="large-icon" color="green" size="50%" />
-					<TextField
-						autoFocus
-						margin="dense"
-						name="email"
-						label="Your Email"
-						type="email"
-						variant="outlined"
-						value={loginData.email}
-						onChange={(e) => handleChange(e)}
-						autoComplete="off"
-						fullWidth
-						color={"success"}
-						inputProps={{ maxLength: 32 }}
-					/>
-					<TextField
-						margin="dense"
-						name="password"
-						label="Your Password"
-						type="password"
-						variant="outlined"
-						value={loginData.password}
-						onChange={(e) => handleChange(e)}
-						autoComplete="off"
-						fullWidth
-						color={"success"}
-						inputProps={{ maxLength: 32 }}
-						sx={{ marginBottom: 2 }}
-					/>
-					{/* <Button
-						size="large" type="submit"
-						mt={2} variant="contained"
-						color="success"
-						startIcon={<FiLogIn size="22px" color="#fff" />}
-						fullWidth
-					>LOGIN</Button> */}
-					<LoadingButton
-						size="large"
-						type="submit"
-						mt={2}
-						variant="contained"
-						color="success"
-						endIcon={loadBtn ? "" : <FiLogIn size="22px" color="#fff" />}
-						fullWidth
-						loading={loadBtn}
-						loadingPosition="end"
-						sx={{ py: loadBtn ? 2 : 1 }}
-
+			<Box textAlign="center" mx={2}>
+				<IconButton
+					sx={{
+						width: "120px",
+						height: "120px",
+						backgroundColor: "#2e7d32",
+						zIndex: 1,
+						"&:hover": { backgroundColor: "#2e7d32" },
+						borderTop: "1px solid #236826",
+						position: "relative",
+						top: "80px"
+					}}
+				>
+					<BiUser color="#fff" size="100px" />
+				</IconButton>
+				<Box
+					sx={{
+						border: "20px solid transparent",
+						maxWidth: { xs: "400px" }
+					}}
+					boxShadow={5}
+				>
+					<Box
+						sx={{
+							backgroundColor: "#fff",
+						}}
+						boxShadow={5}
+						p={4}
 					>
-						{loadBtn ? "" : "Login"}
-					</LoadingButton>
-				</form>
+						<form method="POST" onSubmit={formik.handleSubmit}
+							style={{ textAlign: "center" }}
+						>
+							<TextField
+								autoFocus
+								margin="dense"
+								name="email"
+								label="Email"
+								type="email"
+								variant="standard"
+								value={formik.values.email}
+								onChange={formik.handleChange("email")}
+								autoComplete="off"
+								fullWidth
+								color={"success"}
+								inputProps={{ maxLength: 32 }}
+								sx={{ mt: 7 }}
+								InputProps={{
+									startAdornment: (
+										<InputAdornment position="start">
+											<FaUserCircle size="20px" />
+										</InputAdornment>
+									),
+								}}
+							/>
+							{formik.errors.email && formik.touched.email && (
+								<Typography variant="body2" sx={{ color: "red", marginLeft: "5px", display: "flex", alignItems: "center" }}>
+									<BsExclamationDiamond color="red" size="16px" style={{ marginRight: "8px" }} /> {formik.errors.email}
+								</Typography>
+							)}
+							<TextField
+								margin="dense"
+								name="password"
+								label="Password"
+								type="password"
+								variant="standard"
+								value={formik.values.password}
+								onChange={formik.handleChange("password")}
+								autoComplete="off"
+								fullWidth
+								color={"success"}
+								inputProps={{ maxLength: 32 }}
+								sx={{ mt: 2 }}
+								InputProps={{
+									startAdornment: (
+										<InputAdornment position="start">
+											<RiLockPasswordFill size="20px" />
+										</InputAdornment>
+									),
+								}}
+							/>
+							{formik.errors.password && formik.touched.password && (
+								<Typography variant="body2" sx={{ color: "red", marginLeft: "5px", display: "flex", alignItems: "center" }}>
+									<BsExclamationDiamond color="red" size="16px" style={{ marginRight: "8px" }} /> {formik.errors.password}
+								</Typography>
+							)}
+							<LoadingButton
+								size="large"
+								type="submit"
+								mt={2}
+								variant="contained"
+								color="success"
+								fullWidth
+								loading={loadBtn}
+								loadingPosition="end"
+								sx={{ py: loadBtn ? 2 : 1, mt: 4 }}
+
+							>
+								{loadBtn ? "" : "Login"}
+							</LoadingButton>
+						</form>
+					</Box>
+				</Box>
 			</Box>
-		</Box>
+		</Box >
 	);
 };
 

@@ -17,6 +17,14 @@ body {
   min-height: 100vh;
   padding-bottom: 20px;
 }
+.login_main {
+  background-image: linear-gradient(to left top, #fff, #2e7d32);
+  /* background-image: url("./images/login.jpg");
+  background-repeat: no-repeat;
+  background-size: cover; */
+  width: 100vw;
+  min-height: 100vh;
+}
 .msgs {
   width: 100vw;
   min-height: 100vh;

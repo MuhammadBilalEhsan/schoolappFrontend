@@ -70,7 +70,8 @@ function AddUserDialog({ title, classesArray }) {
             email: yup.string().email("Does not looks like an email")
                 .required("Email is Required."),
             password: yup.string()
-                .required("Pasword is Required."),
+                .required("Pasword is Required.")
+                .min(8, "password contains at least 8 characters.."),
             roll: yup.string()
                 .required("Role is Required."),
             atClass: yup.string()

@@ -19,6 +19,8 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { Link, useHistory } from "react-router-dom"
 import { CgLogOff } from 'react-icons/cg';
+import { logoutFunc } from '../../redux/actions';
+import { useDispatch } from "react-redux"
 // import { useSelector } from 'react-redux';
 
 const drawerWidth = 240;
@@ -30,14 +32,17 @@ function Dashboard(props) {
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const [activeComponent, setActiveComponent] = React.useState(props.Component?.key);
 
+    const dispatch = useDispatch()
+
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
     };
     const history = useHistory()
     const logoutFunction = () => {
+        dispatch(logoutFunc())
         localStorage.removeItem("uid");
         props.setAuth(false)
-        window.location.reload(false);
+        // window.location.reload(false);
         history.push("/");
     }
     React.useEffect(() => { setActiveComponent(props.Component?.key) })
