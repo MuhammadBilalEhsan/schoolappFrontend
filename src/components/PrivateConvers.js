@@ -51,7 +51,7 @@ const PrivateConversation = ({
                     _id: id ? id : null
                 }
                 // console.log("MsgObj", messageObj)
-                const res = await axios.post(`${appSetting.severHostedUrl}/user/sendmsg`, messageObj)
+                const res = await axios.post(`${appSetting.severHostedUrl}/user/sendmsg`, messageObj, { withCredentials: true })
                 if (res) {
                     if (res.data.message) {
                         setCurrentConversation(res.data.conversation)

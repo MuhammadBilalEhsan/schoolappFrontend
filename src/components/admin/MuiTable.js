@@ -53,7 +53,7 @@ export default function MuiTable({ tableBody, curUser }) {
     const history = useHistory()
     const blockUser = async (e, userID) => {
         try {
-            const res = await axios.get(`${appSetting.severHostedUrl}/user/block/${userID}`)
+            const res = await axios.get(`${appSetting.severHostedUrl}/user/block/${userID}`, { withCredentials: true })
             if (res) {
                 if (res.data.message) {
                     socket.emit("changeInUser", res.data.user)
@@ -81,7 +81,7 @@ export default function MuiTable({ tableBody, curUser }) {
                     message: newMessage, recieverID,
                     recieverName
                 }
-                const res = await axios.post(`${appSetting.severHostedUrl}/user/sendmsg`, messageObj)
+                const res = await axios.post(`${appSetting.severHostedUrl}/user/sendmsg`, messageObj, { withCredentials: true })
                 if (res) {
                     if (res.data.message) {
                         socket.emit("changeInConversation", res.data.conversation)

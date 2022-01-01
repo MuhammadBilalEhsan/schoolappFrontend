@@ -42,7 +42,7 @@ const ClassMaterials = ({ curUser, setAuth }) => {
 
 	useEffect(async () => {
 		try {
-			const res = await axios.post(`${appSetting.severHostedUrl}/course/specific`, { id: params.id })
+			const res = await axios.post(`${appSetting.severHostedUrl}/course/specific`, { id: params.id }, { withCredentials: true })
 			if (res.data.currentCourse) {
 				dispatch(currentCourseFunc(res.data.currentCourse))
 				// setCurrentCourse(res.data.currentCourse)

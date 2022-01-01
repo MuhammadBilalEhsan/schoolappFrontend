@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Box from "@mui/material/Box"
 import Typography from "@mui/material/Typography"
 import { useSelector } from 'react-redux'
@@ -11,6 +11,9 @@ const DashBoardBox = ({ currentUser }) => {
     const allCourses = useSelector(state => state.usersReducer.allCourses)
     const users = useSelector(state => state.usersReducer.users)
     const blocked = users?.filter(user => user.blocked === true)
+    useEffect(() => {
+
+    }, [allCourses, users])
     return (
         <Box minWidth="400px" minHeight="100vh" px={2} sx={{ backgroundColor: "#185c1817" }}>
             <Box width="100%" display="flex" alignItems="center" justifyContent={"space-around"} flexWrap={"wrap"}>

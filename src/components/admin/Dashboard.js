@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -21,6 +21,8 @@ import { Link, useHistory } from "react-router-dom"
 import { CgLogOff } from 'react-icons/cg';
 import { logoutFunc } from '../../redux/actions';
 import { useDispatch } from "react-redux"
+import axios from "axios"
+import appSetting from '../../appSetting/appSetting';
 // import { useSelector } from 'react-redux';
 
 const drawerWidth = 240;
@@ -29,8 +31,8 @@ const drawerWidth = 240;
 function Dashboard(props) {
     const { window } = props;
 
-    const [mobileOpen, setMobileOpen] = React.useState(false);
-    const [activeComponent, setActiveComponent] = React.useState(props.Component?.key);
+    const [mobileOpen, setMobileOpen] = useState(false);
+    const [activeComponent, setActiveComponent] = useState(props.Component?.key);
 
     const dispatch = useDispatch()
 
@@ -38,14 +40,19 @@ function Dashboard(props) {
         setMobileOpen(!mobileOpen);
     };
     const history = useHistory()
-    const logoutFunction = () => {
-        dispatch(logoutFunc())
-        localStorage.removeItem("uid");
-        props.setAuth(false)
-        // window.location.reload(false);
-        history.push("/");
+    const logoutFunction = async () => {
+        try {
+            const res = await axios.get(`${appSetting.severHostedUrl}/user/logout`, { withCredentials: true })
+            if (res) {
+                dispatch(logoutFunc())
+                props.setAuth(false)
+                history.push("/");
+            }
+        } catch (error) {
+            console.log(error?.response?.data.error)
+        }
     }
-    React.useEffect(() => { setActiveComponent(props.Component?.key) })
+    useEffect(() => { setActiveComponent(props.Component?.key) })
     const drawer = (
         <div>
             <Toolbar sx={{ textAlign: "center" }}>

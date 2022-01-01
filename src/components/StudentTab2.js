@@ -39,7 +39,7 @@ const StudentTab2 = ({ curCor, ind }) => {
     //             student_id: uid,
     //             course_id: curCor?.id,
     //         }
-    //         const res = await axios.post(`${appSetting.severHostedUrl}/course/delencourse`, obj)
+    //         const res = await axios.post(`${appSetting.severHostedUrl}/course/delencourse`, obj,{ withCredentials: true })
     //         console.log(res.data.message ? res.data.message : res.data.error)
     //     } catch (error) {
     //         console.log(error)
@@ -51,7 +51,7 @@ const StudentTab2 = ({ curCor, ind }) => {
             if (findLocally) {
                 setThisCourse(findLocally)
             } else {
-                const res = await axios.post(`${appSetting.severHostedUrl}/course/getcourse`, { id: curCor.id })
+                const res = await axios.post(`${appSetting.severHostedUrl}/course/getcourse`, { id: curCor.id }, { withCredentials: true })
                 setThisCourse(res.data.DBcourse)
                 setAllCourses([...allCourses, res.data.DBcourse])
             }

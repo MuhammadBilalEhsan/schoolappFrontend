@@ -31,7 +31,7 @@ const CourseStudentsComp = ({ currentCourse, curUser, isAdmin }) => {
     const removeStudentFunc = async (id) => {
         try {
             const reqObj = { studentID: id, courseID: currentCourse?._id }
-            const res = await axios.post(`${appSetting.severHostedUrl}/course/delspecificstudent`, reqObj)
+            const res = await axios.post(`${appSetting.severHostedUrl}/course/delspecificstudent`, reqObj, { withCredentials: true })
             if (res) {
                 if (res.data.message) {
                     socket.emit("changeInCourse", res.data.course)
@@ -52,7 +52,7 @@ const CourseStudentsComp = ({ currentCourse, curUser, isAdmin }) => {
     const muteStudentFunc = async (id) => {
         try {
             handleClose()
-            const res = await axios.post(`${appSetting.severHostedUrl}/course/mutestudent`, { courseID: currentCourse?._id, studentID: id })
+            const res = await axios.post(`${appSetting.severHostedUrl}/course/mutestudent`, { courseID: currentCourse?._id, studentID: id }, { withCredentials: true })
             if (res) {
                 socket.emit("changeInCourse", res.data.course)
                 setCourseStudents(res.data.course.students)
@@ -85,7 +85,7 @@ const CourseStudentsComp = ({ currentCourse, curUser, isAdmin }) => {
                     message: newMessage, recieverID: studentID,
                     recieverName: studentName
                 }
-                const res = await axios.post(`${appSetting.severHostedUrl}/user/sendmsg`, messageObj)
+                const res = await axios.post(`${appSetting.severHostedUrl}/user/sendmsg`, messageObj, { withCredentials: true })
                 if (res) {
                     if (res.data.message) {
                         socket.emit("changeInConversation", res.data.conversation)

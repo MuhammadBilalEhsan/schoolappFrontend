@@ -18,7 +18,6 @@ import { useDispatch } from "react-redux";
 const durationArr = ["1 Week", "2 Weeks", "3 Weeks", "4 Weeks"];
 
 export default function AddCourse({ curUser, editCourse, course, setSeverity, setOpenSnack }) {
-	const uidFromLocalStorage = localStorage.getItem("uid");
 	const [open, setOpen] = useState(false);
 	const [menuOpen, setMenuOpen] = useState(null);
 	const [selectDurInd, setSelectDurInd] = useState(course?.duration || null);
@@ -59,7 +58,7 @@ export default function AddCourse({ curUser, editCourse, course, setSeverity, se
 
 	const formik = useFormik({
 		initialValues: {
-			teacher_id: uidFromLocalStorage,
+			teacher_id: curUser?._id,
 			teacherName: `${curUser?.fname} ${curUser?.lname||""}`,
 			teacherClass: curUser?.atClass,
 			courseName: editCourse ? course?.courseName : "",
@@ -94,7 +93,7 @@ export default function AddCourse({ curUser, editCourse, course, setSeverity, se
 							values.courseOutline = courseOutlineArr;
 							if (editCourse) {
 								handleClose();
-								const res = await axios.post(`${appSetting.severHostedUrl}/course/editcourse`, values);
+								const res = await axios.post(`${appSetting.severHostedUrl}/course/editcourse`, values, { withCredentials: true });
 								if (res) {
 									if (res.data.editted) {
 										socket.emit("courseEditted", res.data.editted)
@@ -110,7 +109,7 @@ export default function AddCourse({ curUser, editCourse, course, setSeverity, se
 							} else {
 								handleClose();
 								// console.log("Added", values)
-								const res = await axios.post(`${appSetting.severHostedUrl}/course/add`, values);
+								const res = await axios.post(`${appSetting.severHostedUrl}/course/add`, values, { withCredentials: true });
 								if (res) {
 									socket.emit("newCoursesAdded", res.data.newCourse)
 									dispatch(getCourseFunc(res.data.newCourse))

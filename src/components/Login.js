@@ -16,15 +16,18 @@ import appSetting from '../appSetting/appSetting'
 import MuiSnacks from "./MuiSnacks"
 import { useFormik } from "formik";
 import * as yup from "yup"
+import { curUserFun } from "../redux/actions";
+import { useDispatch } from "react-redux";
 
 
-const Login = ({ setAuth }) => {
+const Login = ({ setAuth, setCurUser, setIsAdmin, setNowLogin }) => {
 	const [loadBtn, setLoadBtn] = useState(false);
 
 	const [openSnack, setOpenSnack] = useState("");
 	const [severity, setSeverity] = useState("");
 
 	const history = useHistory();
+	const dispatch = useDispatch()
 
 	const formik = useFormik({
 		initialValues: {
@@ -43,17 +46,29 @@ const Login = ({ setAuth }) => {
 		onSubmit: async (values) => {
 			try {
 				setLoadBtn(true);
-				const res = await axios.post(`${appSetting.severHostedUrl}/login`, values)
+
+				const res = await axios.post(`${appSetting.severHostedUrl}/login`, values, { withCredentials: true })
 				if (res) {
-					localStorage.setItem("uid", res.data.user._id);
+					const user = res.data.user
+					setCurUser(user)
 					setLoadBtn(false);
-					setAuth(true)
-					history.push("/profile");
+					if (user.isAdmin) {
+						dispatch(curUserFun(user));
+						setAuth(true)
+						setIsAdmin(true)
+						setNowLogin(true)
+						history.push("/dashboard");
+					} else {
+						dispatch(curUserFun(user));
+						setAuth(true)
+						setNowLogin(true)
+						history.push("/profile");
+					}
 				}
 
 			} catch (error) {
 				setLoadBtn(false);
-				setOpenSnack(error?.response?.data.error);
+				setOpenSnack(error?.response?.data?.error);
 				setSeverity("error");
 			}
 		}
@@ -157,9 +172,7 @@ const Login = ({ setAuth }) => {
 								color="success"
 								fullWidth
 								loading={loadBtn}
-								loadingPosition="end"
-								sx={{ py: loadBtn ? 2 : 1, mt: 4 }}
-
+								sx={{ py: loadBtn ? 2.7 : 1, mt: 4 }}
 							>
 								{loadBtn ? "" : "Login"}
 							</LoadingButton>

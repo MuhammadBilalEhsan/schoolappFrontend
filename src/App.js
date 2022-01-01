@@ -39,120 +39,214 @@ import ProfileForAdmin from './components/admin/ProfileForAdmin';
 const ENDPOINT = appSetting.severHostedUrl
 export const socket = socketIO(ENDPOINT, { transports: ["websocket"] })
 const App = () => {
-	const [isAdmin, setIsAdmin] = useState(false)
-	const [auth, setAuth] = useState(null)
-	const [isBlocked, setIsBlocked] = useState(false)
-	const _id = localStorage.getItem("uid");
+	const users = useSelector((state) => state.usersReducer.users);
+	const me = useSelector((state) => state.usersReducer.curUser);
 
-	const curUser = useSelector((state) => state.usersReducer.curUser);
-	const [uid, setUid] = useState(_id || curUser._id);
+	const [isAdmin, setIsAdmin] = useState(false)
+	const [isBlocked, setIsBlocked] = useState(false)
+	const [nowLogin, setNowLogin] = useState(null)
+	const [auth, setAuth] = useState(null)
+	const [curUser, setCurUser] = useState({})
+
 	const [spinner, setSpinner] = useState(true);
 
 	const dispatch = useDispatch();
-
-	useEffect(() => {
-		if (!auth && !uid) {
-			setSpinner(false)
-		}
-		if (uid || auth) {
-			setSpinner(true)
-			setAuth(true)
-			var currentUser;
-			axios
-				.get(`${appSetting.severHostedUrl}/user/getdata`)
-				.then((response) => {
-					const data = response.data;
-					// console.log("data", response)
-					currentUser = data.find((user) => user._id === _id);
-					if (!currentUser) {
-						setSpinner(false);
-						setUid(false);
-					} else {
-						dispatch(curUserFun(currentUser));
-						setIsBlocked(currentUser?.blocked)
-						// setIsBlocked(currentUser?.blocked)
-						if (currentUser?.isAdmin) {
-							setIsAdmin(true)
-							const allUsers = data.filter(user => user._id !== currentUser?._id)
+	useEffect(async () => {
+		try {
+			let user = await axios.get(`${appSetting.severHostedUrl}/user/currentuser`, { withCredentials: true })
+			if (user) {
+				let currentUser = user.data.user
+				if (currentUser.blocked) {
+					setIsBlocked(true)
+				} else {
+					if (currentUser.isAdmin) {
+						setIsAdmin(true)
+						let requestForUsers = await axios.get(`${appSetting.severHostedUrl}/user/getdata`, { withCredentials: true })
+						if (requestForUsers) {
+							const allUsers = requestForUsers.data.users.filter(user => user._id !== currentUser?._id)
 							dispatch(getUsers(allUsers));
-							axios.get(`${appSetting.severHostedUrl}/course/getall`)
-								.then(res => {
-									const allCourses = res.data.allCourses
-									dispatch(allCoursesRedux(allCourses))
-								}).catch(err => console.log(err))
-
-						} else {
-							if (currentUser.roll === "teacher") {
-								axios.post(`${appSetting.severHostedUrl}/course/mycourse`, { teacher_id: currentUser._id })
-									.then((resp) => {
-										const course = resp.data.course;
-										dispatch(getCourseFunc(course))
-									}).catch(err => console.log(err))
-							}
-							if (currentUser.roll === "student" && currentUser.atClass) {
-								axios.post(`${appSetting.severHostedUrl}/course/forstudent`, { studentClass: currentUser.atClass, studentID: _id })
-									.then((resp) => {
-										const courses = resp.data.courses;
-										dispatch(getStudentCourseFunc(courses))
-									}).catch(err => console.log(err))
+							const requestForCourses = await axios.get(`${appSetting.severHostedUrl}/course/getall`, { withCredentials: true })
+							if (requestForCourses) {
+								dispatch(allCoursesRedux(requestForCourses.data.allCourses))
 							}
 						}
-					}
-					setUid(true);
-					setSpinner(false);
-				})
-				.catch((error) => console.log(error));
-			socket.on("connect", () => {
-				// console.log("Backend Connected..!!")
-			})
-			socket.on("courseADDEDByTeacher", (newCourse) => {
-				if (currentUser?.roll === "student" && currentUser?.atClass == newCourse?.teacherClass) {
-					dispatch(editAvailAbleCourses(newCourse))
-				} else if (currentUser?.isAdmin) {
-					dispatch(addNewCourseForAdmin(newCourse))
-				}
-			})
-			socket.on("courseEditedByTeacher", (course) => {
-				if (currentUser?.roll === "student" && currentUser?.atClass == course?.teacherClass) {
-					dispatch(updateCourses(course))
-				}
-			})
-			socket.on("messageAddedStream", (course) => {
-				dispatch(updateCurrentCourse(course))
-			})
-			socket.on("CHANGE_IN_CONVERSATION", (conversation) => {
-				// console.log("App.js con", conversation)
-				if (currentUser?._id === conversation.user1ID || conversation.user2ID) {
-					dispatch(UpdatecurrentConversation(conversation))
-				}
-			})
-			socket.on("ASSIGNMENT_ADDED", (allAssignment) => {
-				dispatch(updateAllAssignments(allAssignment))
-			})
-			//ITS NOT A BROADCAST
-			socket.on("NEW_USER_ADDED", user => {
-				if (currentUser?.isAdmin) {
-					console.log("user", user)
-					dispatch(newUserAdded(user))
+					} else if (currentUser.roll === "teacher") {
+						const myCourse = await axios.post(`${appSetting.severHostedUrl}/course/mycourse`, { teacher_id: currentUser?._id }, { withCredentials: true })
+						if (myCourse) {
+							dispatch(getCourseFunc(myCourse.data.course))
+						}
+					} else if (currentUser.roll === "student") {
+						const studentCourses = await axios.post(`${appSetting.severHostedUrl}/course/forstudent`, { studentClass: currentUser.atClass, studentID: curUser?._id }, { withCredentials: true })
+						if (studentCourses) {
+							dispatch(getStudentCourseFunc(studentCourses.data.courses))
 
+						}
+					}
 				}
-			})
-			socket.on("CHANGE_IN_USER", (user) => {
-				if (user._id === currentUser?._id) {
-					dispatch(curUserFun(user));
-					setIsBlocked(user.blocked)
-				}
-				if (currentUser.isAdmin) {
-					dispatch(updateSingleUser(user))
-				}
-			})
+				dispatch(curUserFun(user.data.user));
+				setCurUser(currentUser)
+				setAuth(true)
+				setSpinner(false)
+			}
+		} catch (error) {
+			console.log(error?.response?.data?.error)
+			setAuth(false)
+			setSpinner(false)
 		}
-		// }, [auth, ENDPOINT]);
-	}, [auth]);
+	}, [nowLogin])
+	useEffect(() => {
+
+		socket.on("connect", () => {
+			console.log("Backend Connected..!!")
+		})
+		socket.on("courseADDEDByTeacher", (newCourse) => {
+			if (curUser?.roll === "student" && curUser?.atClass == newCourse?.teacherClass) {
+				dispatch(editAvailAbleCourses(newCourse))
+			} else if (curUser?.isAdmin) {
+				dispatch(addNewCourseForAdmin(newCourse))
+			}
+		})
+		socket.on("courseEditedByTeacher", (course) => {
+			if (curUser?.roll === "student" && curUser?.atClass == course?.teacherClass) {
+				dispatch(updateCourses(course))
+			}
+		})
+		socket.on("messageAddedStream", (course) => {
+			dispatch(updateCurrentCourse(course))
+		})
+		socket.on("CHANGE_IN_CONVERSATION", (conversation) => {
+			// console.log("App.js con", conversation)
+			if (curUser?._id === conversation.user1ID || conversation.user2ID) {
+				dispatch(UpdatecurrentConversation(conversation))
+			}
+		})
+		socket.on("ASSIGNMENT_ADDED", (allAssignment) => {
+			dispatch(updateAllAssignments(allAssignment))
+		})
+		//ITS NOT A BROADCAST
+		socket.on("NEW_USER_ADDED", user => {
+			if (curUser?.isAdmin) {
+				dispatch(newUserAdded(user))
+			}
+		})
+		socket.on("CHANGE_IN_USER", (user) => {
+			if (user._id === curUser?._id) {
+				dispatch(curUserFun(user));
+				setIsBlocked(user.blocked)
+			}
+			if (curUser?.isAdmin) {
+				dispatch(updateSingleUser(user))
+			}
+		})
+
+	}, [me, users])
+
+	// useEffect(() => {
+	// 	if (!auth && !uid) {
+	// 		setSpinner(false)
+	// 	}
+	// 	if (uid || auth) {
+	// 		setSpinner(true)
+	// 		setAuth(true)
+	// 		var currentUser;
+	// 		axios
+	// 			.get(`${appSetting.severHostedUrl}/user/getdata`, { withCredentials: true })
+	// 			.then((response) => {
+	// 				const data = response.data;
+	// 				// console.log("data", response)
+	// 				currentUser = data.find((user) => user._id === _id);
+	// 				if (!currentUser) {
+	// 					setSpinner(false);
+	// 					setUid(false);
+	// 				} else {
+	// 					dispatch(curUserFun(currentUser));
+	// 					setIsBlocked(currentUser?.blocked)
+	// 					// setIsBlocked(currentUser?.blocked)
+	// 					if (currentUser?.isAdmin) {
+	// 						setIsAdmin(true)
+	// 						const allUsers = data.filter(user => user._id !== currentUser?._id)
+	// 						dispatch(getUsers(allUsers));
+	// 						axios.get(`${appSetting.severHostedUrl}/course/getall`, { withCredentials: true })
+	// 							.then(res => {
+	// 								const allCourses = res.data.allCourses
+	// 								dispatch(allCoursesRedux(allCourses))
+	// 							}).catch(err => console.log(err))
+
+	// 					} else {
+	// 						if (currentUser.roll === "teacher") {
+	// 							axios.post(`${appSetting.severHostedUrl}/course/mycourse`, { teacher_id: currentUser._id }, { withCredentials: true })
+	// 								.then((resp) => {
+	// 									const course = resp.data.course;
+	// 									dispatch(getCourseFunc(course))
+	// 								}).catch(err => console.log(err))
+	// 						}
+	// 						if (currentUser.roll === "student" && currentUser.atClass) {
+	// 							axios.post(`${appSetting.severHostedUrl}/course/forstudent`, { studentClass: currentUser.atClass, studentID: _id }, { withCredentials: true })
+	// 								.then((resp) => {
+	// 									const courses = resp.data.courses;
+	// 									dispatch(getStudentCourseFunc(courses))
+	// 								}).catch(err => console.log(err))
+	// 						}
+	// 					}
+	// 				}
+	// 				setUid(true);
+	// 				setSpinner(false);
+	// 			})
+	// 			.catch((error) => console.log(error));
+	// 		socket.on("connect", () => {
+	// 			// console.log("Backend Connected..!!")
+	// 		})
+	// 		socket.on("courseADDEDByTeacher", (newCourse) => {
+	// 			if (currentUser?.roll === "student" && currentUser?.atClass == newCourse?.teacherClass) {
+	// 				dispatch(editAvailAbleCourses(newCourse))
+	// 			} else if (currentUser?.isAdmin) {
+	// 				dispatch(addNewCourseForAdmin(newCourse))
+	// 			}
+	// 		})
+	// 		socket.on("courseEditedByTeacher", (course) => {
+	// 			if (currentUser?.roll === "student" && currentUser?.atClass == course?.teacherClass) {
+	// 				dispatch(updateCourses(course))
+	// 			}
+	// 		})
+	// 		socket.on("messageAddedStream", (course) => {
+	// 			dispatch(updateCurrentCourse(course))
+	// 		})
+	// 		socket.on("CHANGE_IN_CONVERSATION", (conversation) => {
+	// 			// console.log("App.js con", conversation)
+	// 			if (currentUser?._id === conversation.user1ID || conversation.user2ID) {
+	// 				dispatch(UpdatecurrentConversation(conversation))
+	// 			}
+	// 		})
+	// 		socket.on("ASSIGNMENT_ADDED", (allAssignment) => {
+	// 			dispatch(updateAllAssignments(allAssignment))
+	// 		})
+	// 		//ITS NOT A BROADCAST
+	// 		socket.on("NEW_USER_ADDED", user => {
+	// 			if (currentUser?.isAdmin) {
+	// 				console.log("user", user)
+	// 				dispatch(newUserAdded(user))
+
+	// 			}
+	// 		})
+	// 		socket.on("CHANGE_IN_USER", (user) => {
+	// 			if (user._id === currentUser?._id) {
+	// 				dispatch(curUserFun(user));
+	// 				setIsBlocked(user.blocked)
+	// 			}
+	// 			if (currentUser.isAdmin) {
+	// 				dispatch(updateSingleUser(user))
+	// 			}
+	// 		})
+	// 	}
+	// 	// }, [auth, ENDPOINT]);
+	// }, [auth]);
 
 	if (spinner) return <Spinner />;
 	if (isBlocked) return <UserBlockedPage />;
 	return (
+		// <div>
+		// 	<p>Hello World</p>
+		// </div>
 		<>
 			{/* {isBlocked ? <UserBlockedPage /> : */}
 			<Router>
@@ -222,7 +316,7 @@ const App = () => {
 						path="/"
 						AdminComp={<Redirect to="/dashboard" curUser={curUser} setAuth={setAuth} />}
 						SuccessComp={<Redirect to="/profile" curUser={curUser} setAuth={setAuth} />}
-						FailComp={<Login setAuth={setAuth} />}
+						FailComp={<Login setAuth={setAuth} setCurUser={setCurUser} setIsAdmin={setIsAdmin} setNowLogin={setNowLogin} />}
 					/>
 					<PrivateRoute
 						auth={auth}

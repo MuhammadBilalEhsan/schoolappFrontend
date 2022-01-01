@@ -43,7 +43,7 @@ const Stream = ({ curUser, currentCourse, isAdmin }) => {
                 const messageObj = {
                     id: _id, name, time, message: newMessage, courseID: currentCourse?._id
                 }
-                const res = await axios.post(`${appSetting.severHostedUrl}/course/sendmessage`, messageObj)
+                const res = await axios.post(`${appSetting.severHostedUrl}/course/sendmessage`, messageObj, { withCredentials: true })
                 if (res) {
                     setMessage("")
                     if (res.data.message) {

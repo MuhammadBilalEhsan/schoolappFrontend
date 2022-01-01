@@ -77,7 +77,7 @@ const Assignment = ({
                     if (isTeacher) {
                         formData.append("title", values.title)
                         formData.append("courseID", currentCourse?._id)
-                        const res = await axios.post(`${appSetting.severHostedUrl}/assignment/add`, formData, config)
+                        const res = await axios.post(`${appSetting.severHostedUrl}/assignment/add`, formData, config, { withCredentials: true })
                         if (res) {
                             closeDialog()
                             setFile(null)
@@ -100,7 +100,7 @@ const Assignment = ({
                         formData.append("name", `${curUser?.fname} ${curUser?.lname}`)
                         formData.append("time", moment().format("hh:mm:ss A"))
                         closeDialog()
-                        const res = await axios.post(`${appSetting.severHostedUrl}/assignment/submit`, formData, config)
+                        const res = await axios.post(`${appSetting.severHostedUrl}/assignment/submit`, formData, config, { withCredentials: true })
                         if (res) {
                             setFile(null)
                             socket.emit("changeInAssignment", res.data.assignment)

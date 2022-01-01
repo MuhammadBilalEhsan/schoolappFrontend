@@ -31,7 +31,7 @@ const SubmittedAndChecked = ({ currentAssignmentID, checked, isAdmin }) => {
     })
 
     useEffect(async () => {
-        const res = await axios.get(`${appSetting.severHostedUrl}/assignment/submitted/${currentAssignmentID}`)
+        const res = await axios.get(`${appSetting.severHostedUrl}/assignment/submitted/${currentAssignmentID}`, { withCredentials: true })
         if (res) {
             dispatch(currentAssignmentRedux(res.data.assignment))
             setAssignment(res.data.assignment)

@@ -36,7 +36,7 @@ const Announcement = ({ currentCourse, curUser }) => {
                 const announcementObj = {
                     id: _id, name, time, message: newMessage, courseID: currentCourse?._id
                 }
-                const res = await axios.post(`${appSetting.severHostedUrl}/course/announcement`, announcementObj)
+                const res = await axios.post(`${appSetting.severHostedUrl}/course/announcement`, announcementObj, { withCredentials: true })
                 if (res) {
                     setMessage("")
                     toggle()

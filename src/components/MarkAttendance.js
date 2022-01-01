@@ -8,7 +8,7 @@ import appSetting from '../appSetting/appSetting';
 import { curUserFun } from '../redux/actions';
 
 
-const MarkAttendance = () => {
+const MarkAttendance = ({ curUser }) => {
 
     const [todayAttend, setTodayAttend] = useState(true);
     const [holiday, setHoliday] = useState(null);
@@ -23,7 +23,7 @@ const MarkAttendance = () => {
     const [severity, setSeverity] = useState("");
 
 
-    const _id = localStorage.getItem("uid");
+    const _id = curUser?._id
     const dispatch = useDispatch()
 
     const handleClick = async () => {
@@ -40,7 +40,7 @@ const MarkAttendance = () => {
             const time = `${hours}:${mins}`;
 
             const attObj = { _id, year, month, date, time };
-            const res = await axios.post(`${appSetting.severHostedUrl}/user/attendance`, attObj);
+            const res = await axios.post(`${appSetting.severHostedUrl}/user/attendance`, attObj, { withCredentials: true });
             if (res) {
                 dispatch(curUserFun(res.data.updated))
                 setOpenSnack(res.data.message);

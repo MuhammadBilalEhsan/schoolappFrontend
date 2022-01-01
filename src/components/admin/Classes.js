@@ -7,7 +7,6 @@ import ClassBox from './ClassBox'
 const Classes = ({ currentUser }) => {
 
     useEffect(() => {
-
     }, [currentUser])
 
     return (

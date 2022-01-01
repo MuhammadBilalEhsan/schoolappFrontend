@@ -17,7 +17,6 @@ import axios from "axios";
 export default function ChangeProfilePic({ curUser, setImgURL, setSeverity, setOpenSnack }) {
 	const [open, setOpen] = useState(false);
 	const [imgObj, setImgObj] = useState(null);
-	const uidFromLocalStorage = localStorage.getItem("uid");
 	const handleClickOpen = () => {
 		setOpen(true);
 	};
@@ -49,13 +48,13 @@ export default function ChangeProfilePic({ curUser, setImgURL, setSeverity, setO
 		try {
 			if (imgObj) {
 				let formData = new FormData();
-				formData.append("_id", uidFromLocalStorage);
+				formData.append("_id", curUser?._id);
 				formData.append("myImg", imgObj);
 				const config = {
 					headers: { "content-type": "multipart/form-data" },
 				};
 				handleClose()
-				const res = await axios.post(`${appSetting.severHostedUrl}/user/editprofileimg`, formData, config);
+				const res = await axios.post(`${appSetting.severHostedUrl}/user/editprofileimg`, formData, config, { withCredentials: true });
 				if (res) {
 					console.log("pPic", res.data.pPic)
 					setImgURL(res.data.pPic)

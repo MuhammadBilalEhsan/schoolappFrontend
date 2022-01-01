@@ -8,7 +8,9 @@ import TextField from '@mui/material/TextField'
 import axios from 'axios'
 import appSetting from '../../appSetting/appSetting'
 import MuiSnacks from '../MuiSnacks'
-import { socket } from '../../App'
+// import { socket } from '../../App'
+import { useDispatch } from 'react-redux'
+import { curUserFun } from '../../redux/actions'
 
 
 const AddBox = ({ currentUser }) => {
@@ -16,6 +18,8 @@ const AddBox = ({ currentUser }) => {
     const [classTitle, setClassTitle] = useState("")
     const [openSnack, setOpenSnack] = useState("");
     const [severity, setSeverity] = useState("");
+
+    const dispatch = useDispatch()
 
     const toggleInput = () => {
         if (openInput) {
@@ -31,10 +35,11 @@ const AddBox = ({ currentUser }) => {
             setSeverity("error")
         } else {
             try {
-                const res = await axios.post(`${appSetting.severHostedUrl}/user/addclass`, { adminID: currentUser?._id, title })
+                const res = await axios.post(`${appSetting.severHostedUrl}/user/addclass`, { adminID: currentUser?._id, title }, { withCredentials: true })
                 if (res) {
                     if (res.data.message) {
-                        socket.emit("changeInUser", res.data.user)
+                        // socket.emit("changeInUser", res.data.user)
+                        dispatch(curUserFun(res.data.user))
                         setOpenSnack(res.data.message)
                         setSeverity("success")
                     } else {

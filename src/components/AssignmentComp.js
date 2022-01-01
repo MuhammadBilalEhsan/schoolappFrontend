@@ -27,7 +27,7 @@ const AssignmentComp = ({ curUser, isTeacher, currentCourse, isAdmin }) => {
 
     useEffect(async () => {
         try {
-            const res = await axios.post(`${appSetting.severHostedUrl}/assignment/allassignments`, { courseID: currentCourse?._id })
+            const res = await axios.post(`${appSetting.severHostedUrl}/assignment/allassignments`, { courseID: currentCourse?._id }, { withCredentials: true })
             if (res) {
                 dispatch(settingAssignments(res.data.allAssignments))
                 setAllAssignments(res.data.allAssignments)

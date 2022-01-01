@@ -47,7 +47,7 @@ const Attendance = ({ curUser, setAuth }) => {
 	const [severity, setSeverity] = useState("");
 
 
-	const _id = localStorage.getItem("uid");
+	const _id = curUser?._id
 	const dispatch = useDispatch()
 	// ____________________________________________________________________________________________
 
@@ -188,7 +188,7 @@ const Attendance = ({ curUser, setAuth }) => {
 			const time = `${hours}:${mins}`;
 
 			const attObj = { _id, year, month, date, time };
-			const res = await axios.post(`${appSetting.severHostedUrl}/user/attendance`, attObj);
+			const res = await axios.post(`${appSetting.severHostedUrl}/user/attendance`, attObj, { withCredentials: true });
 			if (res) {
 				dispatch(curUserFun(res.data.updated))
 				setOpenSnack(res.data.message);

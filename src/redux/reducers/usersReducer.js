@@ -88,6 +88,9 @@ const usersReducer = (state = initialState, action) => {
         return state
       }
     case "UPDATE_SINGLE_USER":
+      // if (state.curUser._id === action.payload._id) {
+      //   return { ...state, curUser: action.payload }
+      // } else {
       let newUsers = []
       const abc = state.users.filter(user => {
         if (user._id === action.payload._id) {
@@ -97,8 +100,21 @@ const usersReducer = (state = initialState, action) => {
         }
       })
       return { ...state, users: newUsers };
+    // }
     case "LOG_OUT":
-      return state = initialState;
+      return {
+        users: [],
+        curUser: {},
+        course: {},
+        studentCourse: [],
+        currentCourse: null,
+        currentAssignment: null,
+        allAssignments: null,
+        checkedAssignments: null,
+        allConversations: [],
+        currentConversation: null,
+        allCourses: []
+      };
     default:
       return state;
   }

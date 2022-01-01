@@ -21,7 +21,7 @@ const CDStudent = ({ curUser, courses, setAuth }) => {
             // .map(course => course.id)
 
             if (deleteCoursesIDsArr) {
-                await axios.post(`${appSetting.severHostedUrl}/course/delcoursefromstudent`, { id: curUser?._id })
+                await axios.post(`${appSetting.severHostedUrl}/course/delcoursefromstudent`, { id: curUser?._id }, { withCredentials: true })
                 setTimeout(() => {
                     setRemovedByTeacherState(false)
                 }, 60000);

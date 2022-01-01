@@ -21,7 +21,6 @@ import appSetting from '../appSetting/appSetting'
 
 export default function EditProfileFormik({ curUser, setOpenSnack, setSeverity, setCurrentUser }) {
 	const [open, setOpen] = useState(false);
-	const uidFromLocalStorage = localStorage.getItem("uid");
 	const handleClickOpen = () => {
 		setOpen(true);
 	};
@@ -32,7 +31,7 @@ export default function EditProfileFormik({ curUser, setOpenSnack, setSeverity, 
 	};
 	const formik = useFormik({
 		initialValues: {
-			id: uidFromLocalStorage,
+			id: curUser?._id,
 			fname: curUser?.fname,
 			lname: curUser?.lname,
 			fatherName: curUser?.fatherName,
@@ -69,7 +68,7 @@ export default function EditProfileFormik({ curUser, setOpenSnack, setSeverity, 
 		onSubmit: async (values) => {
 			try {
 				handleClose();
-				const res = await axios.post(`${appSetting.severHostedUrl}/user/edit-profile`, values);
+				const res = await axios.post(`${appSetting.severHostedUrl}/user/edit-profile`, values, { withCredentials: true });
 				if (res) {
 					setCurrentUser(res.data.updated)
 					dispatch(curUserFun(res.data.updated))

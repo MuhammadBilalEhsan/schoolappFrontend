@@ -91,7 +91,7 @@ function AddUserDialog({ title, classesArray }) {
                     password: values.password,
                 }
 
-                const res = await axios.post(`${appSetting.severHostedUrl}/user/register`, obj);
+                const res = await axios.post(`${appSetting.severHostedUrl}/user/register`, obj, { withCredentials: true });
                 if (res) {
                     socket.emit("newUserAdded", res.data.user)
                     if (res.data.message) {

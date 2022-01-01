@@ -17,7 +17,7 @@ function CourseAcc({ curElem, curUser, setOpenSnack, setSeverity }) {
     const [hideCurrentCourse, setHideCurrentCourse] = useState(false);
     const { fname, lname } = curUser
     const { _id, courseDesc, courseName, courseOutline, duration, topics } = curElem
-    const uid = localStorage.getItem("uid")
+    const uid = curUser?._id
     const dispatch = useDispatch()
     const handleChange = (panel) => (event, isExpanded) => {
         setExpanded(isExpanded ? panel : false);
@@ -30,7 +30,7 @@ function CourseAcc({ curElem, curUser, setOpenSnack, setSeverity }) {
                 course_id: _id,
                 student_id: uid
             }
-            const res = await axios.post(`${appSetting.severHostedUrl}/course/applynow`, obj)
+            const res = await axios.post(`${appSetting.severHostedUrl}/course/applynow`, obj, { withCredentials: true })
             if (res) {
                 if (res.data.message) {
                     socket.emit("changeInCourse", res.data.course)

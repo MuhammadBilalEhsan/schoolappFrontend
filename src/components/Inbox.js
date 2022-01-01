@@ -54,7 +54,7 @@ function Inbox(props) {
     useEffect(async () => {
         try {
             // }
-            const res = await axios.get(`${appSetting.severHostedUrl}/user/myallconversations/${props.curUser?._id}`)
+            const res = await axios.get(`${appSetting.severHostedUrl}/user/myallconversations/${props.curUser?._id}`, { withCredentials: true })
             if (res) {
                 dispatch(allConversationsRedux(res.data.allConversations))
                 setAllConversationsArray(res.data.allConversations)

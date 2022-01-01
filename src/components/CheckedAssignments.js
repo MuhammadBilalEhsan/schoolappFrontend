@@ -23,7 +23,7 @@ const CheckedAssignments = ({ currentCourseID }) => {
 
     useEffect(async () => {
         try {
-            const res = await axios.post(`${appSetting.severHostedUrl}/assignment/studentallchecked`, { courseID: currentCourseID, studentID: curUser?._id })
+            const res = await axios.post(`${appSetting.severHostedUrl}/assignment/studentallchecked`, { courseID: currentCourseID, studentID: curUser?._id }, { withCredentials: true })
             if (res) {
                 setCheckedAssignments(res.data.checked)
                 dispatch(checkedAssignmentsRedux(res.data.checked))

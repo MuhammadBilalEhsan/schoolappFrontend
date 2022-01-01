@@ -17,6 +17,8 @@ import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
 import { logoutFunc } from "../redux/actions/index"
+import axios from "axios";
+import appSetting from "../appSetting/appSetting";
 
 const BtnBox = styled("div")(({ theme }) => ({
 	padding: theme.spacing(1),
@@ -44,12 +46,17 @@ const Header = ({ setAuth, curUser }) => {
 	const closeMobMenu = () => {
 		setMobMenuAnchor(null);
 	};
-	const logoutFunction = () => {
-		dispatch(logoutFunc())
-		localStorage.removeItem("uid");
-		setAuth(false)
-		window.location.reload(false);
-		history.push("/");
+	const logoutFunction = async () => {
+		try {
+			const res = await axios.get(`${appSetting.severHostedUrl}/user/logout`, { withCredentials: true })
+			if (res) {
+				dispatch(logoutFunc())
+				setAuth(false)
+				history.push("/");
+			}
+		} catch (error) {
+			console.log(error?.response?.data.error)
+		}
 	}
 	const mobileMenu = (
 		<Menu

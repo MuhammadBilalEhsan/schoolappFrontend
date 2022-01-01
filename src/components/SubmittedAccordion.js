@@ -32,7 +32,7 @@ const SubmittedAccordion = ({ submitted, assignmentID, checked, setOpenSnack, se
     const giveNumbersFunc = async (e) => {
         if (marks && marks >= 0 && marks <= 100) {
             try {
-                const res = await axios.post(`${appSetting.severHostedUrl}/assignment/givemarks`, { studentID: submitted?.id, assignmentID, marks })
+                const res = await axios.post(`${appSetting.severHostedUrl}/assignment/givemarks`, { studentID: submitted?.id, assignmentID, marks }, { withCredentials: true })
                 if (res) {
                     socket.emit("changeInAssignment", res.data.assignment)
                     setHideAccordion(true)

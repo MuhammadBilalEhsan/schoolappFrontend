@@ -10,6 +10,12 @@ export const curUserFun = data => {
     payload: data,
   };
 };
+export const updateSingleUser = (user) => {
+  return {
+    type: "UPDATE_SINGLE_USER",
+    payload: user
+  }
+}
 export const getCourseFunc = data => {
   return {
     type: "GET_COURSE",
@@ -22,11 +28,6 @@ export const getStudentCourseFunc = data => {
     payload: data,
   };
 };
-export const logoutFunc = () => {
-  return {
-    type: "LOG_OUT"
-  }
-}
 export const updateCourses = (data) => {
   return {
     type: "UPDATE_COURSES",
@@ -99,12 +100,6 @@ export const allCoursesRedux = (data) => {
     payload: data
   }
 }
-export const updateSingleUser = (user) => {
-  return {
-    type: "UPDATE_SINGLE_USER",
-    payload: user
-  }
-}
 export const addNewCourseForAdmin = (user) => {
   return {
     type: "ADD_NEW_COURSE_FOR_ADMIN",
@@ -115,5 +110,10 @@ export const newUserAdded = (user) => {
   return {
     type: "USER_ADDED",
     payload: user
+  }
+}
+export const logoutFunc = () => {
+  return {
+    type: "LOG_OUT"
   }
 }

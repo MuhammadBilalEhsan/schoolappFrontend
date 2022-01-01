@@ -67,7 +67,7 @@ const ProfileForAdmin = ({ curUser }) => {
                     {
                         !curUser?.isAdmin ?
                             <Box width="100%">
-                                <MarkAttendance />
+                                <MarkAttendance curUser={curUser} />
                             </Box> : ""
                     }
                     <Box width="100%">
