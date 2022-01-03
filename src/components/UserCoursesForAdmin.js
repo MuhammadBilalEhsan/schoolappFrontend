@@ -70,7 +70,8 @@ const UserCoursesForAdmin = ({ allCourses, user }) => {
                                         )
                                     })
                                 }
-                            </Box> :
+                            </Box>
+                            :
                             <Box width="100%" pt={3} textAlign="center">
                                 <Typography variant="h5" color="#014201">
                                     {user?.roll === "teacher" ?

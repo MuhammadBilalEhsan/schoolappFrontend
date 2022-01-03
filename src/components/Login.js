@@ -57,13 +57,13 @@ const Login = ({ setAuth, setCurUser, setIsAdmin, setNowLogin }) => {
 						setAuth(true)
 						setIsAdmin(true)
 						setNowLogin(true)
-						history.push("/dashboard");
 					} else {
 						dispatch(curUserFun(user));
 						setAuth(true)
 						setNowLogin(true)
-						history.push("/profile");
+						// history.push("/profile");
 					}
+					history.push("/dashboard");
 				}
 
 			} catch (error) {

@@ -7,6 +7,11 @@ import Attendance from "./components/Attendance";
 import CourseDetails from "./components/CourseDetails";
 import ClassMaterials from "./components/ClassMaterials";
 import MessagesComp from "./components/MessagesComp";
+import TeacherCourses from "./components/TeacherCourses";
+import StudentAvailable from "./components/StudentAvailable";
+import StudentEnrolled from "./components/StudentEnrolled";
+import ChangePassword from "./components/ChangePassword";
+import EditProfileComp from "./components/EditProfileComp";
 import Inbox from "./components/Inbox";
 import UserBlockedPage from "./components/UserBlockedPage";
 import appSetting from "./appSetting/appSetting";
@@ -33,8 +38,7 @@ import Classes from './components/admin/Classes';
 import Courses from './components/admin/Courses';
 import Blocked from './components/admin/Blocked';
 import ProfileForAdmin from './components/admin/ProfileForAdmin';
-// import Teachers from './components/admin/Teachers';
-// import Students from './components/admin/Students';
+import { GiCardJoker } from 'react-icons/gi';
 
 const ENDPOINT = appSetting.severHostedUrl
 export const socket = socketIO(ENDPOINT, { transports: ["websocket"] })
@@ -71,19 +75,21 @@ const App = () => {
 							}
 						}
 					} else if (currentUser.roll === "teacher") {
-						const myCourse = await axios.post(`${appSetting.severHostedUrl}/course/mycourse`, { teacher_id: currentUser?._id }, { withCredentials: true })
-						if (myCourse) {
+						const myCourse = await
+							axios.post(`${appSetting.severHostedUrl}/course/mycourse`,
+								{ teacher_id: currentUser?._id }, { withCredentials: true })
+						if (myCourse.data.course) {
 							dispatch(getCourseFunc(myCourse.data.course))
 						}
 					} else if (currentUser.roll === "student") {
-						const studentCourses = await axios.post(`${appSetting.severHostedUrl}/course/forstudent`, { studentClass: currentUser.atClass, studentID: curUser?._id }, { withCredentials: true })
+						const studentCourses = await axios.get(`${appSetting.severHostedUrl}/course/forstudent`,
+							{ withCredentials: true })
 						if (studentCourses) {
 							dispatch(getStudentCourseFunc(studentCourses.data.courses))
-
 						}
 					}
 				}
-				dispatch(curUserFun(user.data.user));
+				dispatch(curUserFun(currentUser));
 				setCurUser(currentUser)
 				setAuth(true)
 				setSpinner(false)
@@ -256,16 +262,17 @@ const App = () => {
 						auth={auth}
 						isAdmin={isAdmin}
 						path="/dashboard"
-						AdminComp={<Dashboard setAuth={setAuth}
+						AdminComp={<Dashboard setAuth={setAuth} curUser={curUser}
 							Component={<DashBoardBox currentUser={curUser} key="dashboard" />} />}
-						SuccessComp={<Redirect to="/profile" />}
+						SuccessComp={<Dashboard setAuth={setAuth} curUser={curUser}
+							Component={<ProfileForAdmin key="dashboard" curUser={curUser} />} />}
 						FailComp={<Redirect to="/" />}
 					/>
 					<PrivateRoute
 						auth={auth}
 						isAdmin={isAdmin}
 						path="/users"
-						AdminComp={<Dashboard setAuth={setAuth}
+						AdminComp={<Dashboard setAuth={setAuth} curUser={curUser}
 							Component={<Users currentUser={curUser} key="users" />} />}
 						SuccessComp={<Redirect to="/profile" />}
 						FailComp={<Redirect to="/" />}
@@ -274,7 +281,7 @@ const App = () => {
 						auth={auth}
 						isAdmin={isAdmin}
 						path="/classes"
-						AdminComp={<Dashboard setAuth={setAuth}
+						AdminComp={<Dashboard setAuth={setAuth} curUser={curUser}
 							Component={<Classes currentUser={curUser} key="classes" />} />}
 						SuccessComp={<Redirect to="/profile" />}
 						FailComp={<Redirect to="/" />}
@@ -283,18 +290,21 @@ const App = () => {
 						auth={auth}
 						isAdmin={isAdmin}
 						path="/courses"
-						AdminComp={<Dashboard setAuth={setAuth}
+						AdminComp={<Dashboard setAuth={setAuth} curUser={curUser}
 							Component={<Courses currentUser={curUser} key="courses" />} />}
-						SuccessComp={<Redirect to="/profile" />}
+						SuccessComp={<Dashboard setAuth={setAuth} curUser={curUser}
+							Component={<TeacherCourses currentUser={curUser} key="courses" />} />}
 						FailComp={<Redirect to="/" />}
 					/>
 					<PrivateRoute
 						auth={auth}
 						isAdmin={isAdmin}
 						path="/inbox"
-						AdminComp={<Dashboard setAuth={setAuth}
+						AdminComp={<Dashboard setAuth={setAuth} curUser={curUser}
 							Component={<Inbox curUser={curUser} key="inbox" />} />}
-						SuccessComp={<Redirect to="/profile" />}
+						SuccessComp={<Dashboard setAuth={setAuth} curUser={curUser}
+							Component={<Inbox curUser={curUser} key="inbox" />} />}
+						// SuccessComp={<Redirect to="/profile" />}
 						FailComp={<Redirect to="/" />}
 					/>
 
@@ -302,7 +312,7 @@ const App = () => {
 						auth={auth}
 						isAdmin={isAdmin}
 						path="/blocked"
-						AdminComp={<Dashboard setAuth={setAuth}
+						AdminComp={<Dashboard setAuth={setAuth} curUser={curUser}
 							Component={<Blocked currentUser={curUser} key="blocked" />} />}
 						SuccessComp={<Redirect to="/profile" />}
 						FailComp={<Redirect to="/" />}
@@ -312,10 +322,47 @@ const App = () => {
 					<PrivateRoute
 						auth={auth}
 						isAdmin={isAdmin}
+						path="/availables"
+						AdminComp={<Redirect to="/dashboard" />}
+						SuccessComp={<Dashboard setAuth={setAuth} curUser={curUser}
+							Component={<StudentAvailable currentUser={curUser} key="availables" />} />}
+						FailComp={<Redirect to="/" />}
+					/>
+					<PrivateRoute
+						auth={auth}
+						isAdmin={isAdmin}
+						path="/enrolled"
+						AdminComp={<Redirect to="/dashboard" />}
+						SuccessComp={<Dashboard setAuth={setAuth} curUser={curUser}
+							Component={<StudentEnrolled currentUser={curUser} key="enrolled" />} />}
+						FailComp={<Redirect to="/" />}
+					/>
+					<PrivateRoute
+						auth={auth}
+						isAdmin={isAdmin}
+						path="/editprofile"
+						AdminComp={<Redirect to="/dashboard" />}
+						SuccessComp={<Dashboard setAuth={setAuth} curUser={curUser}
+							Component={<EditProfileComp currentUser={curUser} key="enrolled" />} />}
+						FailComp={<Redirect to="/" />}
+					/>
+					<PrivateRoute
+						auth={auth}
+						isAdmin={isAdmin}
+						path="/changepassword"
+						AdminComp={<Dashboard setAuth={setAuth} curUser={curUser}
+							Component={<ChangePassword currentUser={curUser} key="enrolled" />} />}
+						SuccessComp={<Dashboard setAuth={setAuth} curUser={curUser}
+							Component={<ChangePassword currentUser={curUser} key="enrolled" />} />}
+						FailComp={<Redirect to="/" />}
+					/>
+					<PrivateRoute
+						auth={auth}
+						isAdmin={isAdmin}
 						exact
 						path="/"
 						AdminComp={<Redirect to="/dashboard" curUser={curUser} setAuth={setAuth} />}
-						SuccessComp={<Redirect to="/profile" curUser={curUser} setAuth={setAuth} />}
+						SuccessComp={<Redirect to="/dashboard" curUser={curUser} setAuth={setAuth} />}
 						FailComp={<Login setAuth={setAuth} setCurUser={setCurUser} setIsAdmin={setIsAdmin} setNowLogin={setNowLogin} />}
 					/>
 					<PrivateRoute
@@ -376,7 +423,7 @@ const App = () => {
 						auth={auth}
 						isAdmin={isAdmin}
 						path="/user"
-						AdminComp={<Dashboard setAuth={setAuth}
+						AdminComp={<Dashboard setAuth={setAuth} curUser={curUser}
 							Component={<ProfileForAdmin key="users" curUser={curUser} />} />}
 						SuccessComp={<Redirect to="/profile" />}
 						FailComp={<Redirect to="/" />}
@@ -385,7 +432,7 @@ const App = () => {
 						auth={auth}
 						isAdmin={isAdmin}
 						path="/inbox/:id"
-						AdminComp={<Dashboard setAuth={setAuth}
+						AdminComp={<Dashboard setAuth={setAuth} curUser={curUser}
 							// Component={<Inbox curUser={curUser} key="inbox" />} />}
 							Component={<Inbox curUser={curUser} key="inbox" />} />}
 						SuccessComp={<Redirect to="/profile" />}
@@ -397,7 +444,7 @@ const App = () => {
 						path="/:id"
 						// AdminComp={<NewClassMaterials curUser={curUser} setAuth={setAuth} />}
 
-						AdminComp={<Dashboard setAuth={setAuth}
+						AdminComp={<Dashboard setAuth={setAuth} curUser={curUser}
 							Component={<NewClassMaterials curUser={curUser} key="courses" />} />}
 						SuccessComp={<ClassMaterials curUser={curUser} setAuth={setAuth} />}
 						FailComp={<Redirect to="/" />}

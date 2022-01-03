@@ -75,13 +75,16 @@ function Inbox(props) {
     }, [])
     const drawer = (
         <div style={{ padding: "8px" }}>
-            <MuiModal
-                setRecieverID={setRecieverID}
-                setRecieverName={setRecieverName}
-                setConversationID={setConversationID}
-                allConversationsArray={allConversationsArray}
-                curUser={props.curUser}
-            />
+            {
+                props.curUser?.isAdmin ?
+                    <MuiModal
+                        setRecieverID={setRecieverID}
+                        setRecieverName={setRecieverName}
+                        setConversationID={setConversationID}
+                        allConversationsArray={allConversationsArray}
+                        curUser={props.curUser}
+                    /> : ""
+            }
             <List sx={{ textTransform: "capitalize", py: 0, mt: 2 }}>
                 {allConversationsArray?.length > 0 ?
                     allConversationsArray.map((chat, index) => (

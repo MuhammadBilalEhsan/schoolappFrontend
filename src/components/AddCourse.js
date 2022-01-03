@@ -59,7 +59,7 @@ export default function AddCourse({ curUser, editCourse, course, setSeverity, se
 	const formik = useFormik({
 		initialValues: {
 			teacher_id: curUser?._id,
-			teacherName: `${curUser?.fname} ${curUser?.lname||""}`,
+			teacherName: `${curUser?.fname} ${curUser?.lname || ""}`,
 			teacherClass: curUser?.atClass,
 			courseName: editCourse ? course?.courseName : "",
 			courseDesc: editCourse ? course?.courseDesc : "",
@@ -126,7 +126,7 @@ export default function AddCourse({ curUser, editCourse, course, setSeverity, se
 					}
 				}
 			} catch (error) {
-				console.log(error);
+				console.log(error?.response?.data?.error)
 				handleClose();
 			}
 		}
