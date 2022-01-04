@@ -13,7 +13,7 @@ import ChangeProfilePic from '../ChangeProfilePic'
 import MuiSnacks from '../MuiSnacks'
 
 
-const ProfileForAdmin = ({ curUser }) => {
+const ProfileForAdmin = ({ curUser, setCurUser }) => {
     const { search } = useLocation()
     const users = useSelector(state => state.usersReducer.users)
     const allCourses = useSelector(state => state.usersReducer.allCourses)
@@ -35,7 +35,7 @@ const ProfileForAdmin = ({ curUser }) => {
             setUser(curUser)
             setImgURL(curUser?.dp)
         }
-    }, [])
+    }, [curUser])
     return (
         <Box
             sx={{
@@ -107,15 +107,15 @@ const ProfileForAdmin = ({ curUser }) => {
                     <MyTypography title="Role:" text={user?.roll || "-"} />
                 </Grid>
                 <Grid
-                    // component={Grid}
                     item
-                    // flexGrow={1}
                     xs={12} md={7}
                 >
                     {
                         !curUser?.isAdmin ?
                             <Box width="100%">
-                                <MarkAttendance curUser={curUser} />
+                                <MarkAttendance curUser={curUser} setCurUser={setCurUser}
+                                    setSeverity={setSeverity} setOpenSnack={setOpenSnack}
+                                />
                             </Box> : ""
                     }
                     <Box width="100%">

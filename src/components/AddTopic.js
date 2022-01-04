@@ -32,7 +32,6 @@ export default function AddTopic({
 			};
 			if (editCourse === true) {
 				setTopicChips([
-
 					...topicChips,
 					topicObj,
 				]);
@@ -47,12 +46,12 @@ export default function AddTopic({
 	};
 	const handleChange = (e) => {
 		setTopicLabel(e.target.value);
-		if (topicLabel.length >= 10) {
+		if (topicLabel.length >= 39) {
 			addChip();
 		}
 	};
 	const handleKeyPress = (e) => {
-		if (e.key === " " || e.key === "Enter") {
+		if (e.key === "Enter") {
 			addChip();
 		}
 	};
@@ -60,6 +59,7 @@ export default function AddTopic({
 	return (
 		<div width="100%" style={{ display: "flex", flexDirection: "column" }} >
 			<TextField
+				sx={{ mt: 2 }}
 				InputProps={{
 					startAdornment: (
 						<span>

@@ -38,7 +38,7 @@ import Classes from './components/admin/Classes';
 import Courses from './components/admin/Courses';
 import Blocked from './components/admin/Blocked';
 import ProfileForAdmin from './components/admin/ProfileForAdmin';
-import { GiCardJoker } from 'react-icons/gi';
+// import { GiCardJoker } from 'react-icons/gi';
 
 const ENDPOINT = appSetting.severHostedUrl
 export const socket = socketIO(ENDPOINT, { transports: ["websocket"] })
@@ -265,7 +265,7 @@ const App = () => {
 						AdminComp={<Dashboard setAuth={setAuth} curUser={curUser}
 							Component={<DashBoardBox currentUser={curUser} key="dashboard" />} />}
 						SuccessComp={<Dashboard setAuth={setAuth} curUser={curUser}
-							Component={<ProfileForAdmin key="dashboard" curUser={curUser} />} />}
+							Component={<ProfileForAdmin key="dashboard" curUser={curUser} setCurUser={setCurUser} />} />}
 						FailComp={<Redirect to="/" />}
 					/>
 					<PrivateRoute
@@ -343,7 +343,7 @@ const App = () => {
 						path="/editprofile"
 						AdminComp={<Redirect to="/dashboard" />}
 						SuccessComp={<Dashboard setAuth={setAuth} curUser={curUser}
-							Component={<EditProfileComp currentUser={curUser} key="enrolled" />} />}
+							Component={<EditProfileComp curUser={curUser} setCurUser={setCurUser} key="edit profile" />} />}
 						FailComp={<Redirect to="/" />}
 					/>
 					<PrivateRoute
@@ -351,9 +351,9 @@ const App = () => {
 						isAdmin={isAdmin}
 						path="/changepassword"
 						AdminComp={<Dashboard setAuth={setAuth} curUser={curUser}
-							Component={<ChangePassword currentUser={curUser} key="enrolled" />} />}
+							Component={<ChangePassword currentUser={curUser} key="change password" />} />}
 						SuccessComp={<Dashboard setAuth={setAuth} curUser={curUser}
-							Component={<ChangePassword currentUser={curUser} key="enrolled" />} />}
+							Component={<ChangePassword currentUser={curUser} key="change password" />} />}
 						FailComp={<Redirect to="/" />}
 					/>
 					<PrivateRoute

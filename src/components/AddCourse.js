@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import {
-	Tooltip, Fab, DialogTitle, DialogContent, DialogActions, Dialog, TextField, Menu,
-	MenuItem, Button, Typography
+	Tooltip, DialogTitle, DialogContent, DialogActions, Dialog, TextField, Menu,
+	MenuItem, Button, Typography, Box
 } from "@mui/material/";
+import LoadingButton from "@mui/lab/LoadingButton";
 import AddTopic from "./AddTopic";
 import CourseOutlineComp from "./CourseOutlineComp";
 import { MdUpload, MdKeyboardArrowDown } from "react-icons/md";
@@ -20,7 +21,9 @@ const durationArr = ["1 Week", "2 Weeks", "3 Weeks", "4 Weeks"];
 export default function AddCourse({ curUser, editCourse, course, setSeverity, setOpenSnack }) {
 	const [open, setOpen] = useState(false);
 	const [menuOpen, setMenuOpen] = useState(null);
+	const [loadBtn, setLoadBtn] = useState(null);
 	const [selectDurInd, setSelectDurInd] = useState(course?.duration || null);
+	const [courseDuration, setCourseDuration] = useState(editCourse ? course.duration : "Not Set")
 	const [topicChips, setTopicChips] = useState([]);
 	const [topicErr, setTopicErr] = useState(null);
 	const [coOutErr, setCoOutErr] = useState(null);
@@ -44,89 +47,92 @@ export default function AddCourse({ curUser, editCourse, course, setSeverity, se
 	const handleMenuClose = () => {
 		setMenuOpen(false);
 	};
-	const handleSelect = (index) => {
-		setEditEditCourse(false)
-		const objsOfCOArr = [...Array(index + 1)].map(() => {
-			const obj = { week: "" }
-			return obj;
-		})
-		setCourseOutlineArr(objsOfCOArr)
-		setSelectDurInd(String(index));
-		handleMenuClose();
+	// const handleSelect = (index) => {
+	// 	setEditEditCourse(false)
+	// 	const objsOfCOArr = [...Array(index + 1)].map(() => {
+	// 		const obj = { week: "" }
+	// 		return obj;
+	// 	})
+	// 	setCourseOutlineArr(objsOfCOArr)
+	// 	// setSelectDurInd(String(index));
+	// 	handleMenuClose();
 
-	};
+	// };
 
 	const formik = useFormik({
 		initialValues: {
-			teacher_id: curUser?._id,
-			teacherName: `${curUser?.fname} ${curUser?.lname || ""}`,
-			teacherClass: curUser?.atClass,
+			// teacher_id: curUser?._id,
+			// teacherName: `${curUser?.fname} ${curUser?.lname || ""}`,
+			// teacherClass: curUser?.atClass,
 			courseName: editCourse ? course?.courseName : "",
 			courseDesc: editCourse ? course?.courseDesc : "",
 			topics: null,
-			duration: null,
-			courseOutline: null,
+			duration: editCourse ? course?.duration : "",
+			courseOutline: editCourse ? course?.courseOutline : "",
 		},
 		validationSchema: yup.object().shape({
 			courseName: yup.string()
 				.required("Course Name is Required Field."),
 			courseDesc: yup.string()
 				.required("Course Description is Required Field."),
+			duration: yup.string()
+				.required("Please Select Duration of Your Course"),
+			courseOutline: yup.string()
+				.required("Course Outline is Required Field."),
 		}),
 
 
-		onSubmit: async (values) => {
+		onSubmit: async (values, actions) => {
 			try {
-				setCoOutErr(false);
+				// setCoOutErr(false);
 				if (topicChips.length === 0) {
 					setTopicErr(true);
 				} else {
-					if (!selectDurInd) {
-						setWeekNotSelected(true);
-					} else {
-						const cOutlineFiltered = courseOutlineArr.filter((curElem) => curElem.week !== "")
-						if (cOutlineFiltered.length !== courseOutlineArr.length) {
-							setCoOutErr(true)
-						} else {
-							values.topics = topicChips;
-							values.duration = courseOutlineArr.length;
-							values.courseOutline = courseOutlineArr;
-							if (editCourse) {
-								handleClose();
-								const res = await axios.post(`${appSetting.severHostedUrl}/course/editcourse`, values, { withCredentials: true });
-								if (res) {
-									if (res.data.editted) {
-										socket.emit("courseEditted", res.data.editted)
-										dispatch(getCourseFunc(res.data.editted))
-									} if (res.data.message) {
-										setOpenSnack(res.data.message)
-										setSeverity("success")
-									} else {
-										setOpenSnack(res.data.error)
-										setSeverity("error")
-									}
-								}
-							} else {
-								handleClose();
-								// console.log("Added", values)
-								const res = await axios.post(`${appSetting.severHostedUrl}/course/add`, values, { withCredentials: true });
-								if (res) {
-									socket.emit("newCoursesAdded", res.data.newCourse)
-									dispatch(getCourseFunc(res.data.newCourse))
-									if (res.data.message) {
-										setOpenSnack(res.data.message)
-										setSeverity("success")
-									} else {
-										setOpenSnack(res.data.error)
-										setSeverity("error")
-									}
-								}
+					// if (!selectDurInd) {
+					// 	setWeekNotSelected(true);
+					// } else {
+					// const cOutlineFiltered = courseOutlineArr.filter((curElem) => curElem.week !== "")
+					// if (cOutlineFiltered.length !== courseOutlineArr.length) {
+					// 	setCoOutErr(true)
+					// } else {
+					values.topics = topicChips;
+					// values.duration = courseOutlineArr.length;
+					// values.courseOutline = courseOutlineArr;
+					if (editCourse) {
+						handleClose();
+						const res = await axios.post(`${appSetting.severHostedUrl}/course/editcourse`, values, { withCredentials: true });
+						if (res) {
+							if (res.data.editted) {
+								socket.emit("courseEditted", res.data.editted)
+								dispatch(getCourseFunc(res.data.editted))
+							} if (res.data.message) {
+								setOpenSnack(res.data.message)
+								setSeverity("success")
 							}
 						}
+					} else {
+						setLoadBtn(true)
+						// console.log("Added", values)
+						const res = await axios.post(`${appSetting.severHostedUrl}/course/add`, values, { withCredentials: true });
+						if (res) {
+							socket.emit("newCoursesAdded", res.data.newCourse)
+							dispatch(getCourseFunc(res.data.newCourse))
+							if (res.data.message) {
+								setOpenSnack(res.data.message)
+								setSeverity("success")
+							}
+							console.log(res.data.newCourse)
+							actions.resetForm()
+						}
+						handleClose();
+						setLoadBtn(false)
 					}
+					// }
+					// }
 				}
 			} catch (error) {
-				console.log(error?.response?.data?.error)
+				setOpenSnack(error?.response?.data?.error)
+				setSeverity("error")
 				handleClose();
 			}
 		}
@@ -142,11 +148,12 @@ export default function AddCourse({ curUser, editCourse, course, setSeverity, se
 		<div>
 			{editCourse ? (
 				// <>
-				<Tooltip title="Edit Course" arrow>
+				<Tooltip title="Edit Course" arrow >
 					<Button
 						size="small"
 						onClick={handleClickOpen}
 						sx={{ borderRadius: 5, }}
+
 					>
 						<RiFileEditFill size="22px" color="orange" />
 					</Button>
@@ -163,18 +170,14 @@ export default function AddCourse({ curUser, editCourse, course, setSeverity, se
 				// </>
 			) : (
 				<Tooltip title="Add Course" arrow>
-					<Fab
+					<Button
 						size="small"
-						sx={{
-							backgroundColor: "green",
-							"&:hover": {
-								backgroundColor: "green",
-							},
-						}}
+						variant="contained" color="success"
 						onClick={handleClickOpen}
+						endIcon={<MdUpload size="20px" color="#fff" />}
 					>
-						<MdUpload size="20px" color="#fff" />
-					</Fab>
+						Add Course
+					</Button>
 				</Tooltip>
 			)}
 			{/* Openning Dialouge Box */}
@@ -186,7 +189,8 @@ export default function AddCourse({ curUser, editCourse, course, setSeverity, se
 					<form onSubmit={formik.handleSubmit}>
 						<TextField
 							autoFocus
-							margin="dense"
+							// margin="dense"
+							sx={{ mt: 2 }}
 							name="courseName"
 							label="Course Name"
 							type="text"
@@ -195,8 +199,9 @@ export default function AddCourse({ curUser, editCourse, course, setSeverity, se
 							onChange={formik.handleChange("courseName")}
 							autoComplete="off"
 							fullWidth
-							color={editCourse ? "warning" : "success"}
-							inputProps={{ maxLength: 12 }}
+							// color={editCourse ? "warning" : "success"}
+							color={"success"}
+							inputProps={{ maxLength: 64 }}
 
 						// required
 						/>
@@ -206,7 +211,8 @@ export default function AddCourse({ curUser, editCourse, course, setSeverity, se
 							</Typography>
 						)}
 						<TextField
-							margin="dense"
+							// margin="dense"
+							sx={{ mt: 2 }}
 							name="courseDesc"
 							label="Description"
 							type="text"
@@ -216,8 +222,9 @@ export default function AddCourse({ curUser, editCourse, course, setSeverity, se
 							autoComplete="off"
 							fullWidth
 							multiline
-							color={editCourse ? "warning" : "success"}
-							inputProps={{ maxLength: 100 }}
+							// color={editCourse ? "warning" : "success"}
+							color={"success"}
+							inputProps={{ maxLength: 200 }}
 						/>
 						{formik.errors.courseDesc && formik.touched.courseDesc && (
 							<Typography variant="body2" sx={{ color: "red", marginLeft: "5px" }}>
@@ -236,25 +243,31 @@ export default function AddCourse({ curUser, editCourse, course, setSeverity, se
 
 						/>
 						{/* add duration field */}
-						<Button
-							onClick={(e) => {
-								handleMenuOpen(e);
-								setCourseOutlineArr([]);
-							}}
-							color={editCourse ? "warning" : "success"}
-							endIcon={<MdKeyboardArrowDown />}
-						>
-							{/* {durationArr[selectDurInd] || "Duration"} */}
-							{
-								editCourse && editEditCourse ? durationArr[String(selectDurInd - 1)] : durationArr[selectDurInd] || "Duration"
-							}
-						</Button>
-						{
-							weekNotSelected ?
-								(<Typography variant="body2" sx={{ color: "red", marginLeft: "5px" }}>
-									Please Select Duration of Your Course
-								</Typography>) : (<></>)
-						}
+						<Box mt={2} width="100%" display="flex" justifyContent="flex-start" alignItems="center" >
+							<Typography variant="subtitle1" color="darkgreen">
+								Select Duration:
+							</Typography>
+
+							<Button
+								onClick={(e) => {
+									handleMenuOpen(e);
+									setCourseOutlineArr([]);
+								}}
+								variant="outlined"
+								sx={{ ml: 3 }}
+								color={"success"}
+								endIcon={<MdKeyboardArrowDown />}
+							>
+								<strong>
+									{courseDuration}
+								</strong>
+							</Button>
+						</Box>
+						{formik.errors.duration && formik.touched.duration && (
+							<Typography variant="body2" sx={{ color: "red", marginLeft: "5px" }}>
+								{formik.errors.duration}
+							</Typography>
+						)}
 						<Menu
 							open={Boolean(menuOpen)}
 							anchorEl={menuOpen}
@@ -263,14 +276,41 @@ export default function AddCourse({ curUser, editCourse, course, setSeverity, se
 							{durationArr.map((item, index) => (
 								<MenuItem
 									key={index}
-									onClick={() => handleSelect(index)}
+									onClick={() => {
+										formik.values.duration = item
+										setCourseDuration(item)
+										handleMenuClose()
+									}}
 									name="duration"
 								>
 									{item}
 								</MenuItem>
 							))}
 						</Menu>
-						{
+
+						<TextField
+							// margin="dense"
+							sx={{ mt: 2 }}
+							name="courseOutline"
+							label="Course Outline"
+							type="text"
+							variant="outlined"
+							value={formik.values.courseOutline}
+							onChange={formik.handleChange("courseOutline")}
+							autoComplete="off"
+							fullWidth
+							multiline
+							// color={editCourse ? "warning" : "success"}
+							color={"success"}
+							inputProps={{ maxLength: 200 }}
+						/>
+						{formik.errors.courseOutline && formik.touched.courseOutline && (
+							<Typography variant="body2" sx={{ color: "red", marginLeft: "5px" }}>
+								{formik.errors.courseOutline}
+							</Typography>
+						)}
+
+						{/* {
 							selectDurInd || editCourse ? (
 								<CourseOutlineComp
 									courseOutlineArr={courseOutlineArr}
@@ -287,22 +327,23 @@ export default function AddCourse({ curUser, editCourse, course, setSeverity, se
 							) : (
 								<></>
 							)
-						}
-
-
+						} */}
 					</form>
 				</DialogContent>
 				<DialogActions>
-					<Button
-						color={editCourse ? "warning" : "success"}
+					<LoadingButton
+						size="small"
+						type="submit"
+						color={"success"}
 						variant="contained"
 						onClick={formik.handleSubmit}
+						loading={loadBtn}
+						sx={{ py: 0.7, px: 2 }}
 					>
-						{editCourse ? "Save Edit" : "Create"}
-					</Button>
-
+						{editCourse ? "Save Edit" : "Create Course"}
+					</LoadingButton>
 					<Button
-						color={editCourse ? "warning" : "success"}
+						color={"success"}
 						variant="outlined"
 						onClick={handleClose}
 					>
