@@ -1,12 +1,14 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
 import AddBox from './AddBox'
 import ClassBox from './ClassBox'
 
-const Classes = ({ currentUser }) => {
+const Classes = ({ currentUser, setCurUser }) => {
+    const [classes, setClasses] = useState(null)
 
     useEffect(() => {
+        setClasses(currentUser?.classes)
     }, [currentUser])
 
     return (
@@ -22,11 +24,11 @@ const Classes = ({ currentUser }) => {
                 <Grid
                     item xs={12} md={6} lg={4}
                 >
-                    <AddBox currentUser={currentUser} />
+                    <AddBox setCurUser={setCurUser} />
                 </Grid>
                 {
-                    currentUser?.classes?.length > 0 ?
-                        currentUser?.classes?.map((classTitle, index) => {
+                    classes?.length > 0 ?
+                        classes?.map((classTitle, index) => {
                             return (
                                 <Grid key={index}
                                     item xs={12} md={6} lg={4}

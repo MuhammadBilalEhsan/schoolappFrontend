@@ -13,7 +13,7 @@ import { useDispatch } from 'react-redux'
 import { curUserFun } from '../../redux/actions'
 
 
-const AddBox = ({ currentUser }) => {
+const AddBox = ({ setCurUser }) => {
     const [openInput, setOpenInput] = useState(false)
     const [classTitle, setClassTitle] = useState("")
     const [openSnack, setOpenSnack] = useState("");
@@ -28,29 +28,29 @@ const AddBox = ({ currentUser }) => {
             setOpenInput(true)
         }
     }
-    const addClass = async () => {
+    const addClass = async (e) => {
+        e.preventDefault()
         const title = classTitle.trim().toLowerCase()
         if (!title) {
             setOpenSnack("Please write something")
             setSeverity("error")
         } else {
             try {
-                const res = await axios.post(`${appSetting.severHostedUrl}/user/addclass`, { adminID: currentUser?._id, title }, { withCredentials: true })
+                const res = await axios.post(`${appSetting.severHostedUrl}/user/addclass`, { title }, { withCredentials: true })
                 if (res) {
                     if (res.data.message) {
                         // socket.emit("changeInUser", res.data.user)
                         dispatch(curUserFun(res.data.user))
+                        setCurUser(res.data.user)
                         setOpenSnack(res.data.message)
                         setSeverity("success")
-                    } else {
-                        setOpenSnack(res.data.error)
-                        setSeverity("error")
+                        setClassTitle("")
+                        toggleInput()
                     }
-                    setClassTitle("")
-                    toggleInput()
                 }
             } catch (error) {
-                console.log("error", error)
+                setOpenSnack(error?.response?.data?.error)
+                setSeverity("error")
                 setClassTitle("")
                 toggleInput()
             }
@@ -82,20 +82,23 @@ const AddBox = ({ currentUser }) => {
             </Box>
             {
                 openInput ?
-                    <TextField
-                        fullWidth autoFocus
-                        placeholder='Add Class Name'
-                        value={classTitle}
-                        variant="standard"
-                        color="success"
+                    <form onSubmit={(e) => addClass(e)}>
+                        <TextField
+                            fullWidth autoFocus
+                            placeholder='Add Class Name'
+                            value={classTitle}
+                            variant="standard"
+                            color="success"
 
-                        onChangeCapture={(e) => setClassTitle(e.target.value)}
-                        sx={{ mt: "18px", }}
-                        InputProps={{
-                            maxLength: 16,
-                            endAdornment: (<BiAddToQueue onClick={(e) => addClass(e)} size="26px" color="green" style={{ cursor: "pointer" }} />)
-                        }}
-                    /> : <Button
+                            onChangeCapture={(e) => setClassTitle(e.target.value)}
+                            sx={{ mt: "18px", }}
+                            InputProps={{
+                                maxLength: 16,
+                                endAdornment: (<BiAddToQueue onClick={(e) => addClass(e)} size="26px" color="green" style={{ cursor: "pointer" }} />)
+                            }}
+                        />
+                    </form>
+                    : <Button
                         onClick={toggleInput}
                         variant="contained"
                         sx={{
@@ -108,7 +111,7 @@ const AddBox = ({ currentUser }) => {
                         Add Class
                     </Button>
             }
-        </Box>
+        </Box >
     )
 }
 

@@ -29,7 +29,6 @@ const CourseBox = ({ course }) => {
                     </Typography>
                     <Typography variant="subtitle1">
                         {teacherName}
-                        {/* Teacher 56 */}
                     </Typography>
                 </Box>
                 <Box mb={1} display="flex" justifyContent="space-between">

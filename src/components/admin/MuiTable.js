@@ -44,69 +44,67 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export default function MuiTable({ tableBody, curUser }) {
 
-    const [recieverID, setRecieverID] = useState("")
-    const [recieverName, setRecieverName] = useState("")
-    const [message, setMessage] = useState("")
+    // const [recieverID, setRecieverID] = useState("")
+    // const [recieverName, setRecieverName] = useState("")
+    // const [message, setMessage] = useState("")
     const [openSnack, setOpenSnack] = useState("")
     const [severity, setSeverity] = useState("")
 
-    const history = useHistory()
+    // const history = useHistory()
     const blockUser = async (e, userID) => {
         try {
             const res = await axios.get(`${appSetting.severHostedUrl}/user/block/${userID}`, { withCredentials: true })
             if (res) {
-                if (res.data.message) {
-                    socket.emit("changeInUser", res.data.user)
-                    setOpenSnack(res.data.message)
-                    setSeverity("success")
-                } else {
-                    setOpenSnack(res.data.error)
-                    setSeverity("error")
-                }
+                // if (res.data.message) {
+                socket.emit("changeInUser", res.data.user)
+                setOpenSnack(res.data.message)
+                setSeverity("success")
+                // }
             }
 
         } catch (error) {
-            console.log("errorr", error)
+            setOpenSnack(error?.response?.data?.error)
+            setSeverity("error")
         }
     }
-    const sendMsgFunc = async (e) => {
-        try {
-            const newMessage = message.trim()
+    // const sendMsgFunc = async (e) => {
+    //     try {
+    //         const newMessage = message.trim()
 
-            if (newMessage) {
-                const senderName = `${curUser?.fname} ${curUser?.lname}`
-                let time = moment().format('dd-mm-yyyy hh:mm:ss A')
-                const messageObj = {
-                    senderID: curUser?._id, senderName, time,
-                    message: newMessage, recieverID,
-                    recieverName
-                }
-                const res = await axios.post(`${appSetting.severHostedUrl}/user/sendmsg`, messageObj, { withCredentials: true })
-                if (res) {
-                    if (res.data.message) {
-                        socket.emit("changeInConversation", res.data.conversation)
-                        setOpenSnack(res.data.message)
-                        setSeverity("success")
-                    } else {
-                        setOpenSnack(res.data.error)
-                        setSeverity("error")
-                    }
-                    setMessage("")
-                    setRecieverID("")
-                    setRecieverName("")
-                }
-            } else {
-                setOpenSnack("write something")
-                setSeverity("error")
-            }
+    //         if (newMessage) {
+    //             const senderName = `${curUser?.fname} ${curUser?.lname}`
+    //             let time = moment().format('dd-mm-yyyy hh:mm:ss A')
+    //             const messageObj = {
+    //                 senderID: curUser?._id, senderName, time,
+    //                 message: newMessage, recieverID,
+    //                 recieverName
+    //             }
+    //             const res = await axios.post(`${appSetting.severHostedUrl}/user/sendmsg`, messageObj, { withCredentials: true })
+    //             if (res) {
+    //                 if (res.data.message) {
+    //                     socket.emit("changeInConversation", res.data.conversation)
+    //                     setOpenSnack(res.data.message)
+    //                     setSeverity("success")
+    //                 } else {
+    //                     setOpenSnack(res.data.error)
+    //                     setSeverity("error")
+    //                 }
+    //                 setMessage("")
+    //                 setRecieverID("")
+    //                 setRecieverName("")
+    //             }
+    //         } else {
+    //             setOpenSnack("write something")
+    //             setSeverity("error")
+    //         }
 
-        } catch (error) {
-            console.log(error)
-        }
-    }
+    //     } catch (error) {
+    //         console.log(error)
+    //     }
+    // }
     return (
         <Box>
-            {recieverID ? <SendingMessageInputComp
+            {/* {recieverID ? <SendingMessageInputComp
                 name="message"
                 autoFocus={true}
                 value={message}
@@ -117,7 +115,7 @@ export default function MuiTable({ tableBody, curUser }) {
                 submitFunc={sendMsgFunc}
                 userName={curUser?.fname[0]}
             /> : ""
-            }
+            } */}
             <TableContainer component={Paper}
             // sx={{ p: 2 }}
             >
@@ -179,7 +177,8 @@ export default function MuiTable({ tableBody, curUser }) {
                                             <Tooltip title={`Message to ${user.fname} ${user.lname}`} arrow>
                                                 <IconButton
                                                     component={Link}
-                                                    to={`/inbox?${user._id}?${user.fname ? user.fname : user.email}_${user.fname && user.lname ? user.lname : ""}`}
+                                                    to={`/inbox?${user?._id}?${user?.fname}_${user?.lname}`}
+                                                // to={`/inbox?${user._id}?${user.fname ? user.fname : user.email}_${user.fname && user.lname ? user.lname : ""}`}
                                                 >
                                                     <BsChatDotsFill color="#014201" size="18px" />
                                                 </IconButton>

@@ -4,13 +4,15 @@
   box-sizing: border-box;
   -webkit-scrollbar-style: none;
 }
+*::before,
+*::after {
+  overflow: auto;
+}
 body::-webkit-scrollbar,
 body div::-webkit-scrollbar {
   display: none;
 }
-body {
-  /* overflow-x: hidden !important; */
-}
+
 ._main {
   background-image: linear-gradient(#fff, rgba(0, 128, 0, 0.247));
   width: 100vw;

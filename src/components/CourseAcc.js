@@ -38,20 +38,18 @@ function CourseAcc({ curElem, curUser, setOpenSnack, setSeverity }) {
                     dispatch(curUserFun(res.data.student))
                     setOpenSnack(res.data.message)
                     setSeverity("success")
-                } else {
-                    setOpenSnack(res.data.errors)
-                    setSeverity("error")
                 }
             }
         } catch (error) {
-            console.log(error)
+            setOpenSnack(error?.response?.data?.error)
+            setSeverity("error")
         }
     }
 
     return (
         <div style={{ marginBottom: 2 }}>
             {hideCurrentCourse ? "" :
-                <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')} sx={{ marginTop: 1, "&:hover": { boxShadow: 3, cursor: "pointer" } }}  >
+                <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')} sx={{ marginTop: 1, boxShadow: 1, "&:hover": { boxShadow: 3, cursor: "pointer" } }}  >
                     <AccordionSummary
                         expandIcon={<MdOutlineExpandMore />}
                         aria-controls="panel1bh-content"
@@ -103,32 +101,25 @@ function CourseAcc({ curElem, curUser, setOpenSnack, setSeverity }) {
                                 <Typography color="black" variant="subtitle2">
                                     Duration:
                                 </Typography>
-                                <Typography ml={5} variant="body2">
-                                    {duration} week / weeks
+                                <Typography color="green" ml={5} variant="body2">
+                                    {duration}
                                 </Typography>
                             </Grid>
                             <Grid item xs={12} sm={6} sx={{ wordWrap: "break-word" }}>
                                 <Typography color="black" variant="subtitle2">
                                     Course Outline:
                                 </Typography>
-                                {courseOutline?.map((curElem, ind) => {
-                                    return (
-                                        <Box key={ind}>
-                                            <Typography color="black" ml={5} variant="body1">
-                                                week {ind + 1}:
-                                            </Typography>
-                                            <Typography color="green" ml={9} variant="body2">
-                                                {curElem.week}
-                                            </Typography>
-                                        </Box>
-                                    );
-                                })}
+                                <Typography color="green" ml={5} variant="body2">
+                                    {courseOutline}
+                                </Typography>
                             </Grid>
                         </Grid>
                     </AccordionDetails>
                     <AccordionActions>
                         <Tooltip title="Enroll Now" arrow>
-                            <Button variant="contained" color="success" onClick={(e) => applyCourse(e)}><GrUserAdd color="green" size="22px" /></Button>
+                            <Button variant="contained" color="success" onClick={(e) => applyCourse(e)}>
+                                <GrUserAdd color="white" size="22px" />
+                            </Button>
                         </Tooltip>
                     </AccordionActions>
                 </Accordion>

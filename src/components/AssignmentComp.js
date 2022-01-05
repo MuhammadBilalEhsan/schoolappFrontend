@@ -88,6 +88,8 @@ const AssignmentComp = ({ curUser, isTeacher, currentCourse, isAdmin }) => {
                                                 assignment={assignment}
                                                 setCurrentAssignmentID={setCurrentAssignmentID}
                                                 setChecked={setChecked}
+                                                setOpenSnack={setOpenSnack}
+                                                setSeverity={setSeverity}
                                             />
                                         )
                                     }

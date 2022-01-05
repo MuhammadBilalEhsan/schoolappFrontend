@@ -96,6 +96,7 @@ function Dashboard(props) {
         try {
             const res = await axios.get(`${appSetting.severHostedUrl}/user/logout`, { withCredentials: true })
             if (res) {
+                localStorage.removeItem("me")
                 dispatch(logoutFunc())
                 props.setAuth(false)
                 history.push("/");

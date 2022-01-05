@@ -7,6 +7,7 @@ import axios from "axios";
 import { socket } from '../App';
 import MuiSnacks from './MuiSnacks';
 import appSetting from '../appSetting/appSetting';
+import { useHistory } from 'react-router-dom';
 
 
 const CourseStudentsComp = ({ currentCourse, curUser, isAdmin }) => {
@@ -20,12 +21,14 @@ const CourseStudentsComp = ({ currentCourse, curUser, isAdmin }) => {
     const [severity, setSeverity] = useState("");
     const open = Boolean(anchorEl);
 
-    const { _id, fname, lname } = curUser || {}
+    // const { _id, fname, lname } = curUser || {}
+
+    const history = useHistory()
 
     const handleClick = (event) => {
-        setStudentID("")
-        setMessage("")
-        setStudentName("")
+        // setStudentID("")
+        // setMessage("")
+        // setStudentName("")
         setAnchorEl(event.currentTarget);
     };
     const removeStudentFunc = async (id) => {
@@ -73,41 +76,41 @@ const CourseStudentsComp = ({ currentCourse, curUser, isAdmin }) => {
     const handleClose = () => {
         setAnchorEl(null);
     };
-    const sendMsgFunc = async (e) => {
-        try {
-            const newMessage = message.trim()
+    // const sendMsgFunc = async (e) => {
+    //     try {
+    //         const newMessage = message.trim()
 
-            if (newMessage) {
-                const name = `${fname} ${lname}`
-                let time = moment().format('hh:mm:ss A')
-                const messageObj = {
-                    senderID: _id, senderName: name, time,
-                    message: newMessage, recieverID: studentID,
-                    recieverName: studentName
-                }
-                const res = await axios.post(`${appSetting.severHostedUrl}/user/sendmsg`, messageObj, { withCredentials: true })
-                if (res) {
-                    if (res.data.message) {
-                        socket.emit("changeInConversation", res.data.conversation)
-                        setOpenSnack(res.data.message)
-                        setSeverity("success")
-                    } else {
-                        setOpenSnack(res.data.error)
-                        setSeverity("error")
-                    }
-                    setMessage("")
-                    setStudentID("")
-                    setStudentName("")
-                }
-            } else {
-                setOpenSnack("write something")
-                setSeverity("error")
-            }
+    //         if (newMessage) {
+    //             const name = `${fname} ${lname}`
+    //             let time = moment().format('hh:mm:ss A')
+    //             const messageObj = {
+    //                 senderID: _id, senderName: name, time,
+    //                 message: newMessage, recieverID: studentID,
+    //                 recieverName: studentName
+    //             }
+    //             const res = await axios.post(`${appSetting.severHostedUrl}/user/sendmsg`, messageObj, { withCredentials: true })
+    //             if (res) {
+    //                 if (res.data.message) {
+    //                     socket.emit("changeInConversation", res.data.conversation)
+    //                     setOpenSnack(res.data.message)
+    //                     setSeverity("success")
+    //                 } else {
+    //                     setOpenSnack(res.data.error)
+    //                     setSeverity("error")
+    //                 }
+    //                 setMessage("")
+    //                 setStudentID("")
+    //                 setStudentName("")
+    //             }
+    //         } else {
+    //             setOpenSnack("write something")
+    //             setSeverity("error")
+    //         }
 
-        } catch (error) {
-            console.log(error)
-        }
-    }
+    //     } catch (error) {
+    //         console.log(error)
+    //     }
+    // }
 
     return (
         <Box>
@@ -157,28 +160,35 @@ const CourseStudentsComp = ({ currentCourse, curUser, isAdmin }) => {
                                             'aria-labelledby': 'basic-button',
                                         }}
                                     >
-                                        <MenuItem onClick={() => {
-                                            setStudentID(currentStudent.id);
-                                            setStudentName(currentStudent.name)
-                                            handleClose()
-                                        }}>
+                                        <MenuItem
+                                            //  onClick={() => {
+                                            //     setStudentID(currentStudent.id);
+                                            //     setStudentName(currentStudent.name)
+                                            //     handleClose()
+                                            // }
+                                            onClick={() => {
+                                                history.push(`/inbox?${currentStudent.id}?${currentStudent.name.split(" ")[0]}_${currentStudent.name.split(" ")[1]}`)
+                                                handleClose()
+                                            }}
+                                        >
                                             Send Message to {currentStudent?.name}</MenuItem>
                                         <MenuItem onClick={() => removeStudentFunc(currentStudent.id)}>Remove</MenuItem>
                                         <MenuItem onClick={() => muteStudentFunc(currentStudent.id)}>{currentStudent.muted ? "Unmute" : "Mute"}</MenuItem>
                                     </Menu>
                                 </Box>
-                                {studentID ? <SendingMessageInputComp
-                                    name="message"
-                                    autoFocus={true}
-                                    value={message}
-                                    setValue={setMessage}
-                                    type="text"
-                                    placeholder={`Write Message for this student`}
-                                    color="success"
-                                    submitFunc={sendMsgFunc}
-                                    userName={curUser?.fname[0]}
-                                /> : ""
-                                }
+                                {/* {
+                            studentID ? <SendingMessageInputComp
+                                name="message"
+                                autoFocus={true}
+                                value={message}
+                                setValue={setMessage}
+                                type="text"
+                                placeholder={`Write Message for this student`}
+                                color="success"
+                                submitFunc={sendMsgFunc}
+                                userName={curUser?.fname[0]}
+                            /> : ""
+                        } */}
                             </Box>
                         )
                     }) : <Box pt={9} width="100%"
@@ -191,7 +201,7 @@ const CourseStudentsComp = ({ currentCourse, curUser, isAdmin }) => {
                 }
 
             </Box>
-        </Box>
+        </Box >
     )
 }
 

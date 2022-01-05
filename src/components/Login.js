@@ -61,8 +61,10 @@ const Login = ({ setAuth, setCurUser, setIsAdmin, setNowLogin }) => {
 						dispatch(curUserFun(user));
 						setAuth(true)
 						setNowLogin(true)
+
 						// history.push("/profile");
 					}
+					localStorage.setItem("me", JSON.stringify({ id: user._id, role: user.roll }))
 					history.push("/dashboard");
 				}
 

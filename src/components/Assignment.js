@@ -1,16 +1,15 @@
 import React, { useState } from 'react'
 import { GrAttachment } from "react-icons/gr"
-import {
-    Button,
-    Tooltip,
-    Dialog,
-    DialogContent,
-    DialogActions,
-    DialogTitle,
-    TextField,
-    Typography,
-    Box
-} from "@mui/material"
+import Button from "@mui/material/Button"
+import Tooltip from "@mui/material/Tooltip"
+import Dialog from "@mui/material/Dialog"
+import DialogContent from "@mui/material/DialogContent"
+import DialogActions from "@mui/material/DialogActions"
+import DialogTitle from "@mui/material/DialogTitle"
+import TextField from "@mui/material/TextField"
+import Typography from "@mui/material/Typography"
+import Box from "@mui/material/Box"
+import LoadingButton from "@mui/lab/LoadingButton"
 import { useFormik } from 'formik'
 import *as yup from "yup"
 import axios from 'axios'
@@ -27,6 +26,7 @@ const Assignment = ({
 }) => {
     const [openAssignDialog, setOpenAssignDialog] = useState(false)
     const [file, setFile] = useState(null)
+    const [loadBtn, setLoadBtn] = useState(null)
 
     const handleDialog = () => {
         setOpenAssignDialog(true)
@@ -56,7 +56,7 @@ const Assignment = ({
             title: yup.string().required("Title is Required Field..."),
         }),
 
-        onSubmit: async (values) => {
+        onSubmit: async (values, actions) => {
             try {
                 if (!file && !values.desc) {
                     setOpenSnack("You cannot leave both files and description blank at the same time")
@@ -75,13 +75,15 @@ const Assignment = ({
                         headers: { "content-type": "multipart/form-data" },
                     };
                     if (isTeacher) {
+                        setLoadBtn(true)
                         formData.append("title", values.title)
                         formData.append("courseID", currentCourse?._id)
-                        const res = await axios.post(`${appSetting.severHostedUrl}/assignment/add`, formData, config, { withCredentials: true })
+                        const res = await axios.post(`${appSetting.severHostedUrl}/assignment/add`,
+                            formData, { withCredentials: true }, config)
                         if (res) {
                             closeDialog()
                             setFile(null)
-                            values = {}
+                            actions.resetForm()
                             if (res.data.message) {
                                 setAllAssignments(res.data.allAssignment)
                                 // console.log("res.data.assignment", res.data.allAssignment)
@@ -89,33 +91,34 @@ const Assignment = ({
                                 dispatch(settingAssignments(res.data.allAssignment))
                                 setOpenSnack(res.data.message)
                                 setSeverity("success")
-                            } else {
-                                setOpenSnack(res.data.error)
-                                setSeverity("error")
                             }
+                            setLoadBtn(false)
                         }
                     } else {
+                        setLoadBtn(true)
                         formData.append("assignmentID", currentAssignment?._id)
                         formData.append("id", `${curUser?._id}`)
                         formData.append("name", `${curUser?.fname} ${curUser?.lname}`)
                         formData.append("time", moment().format("hh:mm:ss A"))
-                        closeDialog()
-                        const res = await axios.post(`${appSetting.severHostedUrl}/assignment/submit`, formData, config, { withCredentials: true })
+                        console.log("asdf")
+                        const res = await axios.post(`${appSetting.severHostedUrl}/assignment/submit`,
+                            formData, { withCredentials: true }, config)
                         if (res) {
+                            closeDialog()
                             setFile(null)
+                            actions.resetForm()
                             socket.emit("changeInAssignment", res.data.assignment)
-                            if (res.data.message) {
-                                setOpenSnack(res.data.message)
-                                setSeverity("success")
-                            } else {
-                                setOpenSnack(res.data.error)
-                                setSeverity("error")
-                            }
+                            // if (res.data.message) {
+                            setOpenSnack(res.data.message)
+                            setSeverity("success")
+                            // }
+                            setLoadBtn(false)
                         }
                     }
                 }
             } catch (error) {
-                console.log(error);
+                setOpenSnack(error?.response?.data?.error)
+                setSeverity("error")
                 closeDialog()
             }
         }
@@ -127,10 +130,10 @@ const Assignment = ({
                 <Button startIcon={btnStartIcon} onClick={handleDialog} color={btnColor}
                     sx={{ marginTop: isTeacher ? 3 : 0, borderRadius: 5 }} variant={btnVariant}>{btnTitle || btnIcon}</Button>
             </Tooltip>
-            <Dialog open={openAssignDialog} onClose={closeDialog} fullWidth maxWidth="sm">
+            <Dialog open={openAssignDialog} onClose={closeDialog} fullWidth maxWidth="sm" onClick={(e) => e.stopPropagation()}>
                 <DialogTitle>{dialogTitle}</DialogTitle>
                 <DialogContent >
-                    <form method="POST">
+                    <form method="POST" onSubmit={formik.handleSubmit}>
                         <TextField
                             autoFocus
                             margin="dense"
@@ -189,7 +192,20 @@ const Assignment = ({
 
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={formik.handleSubmit} color="success" variant="contained">{actionTitle}</Button>
+                    {/* <Button onClick={formik.handleSubmit} color="success" variant="contained">{actionTitle}</Button> */}
+                    <LoadingButton
+                        // type="submit"
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            formik.handleSubmit()
+                        }
+                        }
+                        variant="contained"
+                        color="success"
+                        loading={loadBtn}
+                    >
+                        {actionTitle}
+                    </LoadingButton>
                     <Button onClick={closeDialog} color="success" variant="outlined">cancel</Button>
                 </DialogActions>
             </Dialog>

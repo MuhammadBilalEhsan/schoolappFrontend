@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Chip, TextField, } from "@mui/material";
+import { Chip, TextField, Tooltip, } from "@mui/material";
 
 export default function AddTopic({
 	topicChips,
@@ -66,13 +66,13 @@ export default function AddTopic({
 							{topicChips?.map((data) => {
 								return (
 									<Chip
+										key={data.key}
 										sx={{
-											backgroundColor: editCourse ? "orange" : "#00800030",
+											backgroundColor: "#00800030",
 											marginRight: 1,
 											marginTop: 1,
 										}}
-										key={data.key}
-										label={data.label}
+										label={data.label.length < 22 ? data.label : "bilal"}
 										onDelete={handleDelete(data)}
 									/>
 								);
@@ -90,7 +90,7 @@ export default function AddTopic({
 				onChange={(e) => handleChange(e)}
 				onKeyPress={(e) => handleKeyPress(e)}
 				autoComplete="off"
-				color={editCourse ? "warning" : "success"}
+				color="success"
 				fullWidth
 			/>
 			{

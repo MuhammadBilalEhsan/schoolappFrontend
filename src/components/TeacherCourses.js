@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
+import Tooltip from "@mui/material/Tooltip";
 import Chip from "@mui/material/Chip";
 import Button from "@mui/material/Button";
 import MuiSnacks from './MuiSnacks';
 import { useSelector } from 'react-redux';
 import AddCourse from './AddCourse';
+import { useHistory } from 'react-router-dom';
 
 const TeacherCourses = ({ currentUser }) => {
     const course = useSelector((state) => state.usersReducer.course);
@@ -15,6 +17,7 @@ const TeacherCourses = ({ currentUser }) => {
     const [openSnack, setOpenSnack] = useState("");
     const [severity, setSeverity] = useState("");
 
+    const history = useHistory()
     // dispatch(getCourseFunc(myCourse.data.course))
     useEffect(() => {
     }, [currentUser, course])
@@ -41,15 +44,20 @@ const TeacherCourses = ({ currentUser }) => {
                             {
                                 course?.topics.map(topic => {
                                     return (
-                                        <Chip
-                                            sx={{
-                                                ml: 1, cursor: "pointer", mb: 1,
-                                                "&:hover": { backgroundColor: "#2e7d32", color: "#fff" }
-                                            }}
-                                            key={topic.key}
-                                            color='success'
-                                            label={topic.label}
-                                            variant="outlined" />
+                                        <Tooltip key={topic.key} title={topic.label}
+                                            arrow
+                                        >
+                                            <Chip
+                                                sx={{
+                                                    ml: 1, cursor: "pointer", mb: 1,
+                                                    "&:hover": { backgroundColor: "#2e7d32", color: "#fff" }
+                                                }}
+                                                color='success'
+                                                label={topic.label.length < 22 ? topic.label :
+                                                    `${topic.label.substr(0, 21)}...`
+                                                }
+                                                variant="outlined" />
+                                        </Tooltip>
                                     )
                                 })
                             }
@@ -60,8 +68,21 @@ const TeacherCourses = ({ currentUser }) => {
                         <ShowField title="Students" value={course?.students?.length > 0 ? course.students.length : "0"} />
                         <ShowField title="Assignments" value={course?.assignments?.length > 0 ? course.assignments.length : "0"} />
                         <Box width="100%" mt={2} display="flex" justifyContent="flex-end">
-                            <Button variant="outlined" color="success">Edit Course</Button>
-                            <Button sx={{ ml: 2 }} variant="contained" color="success">Go to Course</Button>
+                            <AddCourse
+                                curUser={currentUser}
+                                editCourse={true}
+                                course={course}
+                                setSeverity={setSeverity}
+                                setOpenSnack={setOpenSnack}
+                            />
+                            <Button
+                                onClick={() => history.push(`/${course?._id}`)}
+                                sx={{ ml: 2 }}
+                                variant="contained"
+                                color="success"
+                            >
+                                Go to Course
+                            </Button>
                         </Box>
                     </Box>
                     :
@@ -91,19 +112,29 @@ const TeacherCourses = ({ currentUser }) => {
 
 const ShowField = ({ title, value }) => {
     return (
-        <Box width="100%" display="flex" justifyContent="space-between" alignItems="center"
+        <Box width="100%" display="flex" flexDirection={{ xs: "column", sm: "row" }}
+            justifyContent="space-between"
+            alignItems={{ xs: "flex-start", sm: "center" }}
             sx={{
                 backgroundColor: "#f6f6f6", boxShadow: 1, borderRadius: 1,
                 cursor: "pointer", "&:hover": { backgroundColor: "#dfdddd" }
             }}
             py={1} px={3} mt={2}
         >
-            <Typography color="#000" width={"25%"}>{title}:</Typography>
+            <Typography color="#000" width={{ xs: "100%", sm: "30%" }}
+            >{title}:</Typography>
 
-            <Typography color="darkgreen" width={"70%"}
-                sx={{ display: "flex", justifyContent: "flex-start", flexWrap: "wrap" }}
-            >{value}</Typography>
-        </Box>
+            <Typography color="darkgreen" width={{ xs: "100%", sm: "60%" }}
+                variant="subtitle1"
+                sx={{
+                    display: "flex", justifyContent: "flex-start",
+                    flexWrap: "wrap", ml: { xs: 2, sm: 1 },
+                    // wordBreak: "break-all"
+                }}
+            >
+                <b>{value}</b>
+            </Typography>
+        </Box >
     )
 }
 

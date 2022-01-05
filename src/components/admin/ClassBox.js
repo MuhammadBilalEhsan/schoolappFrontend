@@ -72,7 +72,7 @@ const ClassBox = ({ title, currentUser }) => {
                         'aria-labelledby': 'basic-button',
                     }}
                 >
-                    <MenuItem>View Users</MenuItem>
+                    {/* <MenuItem>View Users</MenuItem> */}
                     <AddUserDialog title={title} classesArray={currentUser?.classes} />
                 </Menu>
 

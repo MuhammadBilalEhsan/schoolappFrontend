@@ -5,9 +5,9 @@ import {
 } from "@mui/material/";
 import LoadingButton from "@mui/lab/LoadingButton";
 import AddTopic from "./AddTopic";
-import CourseOutlineComp from "./CourseOutlineComp";
+// import CourseOutlineComp from "./CourseOutlineComp";
 import { MdUpload, MdKeyboardArrowDown } from "react-icons/md";
-import { RiFileEditFill } from "react-icons/ri";
+// import { RiFileEditFill } from "react-icons/ri";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import axios from "axios";
@@ -61,9 +61,6 @@ export default function AddCourse({ curUser, editCourse, course, setSeverity, se
 
 	const formik = useFormik({
 		initialValues: {
-			// teacher_id: curUser?._id,
-			// teacherName: `${curUser?.fname} ${curUser?.lname || ""}`,
-			// teacherClass: curUser?.atClass,
 			courseName: editCourse ? course?.courseName : "",
 			courseDesc: editCourse ? course?.courseDesc : "",
 			topics: null,
@@ -112,7 +109,6 @@ export default function AddCourse({ curUser, editCourse, course, setSeverity, se
 						}
 					} else {
 						setLoadBtn(true)
-						// console.log("Added", values)
 						const res = await axios.post(`${appSetting.severHostedUrl}/course/add`, values, { withCredentials: true });
 						if (res) {
 							socket.emit("newCoursesAdded", res.data.newCourse)
@@ -121,7 +117,6 @@ export default function AddCourse({ curUser, editCourse, course, setSeverity, se
 								setOpenSnack(res.data.message)
 								setSeverity("success")
 							}
-							console.log(res.data.newCourse)
 							actions.resetForm()
 						}
 						handleClose();
@@ -149,13 +144,10 @@ export default function AddCourse({ curUser, editCourse, course, setSeverity, se
 			{editCourse ? (
 				// <>
 				<Tooltip title="Edit Course" arrow >
-					<Button
-						size="small"
+					<Button variant="outlined" color="success"
 						onClick={handleClickOpen}
-						sx={{ borderRadius: 5, }}
-
 					>
-						<RiFileEditFill size="22px" color="orange" />
+						Edit Course
 					</Button>
 				</Tooltip>
 				// 	<Tooltip title="Delete Course" arrow>
@@ -199,11 +191,8 @@ export default function AddCourse({ curUser, editCourse, course, setSeverity, se
 							onChange={formik.handleChange("courseName")}
 							autoComplete="off"
 							fullWidth
-							// color={editCourse ? "warning" : "success"}
 							color={"success"}
 							inputProps={{ maxLength: 64 }}
-
-						// required
 						/>
 						{formik.errors.courseName && formik.touched.courseName && (
 							<Typography variant="body2" sx={{ color: "red", marginLeft: "5px" }}>
@@ -211,7 +200,6 @@ export default function AddCourse({ curUser, editCourse, course, setSeverity, se
 							</Typography>
 						)}
 						<TextField
-							// margin="dense"
 							sx={{ mt: 2 }}
 							name="courseDesc"
 							label="Description"

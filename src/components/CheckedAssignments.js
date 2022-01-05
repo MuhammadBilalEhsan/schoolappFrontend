@@ -36,22 +36,22 @@ const CheckedAssignments = ({ currentCourseID }) => {
         <div>
             <Box>
 
-                <Box display="flex" justifyContent="flex-end" px={2} width="100%" >
-                    <Tooltip title="Back to Course Details" arrow>
-                        <Button onClick={() => history.push(`/coursedetails`)} startIcon={<BiArrowBack color="inherit" size="22px" />} color="success" sx={{ marginTop: 3, borderRadius: 5 }} variant="contained">
+                {/* <Box display="flex" justifyContent="flex-end" px={2} width="100%" >
+                    <Tooltip title="Back" arrow>
+                        <Button onClick={() => history.push("/" + currentCourseID)} startIcon={<BiArrowBack color="inherit" size="22px" />} color="success" sx={{ marginTop: 3, borderRadius: 5 }} variant="contained">
                             Back
                         </Button>
                     </Tooltip>
-                </Box>
-                <Box display="flex" borderBottom="1px solid #00800085" justifyContent="space-between" pb={1} px={2} width="100%" >
+                </Box> */}
+                <Box Box display="flex" borderBottom="1px solid #00800085" justifyContent="space-between" pb={1} px={2} width="100%" >
                     <Typography variant="h4" color="green">
                         All Checked Assignments
                     </Typography>
                     <Typography variant="body1" mt={2} color="green">
                         (Assignment Name)
                     </Typography>
-                </Box>
-            </Box>
+                </Box >
+            </Box >
             {checkedAssignments?.length > 0 ?
                 checkedAssignments?.map((assignment, index) => {
                     const findStudent = assignment.submitted.find(student => student.id === curUser._id)
@@ -66,7 +66,7 @@ const CheckedAssignments = ({ currentCourseID }) => {
                                     <Typography variant="h6" color="#0000009c" sx={{ color: "green", cursor: "pointer" }}>{assignment?.title}</Typography>
                                 </Box>
 
-                                <Typography mr={2} variant="body1">{getMarks} Marks</Typography>
+                                <Typography mr={2} variant="body1">{getMarks}Marks</Typography>
 
                             </Box>
                         </Box>
@@ -79,7 +79,7 @@ const CheckedAssignments = ({ currentCourseID }) => {
                     </Typography>
                 </Box>
             }
-        </div>
+        </div >
     )
 }
 

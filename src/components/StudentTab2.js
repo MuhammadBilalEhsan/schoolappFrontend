@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
-import {
-    Accordion,
-    AccordionDetails,
-    AccordionSummary,
-    Typography,
-    Box,
-    Button,
-    Grid,
-    Chip,
-    Avatar,
-    Tooltip
-} from '@mui/material';
+import Accordion from '@mui/material/Accordion';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import Chip from '@mui/material/Chip';
+import Avatar from '@mui/material/Avatar';
+import Tooltip from '@mui/material/Tooltip';
 import { useHistory } from 'react-router-dom';
 import axios from "axios"
 import { MdOutlineExpandMore } from 'react-icons/md';
@@ -62,7 +60,7 @@ const StudentTab2 = ({ curCor, ind }) => {
 
     return (
         <div style={{ marginBottom: 2, width: "100%" }}>
-            <Accordion width="100%" expanded={expanded === 'panel1'} onClick={curCourseDetails} onChange={handleChange('panel1')} sx={{ marginTop: 1, "&:hover": { boxShadow: 3, cursor: "pointer" } }}  >
+            <Accordion width="100%" expanded={expanded === 'panel1'} onClick={curCourseDetails} onChange={handleChange('panel1')} sx={{ marginTop: 1, boxShadow: 1, "&:hover": { boxShadow: 3, cursor: "pointer" } }}  >
                 <AccordionSummary
                     expandIcon={<MdOutlineExpandMore onClick={curCourseDetails} />}
                     aria-controls="panel1bh-content"
@@ -119,26 +117,17 @@ const StudentTab2 = ({ curCor, ind }) => {
                             <Typography color="black" variant="subtitle2">
                                 Duration:
                             </Typography>
-                            <Typography ml={5} variant="body2">
-                                {duration} week / weeks
+                            <Typography color="green" ml={5} variant="body2">
+                                {duration}
                             </Typography>
                         </Grid>
                         <Grid item xs={12} sm={6} sx={{ wordWrap: "break-word" }}>
                             <Typography color="black" variant="subtitle2">
                                 Course Outline:
                             </Typography>
-                            {courseOutline?.map((curElem, ind) => {
-                                return (
-                                    <Box key={ind}>
-                                        <Typography color="black" ml={5} variant="body1">
-                                            week {ind + 1}:
-                                        </Typography>
-                                        <Typography color="green" ml={9} variant="body2">
-                                            {curElem.week}
-                                        </Typography>
-                                    </Box>
-                                );
-                            })}
+                            <Typography color="green" ml={5} variant="body2">
+                                {courseOutline}
+                            </Typography>
                         </Grid>
                     </Grid>
                 </AccordionDetails>

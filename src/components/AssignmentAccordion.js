@@ -6,7 +6,7 @@ import { MdOutlineMoreVert, MdUpload } from "react-icons/md"
 import Assignment from './Assignment'
 
 
-const AssignmentAccordion = ({ curUser, isTeacher, isAdmin, assignment, setCurrentAssignmentID, setChecked }) => {
+const AssignmentAccordion = ({ curUser, isTeacher, isAdmin, assignment, setCurrentAssignmentID, setChecked, setOpenSnack, setSeverity }) => {
     const [expanded, setExpanded] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
@@ -41,7 +41,7 @@ const AssignmentAccordion = ({ curUser, isTeacher, isAdmin, assignment, setCurre
     // console.log("assig", assignment)
     return (
         <div>
-            <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')} sx={{ marginTop: 1, "&:hover": { boxShadow: 3, cursor: "pointer" } }}  >
+            <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')} sx={{ marginTop: 1, boxShadow: 1, "&:hover": { boxShadow: 3, cursor: "pointer" } }}  >
                 <AccordionSummary
                     // expandIcon={assignment?.<ExpandMoreIcon />}
                     aria-controls="panel1bh-content"
@@ -110,6 +110,8 @@ const AssignmentAccordion = ({ curUser, isTeacher, isAdmin, assignment, setCurre
                             actionTitle="submit"
                             curUser={curUser}
                             isTeacher={isTeacher}
+                            setOpenSnack={setOpenSnack}
+                            setSeverity={setSeverity}
                         />
                         )}
                     </Box>
