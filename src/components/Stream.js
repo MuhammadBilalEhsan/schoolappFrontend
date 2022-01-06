@@ -12,6 +12,7 @@ import { currentCourseFunc } from '../redux/actions'
 import { useDispatch } from 'react-redux'
 import appSetting from '../appSetting/appSetting'
 
+const LS = JSON.parse(localStorage.getItem("me"))
 
 const Stream = ({ curUser, currentCourse, isAdmin }) => {
     const [message, setMessage] = useState("")
@@ -43,7 +44,7 @@ const Stream = ({ curUser, currentCourse, isAdmin }) => {
                 const messageObj = {
                     id: _id, name, time, message: newMessage, courseID: currentCourse?._id
                 }
-                const res = await axios.post(`${appSetting.severHostedUrl}/course/sendmessage`, messageObj, { withCredentials: true })
+                const res = await axios.post(`${appSetting.severHostedUrl}/course/sendmessage`, messageObj, { headers: { Authentication: `Bearer ${LS?.token}` } })
                 if (res) {
                     setMessage("")
                     if (res.data.message) {

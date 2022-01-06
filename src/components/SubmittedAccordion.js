@@ -14,6 +14,8 @@ import appSetting from '../appSetting/appSetting'
 import axios from 'axios'
 import { socket } from '../App'
 
+const LS = JSON.parse(localStorage.getItem("me"))
+
 const SubmittedAccordion = ({ submitted, assignmentID, checked, setOpenSnack, setSeverity, isAdmin }) => {
 
     const curUser = useSelector((state) => state.usersReducer.curUser);
@@ -32,7 +34,7 @@ const SubmittedAccordion = ({ submitted, assignmentID, checked, setOpenSnack, se
     const giveNumbersFunc = async (e) => {
         if (marks && marks >= 0 && marks <= 100) {
             try {
-                const res = await axios.post(`${appSetting.severHostedUrl}/assignment/givemarks`, { studentID: submitted?.id, assignmentID, marks }, { withCredentials: true })
+                const res = await axios.post(`${appSetting.severHostedUrl}/assignment/givemarks`, { studentID: submitted?.id, assignmentID, marks }, { headers: { Authentication: `Bearer ${LS?.token}` } })
                 if (res) {
                     socket.emit("changeInAssignment", res.data.assignment)
                     setHideAccordion(true)

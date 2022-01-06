@@ -8,20 +8,20 @@ import appSetting from '../appSetting/appSetting';
 import { curUserFun } from '../redux/actions';
 import moment from 'moment';
 
+const LS = JSON.parse(localStorage.getItem("me"))
 
 const MarkAttendance = ({ curUser, setCurUser, setOpenSnack, setSeverity }) => {
 
     const [todayAttend, setTodayAttend] = useState(true);
     const [holiday, setHoliday] = useState(null);
     const [newState, setNewState] = useState(false);
-    const [firstDate, setFirstDate] = useState();
-    const [curMonth, setCurMonth] = useState();
-    const [curYear, setCurYear] = useState();
-    const [attPercent, setAttPercent] = useState(0);
-    const [lastMonthPercent, setLastMonthPercent] = useState(0);
+    // const [firstDate, setFirstDate] = useState();
+    // const [curMonth, setCurMonth] = useState();
+    // const [curYear, setCurYear] = useState();
+    // const [attPercent, setAttPercent] = useState(0);
+    // const [lastMonthPercent, setLastMonthPercent] = useState(0);
 
 
-    const _id = curUser?._id
     const dispatch = useDispatch()
     const checkTodayAtt = () => {
         // if (curUser.attendance?.length > 0) {
@@ -57,6 +57,7 @@ const MarkAttendance = ({ curUser, setCurUser, setOpenSnack, setSeverity }) => {
     const handleClick = async () => {
         try {
             setNewState(true);
+            const _id = curUser?._id
             const att = new Date();
             const year = att.getFullYear();
             const month = String(att.getMonth());
@@ -66,11 +67,11 @@ const MarkAttendance = ({ curUser, setCurUser, setOpenSnack, setSeverity }) => {
 
             const time = `${hours}:${mins}`;
 
-            const attObj = { year, month, date, time };
+            const attObj = { _id, year, month, date, time };
             // console.log("attObj", attObj)
             const res = await axios.post(`${appSetting.severHostedUrl}/user/attendance`,
                 attObj,
-                { withCredentials: true });
+                { headers: { Authentication: `Bearer ${LS?.token}` } });
             if (res) {
                 dispatch(curUserFun(res.data.updated))
                 setCurUser(res.data.updated)

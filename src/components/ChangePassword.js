@@ -13,6 +13,8 @@ import MuiSnacks from "./MuiSnacks"
 import axios from 'axios'
 import appSetting from '../appSetting/appSetting'
 
+const LS = JSON.parse(localStorage.getItem("me"))
+
 const ChangePassword = () => {
     const [loadBtn, setLoadBtn] = useState(false);
     const [openSnack, setOpenSnack] = useState("");
@@ -20,6 +22,7 @@ const ChangePassword = () => {
 
     const formik = useFormik({
         initialValues: {
+            id: LS?.id,
             oldPassword: "",
             newPassword: "",
             confirmPassword: "",
@@ -44,7 +47,7 @@ const ChangePassword = () => {
                 setLoadBtn(true)
                 const res = await axios.post(`${appSetting.severHostedUrl}/user/changepassword`,
                     values,
-                    { withCredentials: true })
+                    { headers: { Authentication: `Bearer ${LS?.token}` } })
                 if (res) {
                     actions.resetForm()
                     setLoadBtn(false);

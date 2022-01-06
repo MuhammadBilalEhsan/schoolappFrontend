@@ -11,6 +11,7 @@ import MuiSnacks from '../MuiSnacks'
 // import { socket } from '../../App'
 import { useDispatch } from 'react-redux'
 import { curUserFun } from '../../redux/actions'
+const LS = JSON.parse(localStorage.getItem("me"))
 
 
 const AddBox = ({ setCurUser }) => {
@@ -36,7 +37,7 @@ const AddBox = ({ setCurUser }) => {
             setSeverity("error")
         } else {
             try {
-                const res = await axios.post(`${appSetting.severHostedUrl}/user/addclass`, { title }, { withCredentials: true })
+                const res = await axios.post(`${appSetting.severHostedUrl}/user/addclass`, { adminID: LS?.id, title }, { headers: { Authentication: `Bearer ${LS?.token}` } })
                 if (res) {
                     if (res.data.message) {
                         // socket.emit("changeInUser", res.data.user)

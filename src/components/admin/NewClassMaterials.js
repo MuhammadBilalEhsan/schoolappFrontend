@@ -16,6 +16,8 @@ import { currentCourseFunc } from '../../redux/actions';
 import { socket } from '../../App';
 import MuiSnacks from '../MuiSnacks';
 
+const LS = JSON.parse(localStorage.getItem("me"))
+
 const useStyles = makeStyles({
     class_materials: {
         width: "100%",
@@ -43,7 +45,7 @@ const ClassMaterials = ({ curUser }) => {
 
     useEffect(async () => {
         try {
-            const res = await axios.post(`${appSetting.severHostedUrl}/course/specific`, { id: params.id }, { withCredentials: true })
+            const res = await axios.post(`${appSetting.severHostedUrl}/course/specific`, { id: params.id }, { headers: { Authentication: `Bearer ${LS?.token}` } })
             if (res.data.currentCourse) {
                 dispatch(currentCourseFunc(res.data.currentCourse))
                 // setCurrentCourse(res.data.currentCourse)

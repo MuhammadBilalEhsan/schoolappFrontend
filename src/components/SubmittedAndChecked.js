@@ -11,6 +11,8 @@ import { socket } from '../App'
 import appSetting from '../appSetting/appSetting'
 import MuiSnacks from './MuiSnacks'
 
+const LS = JSON.parse(localStorage.getItem("me"))
+
 const SubmittedAndChecked = ({ currentAssignmentID, checked, isAdmin }) => {
     const currentAssignment = useSelector(state => state.usersReducer.currentAssignment)
     const [assignment, setAssignment] = useState(currentAssignment)
@@ -31,7 +33,7 @@ const SubmittedAndChecked = ({ currentAssignmentID, checked, isAdmin }) => {
     })
 
     useEffect(async () => {
-        const res = await axios.get(`${appSetting.severHostedUrl}/assignment/submitted/${currentAssignmentID}`, { withCredentials: true })
+        const res = await axios.get(`${appSetting.severHostedUrl}/assignment/submitted/${currentAssignmentID}`, { headers: { Authentication: `Bearer ${LS?.token}` } })
         if (res) {
             dispatch(currentAssignmentRedux(res.data.assignment))
             setAssignment(res.data.assignment)

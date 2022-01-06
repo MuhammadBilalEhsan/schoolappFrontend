@@ -21,8 +21,8 @@ import { Link, useHistory } from "react-router-dom"
 import { CgLogOff } from 'react-icons/cg';
 import { logoutFunc } from '../../redux/actions';
 import { useDispatch } from "react-redux"
-import axios from "axios"
-import appSetting from '../../appSetting/appSetting';
+// import axios from "axios"
+// import appSetting from '../../appSetting/appSetting';
 // import { useSelector } from 'react-redux';
 
 const drawerWidth = 240;
@@ -92,18 +92,23 @@ function Dashboard(props) {
         setMobileOpen(!mobileOpen);
     };
     const history = useHistory()
-    const logoutFunction = async () => {
-        try {
-            const res = await axios.get(`${appSetting.severHostedUrl}/user/logout`, { withCredentials: true })
-            if (res) {
-                localStorage.removeItem("me")
-                dispatch(logoutFunc())
-                props.setAuth(false)
-                history.push("/");
-            }
-        } catch (error) {
-            console.log(error?.response?.data.error)
-        }
+    const logoutFunction = () => {
+        // try {
+        // let clearLS = localStorage.removeItem("me")
+        let clearLS = localStorage.clear()
+        dispatch(logoutFunc())
+        // if (clearLS) {logout`, { withCredentials: true }
+        // const res = await axios.get(`${appSetting.severHostedUrl}/user/)
+        // if (res) {
+        props.setNowLogin(false)
+        props.setIsAdmin(false)
+        props.setAuth(false)
+        history.push("/");
+        // }
+        // }
+        // } catch (error) {
+        //     console.log(error?.response?.data.error)
+        // }
     }
     useEffect(() => { setActiveComponent(props.Component?.key) })
     const drawer = (

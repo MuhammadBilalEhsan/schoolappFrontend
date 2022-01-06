@@ -1,21 +1,22 @@
 import React, { useState } from 'react';
 import { Box, Typography, Avatar, Menu, MenuItem, Button } from '@mui/material';
 import { FiMoreVertical } from "react-icons/fi";
-import SendingMessageInputComp from "./SendingMessageInputComp";
-import moment from "moment";
+// import SendingMessageInputComp from "./SendingMessageInputComp";
+// import moment from "moment";
 import axios from "axios";
 import { socket } from '../App';
 import MuiSnacks from './MuiSnacks';
 import appSetting from '../appSetting/appSetting';
 import { useHistory } from 'react-router-dom';
+const LS = JSON.parse(localStorage.getItem("me"))
 
 
 const CourseStudentsComp = ({ currentCourse, curUser, isAdmin }) => {
     const [courseStudents, setCourseStudents] = useState(currentCourse?.students);
     const [anchorEl, setAnchorEl] = useState(null);
-    const [message, setMessage] = useState("");
-    const [studentID, setStudentID] = useState("");
-    const [studentName, setStudentName] = useState("");
+    // const [message, setMessage] = useState("");
+    // const [studentID, setStudentID] = useState("");
+    // const [studentName, setStudentName] = useState("");
 
     const [openSnack, setOpenSnack] = useState("");
     const [severity, setSeverity] = useState("");
@@ -34,7 +35,7 @@ const CourseStudentsComp = ({ currentCourse, curUser, isAdmin }) => {
     const removeStudentFunc = async (id) => {
         try {
             const reqObj = { studentID: id, courseID: currentCourse?._id }
-            const res = await axios.post(`${appSetting.severHostedUrl}/course/delspecificstudent`, reqObj, { withCredentials: true })
+            const res = await axios.post(`${appSetting.severHostedUrl}/course/delspecificstudent`, reqObj, { headers: { Authentication: `Bearer ${LS?.token}` } })
             if (res) {
                 if (res.data.message) {
                     socket.emit("changeInCourse", res.data.course)
@@ -55,7 +56,7 @@ const CourseStudentsComp = ({ currentCourse, curUser, isAdmin }) => {
     const muteStudentFunc = async (id) => {
         try {
             handleClose()
-            const res = await axios.post(`${appSetting.severHostedUrl}/course/mutestudent`, { courseID: currentCourse?._id, studentID: id }, { withCredentials: true })
+            const res = await axios.post(`${appSetting.severHostedUrl}/course/mutestudent`, { courseID: currentCourse?._id, studentID: id }, { headers: { Authentication: `Bearer ${LS?.token}` } })
             if (res) {
                 socket.emit("changeInCourse", res.data.course)
                 setCourseStudents(res.data.course.students)
@@ -88,7 +89,7 @@ const CourseStudentsComp = ({ currentCourse, curUser, isAdmin }) => {
     //                 message: newMessage, recieverID: studentID,
     //                 recieverName: studentName
     //             }
-    //             const res = await axios.post(`${appSetting.severHostedUrl}/user/sendmsg`, messageObj, { withCredentials: true })
+    //             const res = await axios.post(`${appSetting.severHostedUrl}/user/sendmsg`, messageObj, { 	headers: { Authentication: `Bearer ${LS?.token}` } })
     //             if (res) {
     //                 if (res.data.message) {
     //                     socket.emit("changeInConversation", res.data.conversation)

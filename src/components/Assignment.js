@@ -19,6 +19,8 @@ import { useDispatch } from 'react-redux'
 import { settingAssignments } from '../redux/actions'
 import appSetting from '../appSetting/appSetting'
 
+const LS = JSON.parse(localStorage.getItem("me"))
+
 const Assignment = ({
     currentCourse, btnTitle, tooltipTitle, curUser, btnIcon, dialogTitle, actionTitle,
     isTeacher, btnStartIcon, btnColor, btnVariant, currentAssignment, input2label,
@@ -79,7 +81,7 @@ const Assignment = ({
                         formData.append("title", values.title)
                         formData.append("courseID", currentCourse?._id)
                         const res = await axios.post(`${appSetting.severHostedUrl}/assignment/add`,
-                            formData, { withCredentials: true }, config)
+                            formData, { headers: { Authentication: `Bearer ${LS?.token}` } }, config)
                         if (res) {
                             closeDialog()
                             setFile(null)
@@ -102,7 +104,7 @@ const Assignment = ({
                         formData.append("time", moment().format("hh:mm:ss A"))
                         console.log("asdf")
                         const res = await axios.post(`${appSetting.severHostedUrl}/assignment/submit`,
-                            formData, { withCredentials: true }, config)
+                            formData, { headers: { Authentication: `Bearer ${LS?.token}` } }, config)
                         if (res) {
                             closeDialog()
                             setFile(null)

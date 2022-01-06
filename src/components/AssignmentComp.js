@@ -11,6 +11,8 @@ import { settingAssignments } from '../redux/actions';
 import MuiSnacks from './MuiSnacks';
 import appSetting from '../appSetting/appSetting'
 
+const LS = JSON.parse(localStorage.getItem("me"))
+
 
 const AssignmentComp = ({ curUser, isTeacher, currentCourse, isAdmin }) => {
     const assignments = useSelector(state => state.usersReducer.allAssignments)
@@ -27,7 +29,7 @@ const AssignmentComp = ({ curUser, isTeacher, currentCourse, isAdmin }) => {
 
     useEffect(async () => {
         try {
-            const res = await axios.post(`${appSetting.severHostedUrl}/assignment/allassignments`, { courseID: currentCourse?._id }, { withCredentials: true })
+            const res = await axios.post(`${appSetting.severHostedUrl}/assignment/allassignments`, { courseID: currentCourse?._id }, { headers: { Authentication: `Bearer ${LS?.token}` } })
             if (res) {
                 dispatch(settingAssignments(res.data.allAssignments))
                 setAllAssignments(res.data.allAssignments)

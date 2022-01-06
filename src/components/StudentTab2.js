@@ -16,6 +16,8 @@ import { MdOutlineExpandMore } from 'react-icons/md';
 import { AiOutlineExclamationCircle } from "react-icons/ai"
 import appSetting from '../appSetting/appSetting'
 
+const LS = JSON.parse(localStorage.getItem("me"))
+
 
 const StudentTab2 = ({ curCor, ind }) => {
     const [expanded, setExpanded] = useState(false);
@@ -37,7 +39,7 @@ const StudentTab2 = ({ curCor, ind }) => {
     //             student_id: uid,
     //             course_id: curCor?.id,
     //         }
-    //         const res = await axios.post(`${appSetting.severHostedUrl}/course/delencourse`, obj,{ withCredentials: true })
+    //         const res = await axios.post(`${appSetting.severHostedUrl}/course/delencourse`, obj,{ 	headers: { Authentication: `Bearer ${LS?.token}` } })
     //         console.log(res.data.message ? res.data.message : res.data.error)
     //     } catch (error) {
     //         console.log(error)
@@ -49,7 +51,7 @@ const StudentTab2 = ({ curCor, ind }) => {
             if (findLocally) {
                 setThisCourse(findLocally)
             } else {
-                const res = await axios.post(`${appSetting.severHostedUrl}/course/getcourse`, { id: curCor.id }, { withCredentials: true })
+                const res = await axios.post(`${appSetting.severHostedUrl}/course/getcourse`, { id: curCor.id }, { headers: { Authentication: `Bearer ${LS?.token}` } })
                 setThisCourse(res.data.DBcourse)
                 setAllCourses([...allCourses, res.data.DBcourse])
             }

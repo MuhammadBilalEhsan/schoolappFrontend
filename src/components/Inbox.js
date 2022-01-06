@@ -14,14 +14,21 @@ import { BsArrowLeftRight, } from 'react-icons/bs';
 import Toolbar from '@mui/material/Toolbar';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
-import { allConversationsRedux, currentConversationRedux } from '../redux/actions';
+import {
+    allConversationsRedux,
+    //  currentConversationRedux 
+} from '../redux/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import appSetting from '../appSetting/appSetting';
 import MuiModal from './admin/MuiModal';
 import { AiOutlineWechat } from 'react-icons/ai';
 import PrivateConvers from './PrivateConvers';
-import { useParams, useLocation } from 'react-router-dom';
+import {
+    //  useParams, 
+    useLocation
+} from 'react-router-dom';
+const LS = JSON.parse(localStorage.getItem("me"))
 
 const drawerWidth = 240;
 
@@ -54,7 +61,7 @@ function Inbox(props) {
     useEffect(async () => {
         try {
             // }
-            const res = await axios.get(`${appSetting.severHostedUrl}/user/myallconversations/${props.curUser?._id}`, { withCredentials: true })
+            const res = await axios.get(`${appSetting.severHostedUrl}/user/myallconversations/${props.curUser?._id}`, { headers: { Authentication: `Bearer ${LS?.token}` } })
             if (res) {
                 dispatch(allConversationsRedux(res.data.allConversations))
                 setAllConversationsArray(res.data.allConversations)

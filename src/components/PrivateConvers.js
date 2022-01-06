@@ -10,6 +10,8 @@ import appSetting from '../appSetting/appSetting';
 import moment from 'moment';
 import { socket } from '../App';
 
+const LS = JSON.parse(localStorage.getItem("me"))
+
 
 
 const PrivateConversation = ({
@@ -51,7 +53,7 @@ const PrivateConversation = ({
                     _id: id ? id : null
                 }
                 // console.log("MsgObj", messageObj)
-                const res = await axios.post(`${appSetting.severHostedUrl}/user/sendmsg`, messageObj, { withCredentials: true })
+                const res = await axios.post(`${appSetting.severHostedUrl}/user/sendmsg`, messageObj, { headers: { Authentication: `Bearer ${LS?.token}` } })
                 if (res) {
                     if (res.data.message) {
                         setCurrentConversation(res.data.conversation)

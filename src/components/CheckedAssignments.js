@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Tooltip, Button, Typography, Avatar } from '@mui/material'
-import { BiArrowBack } from "react-icons/bi"
-import { useHistory } from 'react-router-dom'
+import {
+    Box,
+    // Tooltip, Button,
+    Typography, Avatar
+} from '@mui/material'
+// import { BiArrowBack } from "react-icons/bi"
+// import { useHistory } from 'react-router-dom'
 import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux'
 import { checkedAssignmentsRedux } from '../redux/actions'
 import appSetting from '../appSetting/appSetting'
 
+const LS = JSON.parse(localStorage.getItem("me"))
 
 const CheckedAssignments = ({ currentCourseID }) => {
 
@@ -14,7 +19,7 @@ const CheckedAssignments = ({ currentCourseID }) => {
 
     const [checkedAssignments, setCheckedAssignments] = useState(null)
 
-    const history = useHistory()
+    // const history = useHistory()
     const dispatch = useDispatch()
 
     // useEffect(() => {
@@ -23,7 +28,7 @@ const CheckedAssignments = ({ currentCourseID }) => {
 
     useEffect(async () => {
         try {
-            const res = await axios.post(`${appSetting.severHostedUrl}/assignment/studentallchecked`, { courseID: currentCourseID, studentID: curUser?._id }, { withCredentials: true })
+            const res = await axios.post(`${appSetting.severHostedUrl}/assignment/studentallchecked`, { courseID: currentCourseID, studentID: curUser?._id }, { headers: { Authentication: `Bearer ${LS?.token}` } })
             if (res) {
                 setCheckedAssignments(res.data.checked)
                 dispatch(checkedAssignmentsRedux(res.data.checked))

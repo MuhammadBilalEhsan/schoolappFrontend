@@ -11,6 +11,8 @@ import { curUserFun } from '../redux/actions';
 import { useDispatch } from 'react-redux';
 import appSetting from '../appSetting/appSetting'
 
+const LS = JSON.parse(localStorage.getItem("me"))
+
 
 function CourseAcc({ curElem, curUser, setOpenSnack, setSeverity }) {
     const [expanded, setExpanded] = useState(false);
@@ -30,7 +32,7 @@ function CourseAcc({ curElem, curUser, setOpenSnack, setSeverity }) {
                 course_id: _id,
                 student_id: uid
             }
-            const res = await axios.post(`${appSetting.severHostedUrl}/course/applynow`, obj, { withCredentials: true })
+            const res = await axios.post(`${appSetting.severHostedUrl}/course/applynow`, obj, { headers: { Authentication: `Bearer ${LS?.token}` } })
             if (res) {
                 if (res.data.message) {
                     socket.emit("changeInCourse", res.data.course)

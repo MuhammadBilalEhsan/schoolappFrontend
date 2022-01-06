@@ -13,13 +13,18 @@ import { ImBlocked } from 'react-icons/im';
 import { BsChatDotsFill } from 'react-icons/bs';
 import { RiInformationLine } from 'react-icons/ri';
 import { socket } from '../../App';
-import moment from 'moment';
+// import moment from 'moment';
 import axios from 'axios';
 import appSetting from '../../appSetting/appSetting';
 import MuiSnacks from '../MuiSnacks';
-import SendingMessageInputComp from '../SendingMessageInputComp';
+// import SendingMessageInputComp from '../SendingMessageInputComp';
 import { Box } from '@mui/system';
-import { useHistory, Link } from 'react-router-dom';
+import {
+    //  useHistory,
+    Link
+} from 'react-router-dom';
+
+const LS = JSON.parse(localStorage.getItem("me"))
 
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -53,7 +58,7 @@ export default function MuiTable({ tableBody, curUser }) {
     // const history = useHistory()
     const blockUser = async (e, userID) => {
         try {
-            const res = await axios.get(`${appSetting.severHostedUrl}/user/block/${userID}`, { withCredentials: true })
+            const res = await axios.get(`${appSetting.severHostedUrl}/user/block/${userID}`, { headers: { Authentication: `Bearer ${LS?.token}` } })
             if (res) {
                 // if (res.data.message) {
                 socket.emit("changeInUser", res.data.user)
@@ -79,7 +84,7 @@ export default function MuiTable({ tableBody, curUser }) {
     //                 message: newMessage, recieverID,
     //                 recieverName
     //             }
-    //             const res = await axios.post(`${appSetting.severHostedUrl}/user/sendmsg`, messageObj, { withCredentials: true })
+    //             const res = await axios.post(`${appSetting.severHostedUrl}/user/sendmsg`, messageObj, { 	headers: { Authentication: `Bearer ${LS?.token}` } })
     //             if (res) {
     //                 if (res.data.message) {
     //                     socket.emit("changeInConversation", res.data.conversation)

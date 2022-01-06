@@ -10,6 +10,8 @@ import StudentTab2 from './StudentTab2';
 import axios from 'axios';
 import appSetting from '../appSetting/appSetting';
 
+const LS = JSON.parse(localStorage.getItem("me"))
+
 const StudentEnrolled = ({ curUser }) => {
     const courses = useSelector((state) => state.usersReducer.studentCourse);
 
@@ -25,7 +27,7 @@ const StudentEnrolled = ({ curUser }) => {
             // .map(course => course.id)
 
             if (deleteCoursesIDsArr) {
-                await axios.post(`${appSetting.severHostedUrl}/course/delcoursefromstudent`, { id: curUser?._id }, { withCredentials: true })
+                await axios.post(`${appSetting.severHostedUrl}/course/delcoursefromstudent`, { id: curUser?._id }, { headers: { Authentication: `Bearer ${LS?.token}` } })
                 setTimeout(() => {
                     setRemovedByTeacherState(false)
                 }, 60000);

@@ -13,7 +13,7 @@ import { curUserFun } from "../redux/actions/index";
 import appSetting from '../appSetting/appSetting'
 import MuiSnacks from "./MuiSnacks";
 
-
+const LS = JSON.parse(localStorage.getItem("me"))
 
 function EditProfileComp({ curUser, setCurUser }) {
     const [loadBtn, setLoadBtn] = useState(false);
@@ -29,6 +29,7 @@ function EditProfileComp({ curUser, setCurUser }) {
     // };
     const formik = useFormik({
         initialValues: {
+            id: curUser?._id,
             fname: curUser?.fname,
             lname: curUser?.lname,
             fatherName: curUser?.fatherName,
@@ -63,7 +64,7 @@ function EditProfileComp({ curUser, setCurUser }) {
         onSubmit: async (values) => {
             try {
                 setLoadBtn(true);
-                const res = await axios.post(`${appSetting.severHostedUrl}/user/edit-profile`, values, { withCredentials: true });
+                const res = await axios.post(`${appSetting.severHostedUrl}/user/edit-profile`, values, { headers: { Authentication: `Bearer ${LS?.token}` } });
                 if (res) {
                     setLoadBtn(false);
                     setCurUser(res.data.updated)

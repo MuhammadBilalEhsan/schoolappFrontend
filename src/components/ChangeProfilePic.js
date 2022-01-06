@@ -1,22 +1,24 @@
 import React, { useState } from "react";
 import "../App.css"
-import {
-	Button,
-	Dialog,
-	DialogActions,
-	DialogContent,
-	DialogTitle,
-	Box,
-	Tooltip,
-} from "@mui/material/";
+import Button from "@mui/material/Button";
+import LoadingButton from "@mui/lab/LoadingButton";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import Box from "@mui/material/Box";
+import Tooltip from "@mui/material/Tooltip";
 import { BsCameraFill } from "react-icons/bs";
 import { FaUserEdit } from "react-icons/fa";
 import appSetting from '../appSetting/appSetting'
 import axios from "axios";
 
+const LS = JSON.parse(localStorage.getItem("me"))
+
 export default function ChangeProfilePic({ curUser, setImgURL, setSeverity, setOpenSnack }) {
 	const [open, setOpen] = useState(false);
 	const [imgObj, setImgObj] = useState(null);
+	const [loadBtn, setLoadBtn] = useState(null);
 	const handleClickOpen = () => {
 		setOpen(true);
 	};
@@ -35,7 +37,7 @@ export default function ChangeProfilePic({ curUser, setImgURL, setSeverity, setO
 			setImgObj(img)
 		}
 		else if (size > 5000000) {
-			setOpenSnack("please Select an image of size less then 5 mb")
+			setOpenSnack("please Select an image of size less then 5 mbs.")
 			setSeverity("error")
 		} else {
 			setOpenSnack("you can select only image...")
@@ -47,26 +49,34 @@ export default function ChangeProfilePic({ curUser, setImgURL, setSeverity, setO
 		e.preventDefault()
 		try {
 			if (imgObj) {
+				setLoadBtn(true)
 				let formData = new FormData();
 				formData.append("_id", curUser?._id);
 				formData.append("myImg", imgObj);
 				const config = {
-					headers: { "content-type": "multipart/form-data" },
+					headers: {
+						"content-type": "multipart/form-data",
+						"Authentication": `Bearer ${LS?.token}`
+					},
 				};
-				handleClose()
-				const res = await axios.post(`${appSetting.severHostedUrl}/user/editprofileimg`, formData, config, { withCredentials: true });
+				const res = await axios.post(`${appSetting.severHostedUrl}/user/editprofileimg`,
+					formData, config);
 				if (res) {
-					console.log("pPic", res.data.pPic)
+					// console.log("pPic", res.data.pPic)
 					setImgURL(res.data.pPic)
 					setOpenSnack(res.data.message)
 					setSeverity("success");
+					setLoadBtn(false)
 				}
+				handleClose()
 			} else {
 				setOpenSnack("Please Select an Image")
 				setSeverity("error")
 			}
 		} catch (err) {
-			console.log(err);
+			setLoadBtn(false)
+			setOpenSnack(err?.response?.data?.error)
+			setSeverity("error")
 			handleClose()
 		}
 	};
@@ -99,9 +109,26 @@ export default function ChangeProfilePic({ curUser, setImgURL, setSeverity, setO
 					</form>
 				</DialogContent>
 				<DialogActions>
-					<Button color="success" variant="contained" onClick={saveImg}>
+					{/* <Button color="success" variant="contained" onClick={saveImg}>
 						save image
-					</Button>
+					</Button> */}
+
+
+
+					<LoadingButton
+						// size="large"
+						// type="submit"
+						// mt={2}
+						onClick={saveImg}
+						variant="contained"
+						color="success"
+						loading={loadBtn}
+					// sx={{ py: loadBtn ? 2.7 : 1, mt: 4 }}
+					// fullWidth
+					>
+						Set as Profile
+					</LoadingButton>
+
 
 					<Button color="success" onClick={handleClose}>
 						Cancel

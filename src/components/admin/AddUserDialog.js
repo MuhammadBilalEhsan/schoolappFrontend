@@ -25,6 +25,8 @@ import { RiArrowDropDownFill } from "react-icons/ri"
 import { BsExclamationDiamond } from "react-icons/bs"
 // import { useDispatch } from 'react-redux';
 
+const LS = JSON.parse(localStorage.getItem("me"))
+
 
 function AddUserDialog({ title, classesArray }) {
     const [open, setOpen] = useState(false);
@@ -91,7 +93,7 @@ function AddUserDialog({ title, classesArray }) {
                     password: values.password,
                 }
 
-                const res = await axios.post(`${appSetting.severHostedUrl}/user/register`, obj, { withCredentials: true });
+                const res = await axios.post(`${appSetting.severHostedUrl}/user/register`, obj, { headers: { Authentication: `Bearer ${LS?.token}` } });
                 if (res) {
                     socket.emit("newUserAdded", res.data.user)
                     if (res.data.message) {

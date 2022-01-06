@@ -9,6 +9,8 @@ import MuiSnacks from './MuiSnacks';
 import appSetting from '../appSetting/appSetting'
 import { socket } from '../App'
 
+const LS = JSON.parse(localStorage.getItem("me"))
+
 
 const Announcement = ({ currentCourse, curUser }) => {
     const [courseAnnouncments, setCourseAnnouncments] = useState(null)
@@ -36,7 +38,7 @@ const Announcement = ({ currentCourse, curUser }) => {
                 const announcementObj = {
                     id: _id, name, time, message: newMessage, courseID: currentCourse?._id
                 }
-                const res = await axios.post(`${appSetting.severHostedUrl}/course/announcement`, announcementObj, { withCredentials: true })
+                const res = await axios.post(`${appSetting.severHostedUrl}/course/announcement`, announcementObj, { headers: { Authentication: `Bearer ${LS?.token}` } })
                 if (res) {
                     setMessage("")
                     toggle()

@@ -11,21 +11,23 @@ const SendingMessageInputComp = ({ userName, autoFocus, placeholder, value, setV
                         <Avatar sx={{ bgcolor: "green", textTransform: "capitalize" }}>{userName}</Avatar>
                     </Box>
                     <Box flexGrow={1}>
-                        <TextField
-                            autoFocus={autoFocus}
-                            name={name}
-                            type={type}
-                            placeholder={placeholder}
-                            value={value}
-                            onChange={(e) => setValue(e.target.value)}
-                            autoComplete="off"
-                            fullWidth
-                            multiline
-                            color={color}
-                            InputProps={{
-                                endAdornment: (<AiOutlineSend onClick={(e) => submitFunc(e)} size="26px" color="green" style={{ margin: "auto 1 0 0", cursor: "pointer" }} />)
-                            }}
-                        />
+                        <form onSubmit={(e) => submitFunc(e)}>
+                            <TextField
+                                autoFocus={autoFocus}
+                                name={name}
+                                type={type}
+                                placeholder={placeholder}
+                                value={value}
+                                onChange={(e) => setValue(e.target.value)}
+                                autoComplete="off"
+                                fullWidth
+                                multiline
+                                color={color}
+                                InputProps={{
+                                    endAdornment: (<AiOutlineSend onClick={(e) => submitFunc(e)} size="26px" color="green" style={{ margin: "auto 1 0 0", cursor: "pointer" }} />)
+                                }}
+                            />
+                        </form>
                     </Box>
                 </Box>
             </Box>

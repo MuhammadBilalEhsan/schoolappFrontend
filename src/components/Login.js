@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
+// import { useHistory } from "react-router-dom";
 import axios from "axios";
 import Box from "@mui/material/Box"
 import TextField from "@mui/material/TextField"
@@ -11,14 +11,14 @@ import { BiUser } from "react-icons/bi";
 import { BsExclamationDiamond } from "react-icons/bs";
 import { FaUserCircle } from "react-icons/fa";
 import { RiLockPasswordFill } from "react-icons/ri";
-import "../css/login.css";
+// import "../css/login.css";
 import appSetting from '../appSetting/appSetting'
 import MuiSnacks from "./MuiSnacks"
 import { useFormik } from "formik";
 import * as yup from "yup"
 import { curUserFun } from "../redux/actions";
 import { useDispatch } from "react-redux";
-
+// const me = JSON.parse(localStorage.getItem("me"))
 
 const Login = ({ setAuth, setCurUser, setIsAdmin, setNowLogin }) => {
 	const [loadBtn, setLoadBtn] = useState(false);
@@ -26,7 +26,7 @@ const Login = ({ setAuth, setCurUser, setIsAdmin, setNowLogin }) => {
 	const [openSnack, setOpenSnack] = useState("");
 	const [severity, setSeverity] = useState("");
 
-	const history = useHistory();
+	// const history = useHistory();
 	const dispatch = useDispatch()
 
 	const formik = useFormik({
@@ -41,31 +41,31 @@ const Login = ({ setAuth, setCurUser, setIsAdmin, setNowLogin }) => {
 				.required("Pasword is Required.")
 				.min(8, "password contains at least 8 characters.."),
 		}),
-
-
 		onSubmit: async (values) => {
 			try {
 				setLoadBtn(true);
 
-				const res = await axios.post(`${appSetting.severHostedUrl}/login`, values, { withCredentials: true })
+				const res = await axios.post(`${appSetting.severHostedUrl}/login`,
+					values)
 				if (res) {
+					const token = res.data.token
 					const user = res.data.user
 					setCurUser(user)
 					setLoadBtn(false);
+					localStorage.setItem("me", JSON.stringify({ id: user._id, role: user.roll, atClass: user.atClass, token }))
 					if (user.isAdmin) {
 						dispatch(curUserFun(user));
 						setAuth(true)
 						setIsAdmin(true)
-						setNowLogin(true)
+						// setNowLogin(true)
 					} else {
 						dispatch(curUserFun(user));
 						setAuth(true)
-						setNowLogin(true)
-
+						// setNowLogin(true)
 						// history.push("/profile");
 					}
-					localStorage.setItem("me", JSON.stringify({ id: user._id, role: user.roll }))
-					history.push("/dashboard");
+					setNowLogin(true)
+					// history.push("/dashboard");
 				}
 
 			} catch (error) {
