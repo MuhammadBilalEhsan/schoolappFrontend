@@ -8,10 +8,10 @@ import { socket } from '../App';
 import MuiSnacks from './MuiSnacks';
 import appSetting from '../appSetting/appSetting';
 import { useHistory } from 'react-router-dom';
-const LS = JSON.parse(localStorage.getItem("me"))
 
 
 const CourseStudentsComp = ({ currentCourse, curUser, isAdmin }) => {
+    const LS = JSON.parse(localStorage.getItem("me"))
     const [courseStudents, setCourseStudents] = useState(currentCourse?.students);
     const [anchorEl, setAnchorEl] = useState(null);
     // const [message, setMessage] = useState("");

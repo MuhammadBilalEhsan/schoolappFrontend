@@ -16,10 +16,10 @@ import { MdOutlineExpandMore } from 'react-icons/md';
 import { AiOutlineExclamationCircle } from "react-icons/ai"
 import appSetting from '../appSetting/appSetting'
 
-const LS = JSON.parse(localStorage.getItem("me"))
 
 
 const StudentTab2 = ({ curCor, ind }) => {
+    const LS = JSON.parse(localStorage.getItem("me"))
     const [expanded, setExpanded] = useState(false);
 
     const [thisCourse, setThisCourse] = useState({});

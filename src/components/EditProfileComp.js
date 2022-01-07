@@ -13,9 +13,9 @@ import { curUserFun } from "../redux/actions/index";
 import appSetting from '../appSetting/appSetting'
 import MuiSnacks from "./MuiSnacks";
 
-const LS = JSON.parse(localStorage.getItem("me"))
 
 function EditProfileComp({ curUser, setCurUser }) {
+    const LS = JSON.parse(localStorage.getItem("me"))
     const [loadBtn, setLoadBtn] = useState(false);
     const [openSnack, setOpenSnack] = useState("");
     const [severity, setSeverity] = useState("");
@@ -81,7 +81,7 @@ function EditProfileComp({ curUser, setCurUser }) {
 
     })
     return (
-        <Box width="100%" minHeight="90vh"
+        <Box width="100%" minHeight="88vh"
             sx={{ backgroundColor: "#f6f6f6" }}
             display="flex" justifyContent="center" alignItems="flex-start"
         >

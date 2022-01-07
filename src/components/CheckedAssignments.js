@@ -11,9 +11,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { checkedAssignmentsRedux } from '../redux/actions'
 import appSetting from '../appSetting/appSetting'
 
-const LS = JSON.parse(localStorage.getItem("me"))
 
 const CheckedAssignments = ({ currentCourseID }) => {
+    const LS = JSON.parse(localStorage.getItem("me"))
 
     const curUser = useSelector((state) => state.usersReducer.curUser);
 
@@ -34,7 +34,7 @@ const CheckedAssignments = ({ currentCourseID }) => {
                 dispatch(checkedAssignmentsRedux(res.data.checked))
             }
         } catch (error) {
-            console.log(error)
+            console.log(error?.response?.data?.error)
         }
     }, [])
     return (

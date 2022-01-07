@@ -16,7 +16,6 @@ import { currentCourseFunc } from '../../redux/actions';
 import { socket } from '../../App';
 import MuiSnacks from '../MuiSnacks';
 
-const LS = JSON.parse(localStorage.getItem("me"))
 
 const useStyles = makeStyles({
     class_materials: {
@@ -27,6 +26,7 @@ const useStyles = makeStyles({
 
 
 const ClassMaterials = ({ curUser }) => {
+    const LS = JSON.parse(localStorage.getItem("me"))
     const currentCourse = useSelector((state) => state.usersReducer.currentCourse);
     // const [currentCourse, setCurrentCourse] = useState(currCourse)
     const [openSnack, setOpenSnack] = useState("");

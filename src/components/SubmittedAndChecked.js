@@ -11,9 +11,9 @@ import { socket } from '../App'
 import appSetting from '../appSetting/appSetting'
 import MuiSnacks from './MuiSnacks'
 
-const LS = JSON.parse(localStorage.getItem("me"))
 
 const SubmittedAndChecked = ({ currentAssignmentID, checked, isAdmin }) => {
+    const LS = JSON.parse(localStorage.getItem("me"))
     const currentAssignment = useSelector(state => state.usersReducer.currentAssignment)
     const [assignment, setAssignment] = useState(currentAssignment)
 

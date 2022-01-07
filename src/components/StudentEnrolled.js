@@ -10,9 +10,9 @@ import StudentTab2 from './StudentTab2';
 import axios from 'axios';
 import appSetting from '../appSetting/appSetting';
 
-const LS = JSON.parse(localStorage.getItem("me"))
 
 const StudentEnrolled = ({ curUser }) => {
+    const LS = JSON.parse(localStorage.getItem("me"))
     const courses = useSelector((state) => state.usersReducer.studentCourse);
 
     const [removedByTeacherState, setRemovedByTeacherState] = useState(true)

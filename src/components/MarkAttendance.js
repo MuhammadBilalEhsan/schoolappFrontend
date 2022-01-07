@@ -8,9 +8,9 @@ import appSetting from '../appSetting/appSetting';
 import { curUserFun } from '../redux/actions';
 import moment from 'moment';
 
-const LS = JSON.parse(localStorage.getItem("me"))
 
 const MarkAttendance = ({ curUser, setCurUser, setOpenSnack, setSeverity }) => {
+    const LS = JSON.parse(localStorage.getItem("me"))
 
     const [todayAttend, setTodayAttend] = useState(true);
     const [holiday, setHoliday] = useState(null);

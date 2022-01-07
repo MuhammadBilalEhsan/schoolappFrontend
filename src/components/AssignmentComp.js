@@ -11,10 +11,10 @@ import { settingAssignments } from '../redux/actions';
 import MuiSnacks from './MuiSnacks';
 import appSetting from '../appSetting/appSetting'
 
-const LS = JSON.parse(localStorage.getItem("me"))
 
 
 const AssignmentComp = ({ curUser, isTeacher, currentCourse, isAdmin }) => {
+    const LS = JSON.parse(localStorage.getItem("me"))
     const assignments = useSelector(state => state.usersReducer.allAssignments)
 
     const [allAssignments, setAllAssignments] = useState(assignments)
@@ -35,7 +35,8 @@ const AssignmentComp = ({ curUser, isTeacher, currentCourse, isAdmin }) => {
                 setAllAssignments(res.data.allAssignments)
             }
         } catch (error) {
-            console.log(error)
+            setOpenSnack(error?.response?.data?.error)
+            setSeverity("error")
         }
     }, [])
     return (

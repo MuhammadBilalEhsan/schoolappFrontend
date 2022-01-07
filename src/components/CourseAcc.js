@@ -11,10 +11,10 @@ import { curUserFun } from '../redux/actions';
 import { useDispatch } from 'react-redux';
 import appSetting from '../appSetting/appSetting'
 
-const LS = JSON.parse(localStorage.getItem("me"))
 
 
 function CourseAcc({ curElem, curUser, setOpenSnack, setSeverity }) {
+    const LS = JSON.parse(localStorage.getItem("me"))
     const [expanded, setExpanded] = useState(false);
     const [hideCurrentCourse, setHideCurrentCourse] = useState(false);
     const { fname, lname } = curUser

@@ -13,9 +13,9 @@ import MuiSnacks from "./MuiSnacks"
 import axios from 'axios'
 import appSetting from '../appSetting/appSetting'
 
-const LS = JSON.parse(localStorage.getItem("me"))
 
 const ChangePassword = () => {
+    const LS = JSON.parse(localStorage.getItem("me"))
     const [loadBtn, setLoadBtn] = useState(false);
     const [openSnack, setOpenSnack] = useState("");
     const [severity, setSeverity] = useState("");
@@ -63,7 +63,7 @@ const ChangePassword = () => {
     });
 
     return (
-        <Box width="100%" minHeight="100vh"
+        <Box width="100%" minHeight="88vh"
             sx={{ backgroundColor: "#f6f6f6" }}
             display="flex" justifyContent="center" alignItems="flex-start"
         >

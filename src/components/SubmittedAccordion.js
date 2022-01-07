@@ -14,10 +14,10 @@ import appSetting from '../appSetting/appSetting'
 import axios from 'axios'
 import { socket } from '../App'
 
-const LS = JSON.parse(localStorage.getItem("me"))
 
 const SubmittedAccordion = ({ submitted, assignmentID, checked, setOpenSnack, setSeverity, isAdmin }) => {
-
+    const LS = JSON.parse(localStorage.getItem("me"))
+    
     const curUser = useSelector((state) => state.usersReducer.curUser);
     const [showInput, setShowInput] = useState(false)
     const [hideAccordion, setHideAccordion] = useState(false)

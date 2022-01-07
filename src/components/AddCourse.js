@@ -16,11 +16,11 @@ import appSetting from "../appSetting/appSetting";
 import { getCourseFunc } from "../redux/actions";
 import { useDispatch } from "react-redux";
 
-const LS = JSON.parse(localStorage.getItem("me"))
 
 const durationArr = ["1 Week", "2 Weeks", "3 Weeks", "4 Weeks"];
 
 export default function AddCourse({ curUser, editCourse, course, setSeverity, setOpenSnack }) {
+	const LS = JSON.parse(localStorage.getItem("me"))
 	const [open, setOpen] = useState(false);
 	const [menuOpen, setMenuOpen] = useState(null);
 	const [loadBtn, setLoadBtn] = useState(null);

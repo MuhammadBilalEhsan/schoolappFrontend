@@ -13,9 +13,9 @@ import { FaUserEdit } from "react-icons/fa";
 import appSetting from '../appSetting/appSetting'
 import axios from "axios";
 
-const LS = JSON.parse(localStorage.getItem("me"))
 
 export default function ChangeProfilePic({ curUser, setImgURL, setSeverity, setOpenSnack }) {
+	const LS = JSON.parse(localStorage.getItem("me"))
 	const [open, setOpen] = useState(false);
 	const [imgObj, setImgObj] = useState(null);
 	const [loadBtn, setLoadBtn] = useState(null);
@@ -73,9 +73,9 @@ export default function ChangeProfilePic({ curUser, setImgURL, setSeverity, setO
 				setOpenSnack("Please Select an Image")
 				setSeverity("error")
 			}
-		} catch (err) {
+		} catch (error) {
 			setLoadBtn(false)
-			setOpenSnack(err?.response?.data?.error)
+			setOpenSnack(error?.response?.data?.error)
 			setSeverity("error")
 			handleClose()
 		}

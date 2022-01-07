@@ -19,13 +19,13 @@ import { useDispatch } from 'react-redux'
 import { settingAssignments } from '../redux/actions'
 import appSetting from '../appSetting/appSetting'
 
-const LS = JSON.parse(localStorage.getItem("me"))
 
 const Assignment = ({
     currentCourse, btnTitle, tooltipTitle, curUser, btnIcon, dialogTitle, actionTitle,
     isTeacher, btnStartIcon, btnColor, btnVariant, currentAssignment, input2label,
     setOpenSnack, setSeverity, setAllAssignments
 }) => {
+    const LS = JSON.parse(localStorage.getItem("me"))
     const [openAssignDialog, setOpenAssignDialog] = useState(false)
     const [file, setFile] = useState(null)
     const [loadBtn, setLoadBtn] = useState(null)

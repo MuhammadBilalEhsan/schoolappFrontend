@@ -9,10 +9,10 @@ import MuiSnacks from './MuiSnacks';
 import appSetting from '../appSetting/appSetting'
 import { socket } from '../App'
 
-const LS = JSON.parse(localStorage.getItem("me"))
 
 
 const Announcement = ({ currentCourse, curUser }) => {
+    const LS = JSON.parse(localStorage.getItem("me"))
     const [courseAnnouncments, setCourseAnnouncments] = useState(null)
     const [showInput, setShowInput] = useState(false)
     const [message, setMessage] = useState("")
@@ -42,15 +42,11 @@ const Announcement = ({ currentCourse, curUser }) => {
                 if (res) {
                     setMessage("")
                     toggle()
-                    if (res.data.message) {
-                        setOpenSnack(res.data.message)
-                        setSeverity("success")
-                        socket.emit("changeInCourse", res.data.course)
-                        setCourseAnnouncments(res.data.course.announcement)
-                    } else {
-                        setOpenSnack(res.data.error)
-                        setSeverity("error")
-                    }
+                    setOpenSnack(res.data.message)
+                    setSeverity("success")
+                    socket.emit("changeInCourse", res.data.course)
+                    setCourseAnnouncments(res.data.course.announcement)
+
                 }
             } else {
                 setOpenSnack("Write something")
@@ -58,7 +54,8 @@ const Announcement = ({ currentCourse, curUser }) => {
             }
 
         } catch (error) {
-            console.log(error)
+            setOpenSnack(error?.response?.data?.error)
+            setSeverity("error")
         }
     }
     useEffect(() => {

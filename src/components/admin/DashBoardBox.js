@@ -15,7 +15,7 @@ const DashBoardBox = ({ currentUser }) => {
 
     }, [allCourses, users])
     return (
-        <Box minWidth="400px" minHeight="100vh" px={2} sx={{ backgroundColor: "#185c1817" }}>
+        <Box minWidth="400px" minHeight="88vh" px={2} sx={{ backgroundColor: "#185c1817" }}>
             <Box width="100%" display="flex" alignItems="center" justifyContent={"space-around"} flexWrap={"wrap"}>
 
 

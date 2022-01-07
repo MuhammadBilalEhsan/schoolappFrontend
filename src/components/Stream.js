@@ -12,9 +12,9 @@ import { currentCourseFunc } from '../redux/actions'
 import { useDispatch } from 'react-redux'
 import appSetting from '../appSetting/appSetting'
 
-const LS = JSON.parse(localStorage.getItem("me"))
 
 const Stream = ({ curUser, currentCourse, isAdmin }) => {
+    const LS = JSON.parse(localStorage.getItem("me"))
     const [message, setMessage] = useState("")
     const [isMuted, setIsMuted] = useState(false)
 
