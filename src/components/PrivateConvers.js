@@ -136,7 +136,8 @@ const PrivateConversation = ({
         width="100%"
         display="flex"
         flexDirection={"column"}
-        // minHeight="85vh"
+        // minHeight="100%"
+        sx={{ height: { xs: `calc(100vh - ${137}px)` } }}
         px={1.5}
       >
         <Box
@@ -171,7 +172,7 @@ const PrivateConversation = ({
               );
             })
           ) : (
-            <Box pt={5} width="100%" textAlign="center">
+            <Box pt={5} width="100%" textAlign="center" flexGrow={1}>
               <Typography variant="subtitle1" color="darkgreen">
                 Currently No Chats
               </Typography>

@@ -1,14 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import Dialog from "@mui/material/Dialog";
-import Typography from "@mui/material/Typography";
+import LoadingButton from "@mui/lab/LoadingButton";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
-import DialogTitle from "@mui/material/DialogTitle";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormLabel from "@mui/material/FormLabel";
 import RadioGroup from "@mui/material/RadioGroup";
@@ -16,22 +14,29 @@ import Radio from "@mui/material/Radio";
 import axios from "axios";
 import appSetting from "../../appSetting/appSetting";
 import MuiSnacks from "../MuiSnacks";
+import MuiTextField from "../MuiTextField";
 import { socket } from "../../App";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
 import { FiPlus } from "react-icons/fi";
 import { RiArrowDropDownFill } from "react-icons/ri";
-import { BsExclamationDiamond } from "react-icons/bs";
+import ValidationComp from "../ValidationComp";
 // import { useDispatch } from 'react-redux';
 
-function AddUserDialog({ title, classesArray }) {
+function AddUserDialog({ title, classesArray, role }) {
   const LS = JSON.parse(localStorage.getItem("me"));
+  const [loadBtn, setLoadBtn] = useState(false);
   const [open, setOpen] = useState(false);
   const [openSnack, setOpenSnack] = useState("");
   const [severity, setSeverity] = useState("");
   const [classState, setClassState] = useState("");
-
+  const [teacherRadio, setTeacherRadio] = useState(
+    role === "teacher" ? true : false
+  );
+  const [studentRadio, setStudentRadio] = useState(
+    role === "student" ? true : false
+  );
   // Menu Handling Start
   const [anchorEl, setAnchorEl] = useState(null);
   const menuOpen = Boolean(anchorEl);
@@ -58,27 +63,28 @@ function AddUserDialog({ title, classesArray }) {
       lname: "",
       email: "",
       password: "",
-      roll: "",
+      roll: String(role),
       atClass: title ? title : "",
     },
 
     validationSchema: yup.object().shape({
-      fname: yup.string().required("First Name is Required."),
-      lname: yup.string().required("Last Name is Required."),
+      fname: yup.string().required("First Name Required."),
+      lname: yup.string().required("Last Name Required."),
       email: yup
         .string()
-        .email("Does not looks like an email")
-        .required("Email is Required."),
+        .email("Not looks like an email")
+        .required("Email Required."),
       password: yup
         .string()
-        .required("Pasword is Required.")
+        .required("Pasword Required.")
         .min(8, "password contains at least 8 characters.."),
-      roll: yup.string().required("Role is Required."),
-      atClass: yup.string().required("Class is Required."),
+      roll: yup.string().required("Role Required."),
+      atClass: yup.string().required("Class Required."),
     }),
 
     onSubmit: async (values, actions) => {
       try {
+        setLoadBtn(true);
         let obj = {
           fname: values.fname,
           lname: values.lname,
@@ -87,6 +93,8 @@ function AddUserDialog({ title, classesArray }) {
           atClass: values.atClass,
           password: values.password,
         };
+
+        // console.log("obj", obj);
 
         const res = await axios.post(
           `${appSetting.severHostedUrl}/user/register`,
@@ -99,14 +107,19 @@ function AddUserDialog({ title, classesArray }) {
           setSeverity("success");
           handleClose();
           actions.resetForm();
+          setLoadBtn(false);
         }
       } catch (error) {
         setOpenSnack(error?.response?.data?.error);
         setSeverity("error");
+        setLoadBtn(false);
         // handleClose();
       }
     },
   });
+  useEffect(() => {
+    formik.values.roll = String(role);
+  }, [role]);
   return (
     <div>
       {openSnack ? (
@@ -129,9 +142,6 @@ function AddUserDialog({ title, classesArray }) {
           color="success"
           sx={{
             boxShadow: 5,
-            // "&:hover": { backgroundColor: "#014201" },
-            // backgroundColor: "#014201",
-            // color: "#fff",
           }}
           endIcon={<FiPlus color="white" />}
         >
@@ -139,9 +149,9 @@ function AddUserDialog({ title, classesArray }) {
         </Button>
       )}
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="xs">
-        <DialogTitle>
+        {/* <DialogTitle>
           <strong>Add User{title ? ` in "${title}"` : ""}</strong>
-        </DialogTitle>
+        </DialogTitle> */}
         <DialogContent>
           <Box
             component="form"
@@ -150,112 +160,88 @@ function AddUserDialog({ title, classesArray }) {
             autoComplete="off"
             onSubmit={formik.handleSubmit}
           >
-            <TextField
-              autoFocus
-              sx={{ mt: 2 }}
-              type="text"
-              color="success"
+            <MuiTextField
               label="First Name"
-              variant="outlined"
-              value={formik.values.fname}
-              onChange={formik.handleChange("fname")}
-              inputProps={{ maxLength: 16 }}
-              fullWidth
+              autoFocus={true}
+              inputProps={{ ...formik.getFieldProps("fname"), maxLength: 16 }}
+              color={
+                formik.touched.fname && formik.errors.fname
+                  ? "error"
+                  : "success"
+              }
             />
-            {formik.errors.fname && formik.touched.fname && (
-              <Typography
-                variant="body2"
-                sx={{
-                  color: "red",
-                  marginLeft: "5px",
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <BsExclamationDiamond
-                  color="red"
-                  size="16px"
-                  style={{ marginRight: "8px" }}
-                />{" "}
-                {formik.errors.fname}
-              </Typography>
-            )}
-            <TextField
-              sx={{ mt: 2 }}
-              type="text"
-              color="success"
+            {formik.touched.fname && formik.errors.fname ? (
+              <ValidationComp error={formik.errors.fname} />
+            ) : null}
+            <MuiTextField
               label="Last Name"
-              variant="outlined"
-              value={formik.values.lname}
-              onChange={formik.handleChange("lname")}
-              inputProps={{ maxLength: 16 }}
-              fullWidth
+              inputProps={{ ...formik.getFieldProps("lname"), maxLength: 16 }}
+              color={
+                formik.touched.lname && formik.errors.lname
+                  ? "error"
+                  : "success"
+              }
+              //  variant="outlined"
             />
-            {formik.errors.lname && formik.touched.lname && (
-              <Typography
-                variant="body2"
-                sx={{
-                  color: "red",
-                  marginLeft: "5px",
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <BsExclamationDiamond
-                  color="red"
-                  size="16px"
-                  style={{ marginRight: "8px" }}
-                />{" "}
-                {formik.errors.lname}
-              </Typography>
-            )}
+            {formik.errors.lname && formik.touched.lname ? (
+              <ValidationComp error={formik.errors.lname} />
+            ) : null}
             <FormLabel component="legend" sx={{ mt: 2 }}>
               Role:
             </FormLabel>
             <RadioGroup row>
               <FormControlLabel
-                onChange={(e) => (formik.values.roll = String(e.target.value))}
+                onChange={(e) => {
+                  formik.values.roll = String(e.target.value);
+                  formik.setFieldTouched("roll");
+                }}
+                disabled={role === "student" ? true : false}
+                checked={teacherRadio}
+                onClick={() => setTeacherRadio(true)}
                 value="teacher"
                 control={<Radio color="success" />}
                 label="Teacher"
               />
               <FormControlLabel
-                onChange={(e) => (formik.values.roll = String(e.target.value))}
+                onChange={(e) => {
+                  formik.values.roll = String(e.target.value);
+                  formik.setFieldTouched("roll");
+                }}
+                disabled={role === "teacher" ? true : false}
+                checked={studentRadio}
+                onClick={() => setStudentRadio(true)}
                 value="student"
                 control={<Radio color="success" />}
                 label="Student"
               />
             </RadioGroup>
-            {formik.errors.roll && formik.touched.roll && (
-              <Typography
-                variant="body2"
-                sx={{
-                  color: "red",
-                  marginLeft: "5px",
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <BsExclamationDiamond
-                  color="red"
-                  size="16px"
-                  style={{ marginRight: "8px" }}
-                />{" "}
-                {formik.errors.roll}
-              </Typography>
-            )}
+            {formik.touched.roll && formik.errors.roll ? (
+              <ValidationComp error={formik.errors.roll} />
+            ) : null}
             <Button
               aria-expanded={menuOpen ? "true" : undefined}
               sx={{ mt: 2 }}
-              color="success"
+              color={
+                formik.touched.atClass && formik.errors.atClass
+                  ? "error"
+                  : "success"
+              }
               variant="outlined"
-              onClick={(e) => setAnchorEl(e.currentTarget)}
+              onClick={(e) => {
+                setAnchorEl(e.currentTarget);
+              }}
               disabled={title ? true : false}
               endIcon={<RiArrowDropDownFill color="inherit" />}
+              // inputProps={{ ...formik.getFieldProps("atClass") }}
             >
               {title ? title : classState ? classState : "Select Class"}
             </Button>
-            <Menu anchorEl={anchorEl} open={menuOpen} onClose={menuClose}>
+            <Menu
+              anchorEl={anchorEl}
+              open={menuOpen}
+              onClose={menuClose}
+              onClick={() => formik.setFieldTouched("atClass")}
+            >
               {classesArray?.map((classTitle, index) => {
                 return (
                   <MenuItem
@@ -271,96 +257,55 @@ function AddUserDialog({ title, classesArray }) {
                 );
               })}
             </Menu>
-            {formik.errors.atClass && formik.touched.atClass && (
-              <Typography
-                variant="body2"
-                sx={{
-                  color: "red",
-                  marginLeft: "5px",
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <BsExclamationDiamond
-                  color="red"
-                  size="16px"
-                  style={{ marginRight: "8px" }}
-                />{" "}
-                {formik.errors.atClass}
-              </Typography>
-            )}
-            <TextField
-              sx={{ mt: 2 }}
+            {formik.touched.atClass && formik.errors.atClass ? (
+              <ValidationComp error={formik.errors.atClass} />
+            ) : null}
+            <MuiTextField
+              label="Email"
               type="email"
-              color="success"
-              label="email"
-              variant="outlined"
-              value={formik.values.email}
-              onChange={formik.handleChange("email")}
-              inputProps={{ maxLength: 32 }}
-              fullWidth
+              inputProps={{ ...formik.getFieldProps("email") }}
+              color={
+                formik.touched.email && formik.errors.email
+                  ? "error"
+                  : "success"
+              }
             />
-            {formik.errors.email && formik.touched.email && (
-              <Typography
-                variant="body2"
-                sx={{
-                  color: "red",
-                  marginLeft: "5px",
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <BsExclamationDiamond
-                  color="red"
-                  size="16px"
-                  style={{ marginRight: "8px" }}
-                />{" "}
-                {formik.errors.email}
-              </Typography>
-            )}
-            <TextField
-              sx={{ mt: 2 }}
-              type="password"
-              color="success"
+            {formik.touched.email && formik.errors.email ? (
+              <ValidationComp error={formik.errors.email} />
+            ) : null}
+            <MuiTextField
               label="Password"
-              variant="outlined"
-              value={formik.values.password}
-              onChange={formik.handleChange("password")}
-              fullWidth
+              type="password"
+              inputProps={{ ...formik.getFieldProps("password") }}
+              color={
+                formik.touched.password && formik.errors.password
+                  ? "error"
+                  : "success"
+              }
             />
-            {formik.errors.password && formik.touched.password && (
-              <Typography
-                variant="body2"
-                sx={{
-                  color: "red",
-                  marginLeft: "5px",
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <BsExclamationDiamond
-                  color="red"
-                  size="16px"
-                  style={{ marginRight: "8px" }}
-                />{" "}
-                {formik.errors.password}
-              </Typography>
-            )}
+            {formik.touched.password && formik.errors.password ? (
+              <ValidationComp error={formik.errors.password} />
+            ) : null}
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button
+          <LoadingButton
             variant="contained"
+            size="small"
             color="success"
             onClick={formik.handleSubmit}
+            loading={loadBtn}
+            sx={{ py: loadBtn ? 2 : "5px", px: loadBtn ? 6.3 : "15px" }}
           >
-            Register
-          </Button>
+            {loadBtn ? "" : "Register"}
+          </LoadingButton>
           <Button
             variant="outlined"
             color="success"
-            onClick={handleClose}
-            autoFocus
+            onClick={() => {
+              handleClose();
+              formik.resetForm();
+            }}
           >
             cancel
           </Button>

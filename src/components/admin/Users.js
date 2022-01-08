@@ -11,6 +11,7 @@ import SubSpinner from "../SubSpinner";
 
 const Users = ({ currentUser }) => {
   const [tableBody, setTableBody] = useState(null);
+  const [role, setRole] = useState("");
   const [activeBtnValue, setActiveBtnValue] = useState("all");
 
   const users = useSelector((state) => state.usersReducer.users);
@@ -20,9 +21,12 @@ const Users = ({ currentUser }) => {
   const handleChange = (event, value) => {
     if (value === "teachers") {
       setTableBody(teachers);
+      setRole("teacher");
     } else if (value === "students") {
       setTableBody(students);
+      setRole("student");
     } else {
+      setRole("");
       setTableBody(users);
     }
   };
@@ -34,7 +38,7 @@ const Users = ({ currentUser }) => {
       width="100%"
       p={2}
       minHeight="88vh"
-      sx={{ backgroundColor: "#f6f6f6" }}
+      sx={{ backgroundColor: users?.length > 0 ? "#fff" : "#f6f6f6" }}
     >
       {users?.length > 0 ? (
         <Box
@@ -52,12 +56,15 @@ const Users = ({ currentUser }) => {
             <ToggleButton
               size="small"
               sx={{
-                "&:hover": { color: "#014201" },
+                "&:hover": { color: "#fff", backgroundColor: "#1b5e20" },
                 backgroundColor: activeBtnValue === "all" ? "#2e7d32" : "#fff",
                 color: activeBtnValue === "all" ? "#fff" : "#014201",
               }}
               value="all"
-              onClick={() => setActiveBtnValue("all")}
+              onClick={() => {
+                setActiveBtnValue("all");
+                // setRole("");
+              }}
             >
               All Users
             </ToggleButton>
@@ -65,17 +72,16 @@ const Users = ({ currentUser }) => {
             <ToggleButton
               size="small"
               sx={{
-                //   "&:hover": { backgroundColor: "#014201", color: "#fff" },
-                //   backgroundColor:
-                //     activeBtnValue === "teachers" ? "#014201" : "white",
-                //   color: activeBtnValue === "teachers" ? "#fff" : "#014201",
-                "&:hover": { color: "#014201" },
+                "&:hover": { color: "#fff", backgroundColor: "#1b5e20" },
                 backgroundColor:
                   activeBtnValue === "teachers" ? "#2e7d32" : "#fff",
                 color: activeBtnValue === "teachers" ? "#fff" : "#014201",
               }}
               value="teachers"
-              onClick={() => setActiveBtnValue("teachers")}
+              onClick={() => {
+                setActiveBtnValue("teachers");
+                // setRole("teacher");
+              }}
             >
               Teachers
             </ToggleButton>
@@ -83,22 +89,21 @@ const Users = ({ currentUser }) => {
             <ToggleButton
               size="small"
               sx={{
-                //   "&:hover": { backgroundColor: "#014201", color: "#fff" },
-                //   backgroundColor:
-                //     activeBtnValue === "students" ? "#014201" : "white",
-                //   color: activeBtnValue === "students" ? "#fff" : "#014201",
-                "&:hover": { color: "#014201" },
+                "&:hover": { color: "#fff", backgroundColor: "#1b5e20" },
                 backgroundColor:
                   activeBtnValue === "students" ? "#2e7d32" : "#fff",
                 color: activeBtnValue === "students" ? "#fff" : "#014201",
               }}
               value="students"
-              onClick={() => setActiveBtnValue("students")}
+              onClick={() => {
+                setActiveBtnValue("students");
+                // setRole("student");
+              }}
             >
               Students
             </ToggleButton>
           </ToggleButtonGroup>
-          <AddUserDialog classesArray={currentUser?.classes} />
+          <AddUserDialog classesArray={currentUser?.classes} role={role} />
         </Box>
       ) : (
         ""

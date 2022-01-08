@@ -271,13 +271,14 @@ function Inbox(props) {
       <Box
         component="main"
         sx={{
+          height: { xs: `calc(100vh - ${137}px)` },
+          // width: { sm: `calc(100% - ${drawerWidth}px)` },
           flexGrow: 1,
           mt: { xs: "32px", sm: "64px" },
           ml: { xs: 0, md: "240px" },
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          minHeight: "78vh",
           backgroundColor: "#f6f6f6",
         }}
       >
