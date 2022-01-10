@@ -90,12 +90,12 @@ const ClassBox = ({ title, currentUser }) => {
           <AddUserDialog
             title={title}
             role={"teacher"}
-            classesArray={[...currentUser?.proClasses, ...currentUser?.classes]}
+            classesArray={currentUser?.classes}
           />
           <AddUserDialog
             title={title}
             role={"student"}
-            classesArray={[...currentUser?.proClasses, ...currentUser?.classes]}
+            classesArray={currentUser?.classes}
           />
         </Menu>
       </Box>

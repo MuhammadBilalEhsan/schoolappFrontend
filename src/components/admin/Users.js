@@ -111,10 +111,7 @@ const Users = ({ currentUser }) => {
               Students
             </ToggleButton>
           </ToggleButtonGroup>
-          <AddUserDialog
-            classesArray={[...currentUser?.proClasses, ...currentUser?.classes]}
-            role={role}
-          />
+          <AddUserDialog classesArray={currentUser?.classes} role={role} />
         </Box>
       ) : (
         ""
@@ -138,9 +135,7 @@ const Users = ({ currentUser }) => {
           <Typography variant="h5" color="#014201" mb={2}>
             Currently No User.
           </Typography>
-          <AddUserDialog
-            classesArray={[...currentUser?.proClasses, ...currentUser?.classes]}
-          />
+          <AddUserDialog classesArray={currentUser?.classes} />
         </Box>
       ) : (
         <SubSpinner />
