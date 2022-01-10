@@ -37,7 +37,7 @@ const CourseBox = ({ course }) => {
           <Typography variant="subtitle1" color="#014201">
             <strong>Duration:</strong>
           </Typography>
-          <Typography variant="subtitle1">{duration} Weeks</Typography>
+          <Typography variant="subtitle1">{duration}</Typography>
         </Box>
         <Box display="flex" justifyContent="space-between">
           <Typography variant="subtitle1" color="#014201">

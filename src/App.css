@@ -35,11 +35,11 @@ body div::-webkit-scrollbar {
   min-height: 100vh;
   padding-bottom: 20px;
 }
-.css-v60gti-MuiInputBase-root-MuiOutlinedInput-root {
+/* .css-v60gti-MuiInputBase-root-MuiOutlinedInput-root {
   display: flex !important;
   flex-direction: column !important;
   align-items: flex-start !important;
-}
+} */
 .css-heg063-MuiTabs-flexContainer {
   justify-content: center;
   min-width: 489px;
@@ -74,3 +74,11 @@ body div::-webkit-scrollbar {
     rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px,
     rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;
 }
+
+/* react select  */
+/* .css-inbie6-control:focus {
+  border: 1px solid #2e7d32 !important;
+}
+.css-inbie6-control:hover {
+  border: 1px solid #2e7d32 !important;
+} */

@@ -36,7 +36,7 @@ const ClassBox = ({ title, currentUser }) => {
         backgroundColor: "#f6f6f6",
         cursor: "pointer",
         borderRadius: 1,
-        boxShadow: 1,
+        boxShadow: 2,
         "&:hover": {
           backgroundColor: "#efefef",
         },
@@ -87,7 +87,16 @@ const ClassBox = ({ title, currentUser }) => {
           }}
         >
           {/* <MenuItem>View Users</MenuItem> */}
-          <AddUserDialog title={title} classesArray={currentUser?.classes} />
+          <AddUserDialog
+            title={title}
+            role={"teacher"}
+            classesArray={[...currentUser?.proClasses, ...currentUser?.classes]}
+          />
+          <AddUserDialog
+            title={title}
+            role={"student"}
+            classesArray={[...currentUser?.proClasses, ...currentUser?.classes]}
+          />
         </Menu>
       </Box>
     </Box>

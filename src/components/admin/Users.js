@@ -32,7 +32,15 @@ const Users = ({ currentUser }) => {
   };
   useEffect(() => {
     setTableBody(users);
+    if (activeBtnValue === "teachers") {
+      setTableBody(teachers);
+      // setRole("teacher");
+    } else if (activeBtnValue === "students") {
+      setTableBody(students);
+      // setRole("student");
+    }
   }, [users]);
+  // useEffect(() => {}, [activeBtnValue]);
   return (
     <Box
       width="100%"
@@ -103,7 +111,10 @@ const Users = ({ currentUser }) => {
               Students
             </ToggleButton>
           </ToggleButtonGroup>
-          <AddUserDialog classesArray={currentUser?.classes} role={role} />
+          <AddUserDialog
+            classesArray={[...currentUser?.proClasses, ...currentUser?.classes]}
+            role={role}
+          />
         </Box>
       ) : (
         ""
@@ -127,7 +138,9 @@ const Users = ({ currentUser }) => {
           <Typography variant="h5" color="#014201" mb={2}>
             Currently No User.
           </Typography>
-          <AddUserDialog classesArray={currentUser?.classes} />
+          <AddUserDialog
+            classesArray={[...currentUser?.proClasses, ...currentUser?.classes]}
+          />
         </Box>
       ) : (
         <SubSpinner />

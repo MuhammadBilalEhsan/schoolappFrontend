@@ -83,7 +83,7 @@ const AddBox = ({ setCurUser }) => {
         sx={{
           backgroundColor: "#f6f6f6",
           cursor: "pointer",
-          boxShadow: 1,
+          boxShadow: 2,
           "&:hover": {
             backgroundColor: "#efefef",
           },
@@ -97,14 +97,16 @@ const AddBox = ({ setCurUser }) => {
           <TextField
             fullWidth
             autoFocus
-            placeholder="Add Class Name"
+            placeholder="Class Title.."
             value={classTitle}
             variant="standard"
             color="success"
             onChangeCapture={(e) => setClassTitle(e.target.value)}
             sx={{ mt: "18px" }}
+            inputProps={{
+              maxLength: 22,
+            }}
             InputProps={{
-              maxLength: 16,
               endAdornment: (
                 <BiAddToQueue
                   onClick={(e) => addClass(e)}
@@ -128,7 +130,7 @@ const AddBox = ({ setCurUser }) => {
           }}
           fullWidth
         >
-          Add Class
+          Create New Class
         </Button>
       )}
     </Box>

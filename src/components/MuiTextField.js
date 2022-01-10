@@ -9,6 +9,7 @@ const MuiTextField = ({
   color,
   variant,
   mt,
+  multiline,
 }) => {
   return (
     <TextField
@@ -19,6 +20,7 @@ const MuiTextField = ({
       label={label}
       variant={variant ? variant : "outlined"}
       inputProps={inputProps}
+      multiline={multiline ? multiline : false}
       fullWidth
     />
   );

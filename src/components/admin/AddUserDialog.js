@@ -6,7 +6,7 @@ import Dialog from "@mui/material/Dialog";
 import LoadingButton from "@mui/lab/LoadingButton";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import Box from "@mui/material/Box";
+// import Box from "@mui/material/Box";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormLabel from "@mui/material/FormLabel";
 import RadioGroup from "@mui/material/RadioGroup";
@@ -31,12 +31,8 @@ function AddUserDialog({ title, classesArray, role }) {
   const [openSnack, setOpenSnack] = useState("");
   const [severity, setSeverity] = useState("");
   const [classState, setClassState] = useState("");
-  const [teacherRadio, setTeacherRadio] = useState(
-    role === "teacher" ? true : false
-  );
-  const [studentRadio, setStudentRadio] = useState(
-    role === "student" ? true : false
-  );
+  const [teacherRadio, setTeacherRadio] = useState();
+  const [studentRadio, setStudentRadio] = useState();
   // Menu Handling Start
   const [anchorEl, setAnchorEl] = useState(null);
   const menuOpen = Boolean(anchorEl);
@@ -45,7 +41,6 @@ function AddUserDialog({ title, classesArray, role }) {
     setAnchorEl(null);
   };
   // Menu Handling End
-
   // const dispatch = useDispatch()
   // Dialog Handling Start
   const handleClickOpen = () => {
@@ -107,6 +102,9 @@ function AddUserDialog({ title, classesArray, role }) {
           setSeverity("success");
           handleClose();
           actions.resetForm();
+          setClassState("Select Class");
+          setTeacherRadio(false);
+          setStudentRadio(false);
           setLoadBtn(false);
         }
       } catch (error) {
@@ -119,6 +117,20 @@ function AddUserDialog({ title, classesArray, role }) {
   });
   useEffect(() => {
     formik.values.roll = String(role);
+  });
+  useEffect(() => {
+    if (role) {
+      if (role === "teacher") {
+        setStudentRadio(false);
+        setTeacherRadio(true);
+      } else if (role === "student") {
+        setStudentRadio(true);
+        setTeacherRadio(false);
+      }
+    } else {
+      setStudentRadio(false);
+      setTeacherRadio(false);
+    }
   }, [role]);
   return (
     <div>
@@ -134,7 +146,7 @@ function AddUserDialog({ title, classesArray, role }) {
       )}
 
       {title ? (
-        <MenuItem onClick={handleClickOpen}>Add User</MenuItem>
+        <MenuItem onClick={handleClickOpen}>create {role}</MenuItem>
       ) : (
         <Button
           onClick={handleClickOpen}
@@ -145,7 +157,7 @@ function AddUserDialog({ title, classesArray, role }) {
           }}
           endIcon={<FiPlus color="white" />}
         >
-          Add User
+          Create User
         </Button>
       )}
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="xs">
@@ -153,12 +165,9 @@ function AddUserDialog({ title, classesArray, role }) {
           <strong>Add User{title ? ` in "${title}"` : ""}</strong>
         </DialogTitle> */}
         <DialogContent>
-          <Box
-            component="form"
-            width="100%"
-            p={2}
-            autoComplete="off"
+          <form
             onSubmit={formik.handleSubmit}
+            style={{ padding: "16px", width: "100%" }}
           >
             <MuiTextField
               label="First Name"
@@ -197,7 +206,10 @@ function AddUserDialog({ title, classesArray, role }) {
                 }}
                 disabled={role === "student" ? true : false}
                 checked={teacherRadio}
-                onClick={() => setTeacherRadio(true)}
+                onClick={() => {
+                  setTeacherRadio(true);
+                  setStudentRadio(false);
+                }}
                 value="teacher"
                 control={<Radio color="success" />}
                 label="Teacher"
@@ -209,7 +221,10 @@ function AddUserDialog({ title, classesArray, role }) {
                 }}
                 disabled={role === "teacher" ? true : false}
                 checked={studentRadio}
-                onClick={() => setStudentRadio(true)}
+                onClick={() => {
+                  setStudentRadio(true);
+                  setTeacherRadio(false);
+                }}
                 value="student"
                 control={<Radio color="success" />}
                 label="Student"
@@ -286,7 +301,9 @@ function AddUserDialog({ title, classesArray, role }) {
             {formik.touched.password && formik.errors.password ? (
               <ValidationComp error={formik.errors.password} />
             ) : null}
-          </Box>
+            <input type="submit" style={{ display: "none" }} />
+          </form>
+          {/* </Box> */}
         </DialogContent>
         <DialogActions>
           <LoadingButton
@@ -305,6 +322,21 @@ function AddUserDialog({ title, classesArray, role }) {
             onClick={() => {
               handleClose();
               formik.resetForm();
+              setClassState("Select Class");
+
+              if (role === "teacher") {
+                setTeacherRadio(true);
+                formik.values.roll = "teacher";
+              } else if (role === "student") {
+                setStudentRadio(true);
+                formik.values.roll = "student";
+              } else {
+                setStudentRadio(false);
+                setTeacherRadio(false);
+                formik.values.roll = "";
+              }
+              // setStudentRadio(false);
+              // setTeacherRadio(false);
             }}
           >
             cancel

@@ -208,7 +208,8 @@ const PersonalMessageBox = ({
         <Box
           maxWidth="350px"
           width="fit-content"
-          // minWidth="1px"
+          // minWidth="270px"
+          width="fit-content"
           border="1px solid darkgreen"
           borderRadius={0.4}
           mb={0.5}
@@ -217,6 +218,7 @@ const PersonalMessageBox = ({
             backgroundColor: bgColor,
             color: textColor,
             alignSelf: position,
+            wordBreak: "break-all",
           }}
         >
           {message}
