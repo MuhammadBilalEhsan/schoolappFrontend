@@ -3,7 +3,14 @@ import Select, { StylesConfig } from "react-select";
 import { alpha, useTheme } from "@mui/material/styles";
 import CreatableSelect from "react-select/creatable";
 import { ActionMeta, OnChangeValue } from "react-select";
-const ReactSelect = ({ setNewTags, newTags, setOpenSnack, setSeverity }) => {
+import { useFormik } from "formik";
+const ReactSelect = ({
+  setNewTags,
+  newTags,
+  formik,
+  editCourse,
+  defaultVal,
+}) => {
   const theme = useTheme();
   const dot = (color = "transparent") => ({
     alignItems: "center",
@@ -25,17 +32,18 @@ const ReactSelect = ({ setNewTags, newTags, setOpenSnack, setSeverity }) => {
       marginTop: "16px",
       border: "1px solid black",
       boxShadow: "none",
-      "&:hover": {
+      "&:focus": {
         border: "1px solid #2e7d32",
       },
-      "&:focus": {
+      "&:hover": {
         border: "1px solid #2e7d32",
       },
     }),
     option: (styles) => ({
       ...styles,
-      color: "darkgreen",
-      backgroundColor: "#fff",
+      // color: "darkgreen",
+      // backgroundColor: "#fff",
+      display: "none",
     }),
     // input: (styles) => ({ ...styles, ...dot() }),
     placeholder: (styles) => ({ ...styles, ...dot("#ccc") }),
@@ -64,28 +72,29 @@ const ReactSelect = ({ setNewTags, newTags, setOpenSnack, setSeverity }) => {
     }),
     input: (styles) => ({ ...styles, color: "#000" }),
   };
+
   const handleChange = (newValue, actionMeta) => {
     setNewTags(newValue);
-    // console.log("newValue", newValue);
-    // console.log("key", e.key);
   };
   return (
     <CreatableSelect
-      autoFocus
-      //   defaultValue={defaultVal.tags.map((itm) => itm)}
+      menuIsOpen={newTags?.length <= 9 ? true : false}
+      components={{
+        Menu: () => null,
+      }}
+      // autoFocus
+      defaultValue={editCourse ? defaultVal.map((itm) => itm) : []}
+      // captureMenuScroll={false}
       options={newTags}
       styles={colourStyles}
-      placeholder="Write topic and press enter"
+      placeholder="Write a topic and press enter"
       isMulti
-      captureMenuScroll={false}
+      // onKeyPress
+      onKeyDown={() => formik.setFieldTouched("topics")}
       onChange={(v) => {
-        if (newTags.length < 10) {
-          handleChange(v);
-        } else {
-          setOpenSnack("Max limit Reached.");
-          setSeverity("error");
-        }
+        handleChange(v);
       }}
+      // formatCreateLabel={() => undefined}
       //   menuIsOpen={false}
     />
   );

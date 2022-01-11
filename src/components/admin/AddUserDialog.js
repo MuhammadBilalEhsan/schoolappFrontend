@@ -22,6 +22,7 @@ import * as yup from "yup";
 import { FiPlus } from "react-icons/fi";
 import { RiArrowDropDownFill } from "react-icons/ri";
 import ValidationComp from "../ValidationComp";
+import { Typography } from "@mui/material";
 // import { useDispatch } from 'react-redux';
 
 function AddUserDialog({ title, classesArray, role }) {
@@ -79,7 +80,7 @@ function AddUserDialog({ title, classesArray, role }) {
 
     onSubmit: async (values, actions) => {
       try {
-        setLoadBtn(true);
+        // setLoadBtn(true);
         let obj = {
           fname: values.fname,
           lname: values.lname,
@@ -117,21 +118,21 @@ function AddUserDialog({ title, classesArray, role }) {
   });
   useEffect(() => {
     formik.values.roll = String(role);
-  });
-  useEffect(() => {
-    if (role) {
-      if (role === "teacher") {
-        setStudentRadio(false);
-        setTeacherRadio(true);
-      } else if (role === "student") {
-        setStudentRadio(true);
-        setTeacherRadio(false);
-      }
-    } else {
-      setStudentRadio(false);
-      setTeacherRadio(false);
-    }
   }, [role]);
+  // useEffect(() => {
+  //   if (role) {
+  //     if (role === "teacher") {
+  //       setStudentRadio(false);
+  //       setTeacherRadio(true);
+  //     } else if (role === "student") {
+  //       setStudentRadio(true);
+  //       setTeacherRadio(false);
+  //     }
+  //   } else {
+  //     setStudentRadio(false);
+  //     setTeacherRadio(false);
+  //   }
+  // }, [role]);
   return (
     <div>
       {openSnack ? (
@@ -160,7 +161,13 @@ function AddUserDialog({ title, classesArray, role }) {
           Create User
         </Button>
       )}
-      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="xs">
+      <Dialog
+        open={open}
+        //  onClose={handleClose}
+        disablebackdropclick={""}
+        fullWidth
+        maxWidth="xs"
+      >
         {/* <DialogTitle>
           <strong>Add User{title ? ` in "${title}"` : ""}</strong>
         </DialogTitle> */}
@@ -195,41 +202,59 @@ function AddUserDialog({ title, classesArray, role }) {
             {formik.errors.lname && formik.touched.lname ? (
               <ValidationComp error={formik.errors.lname} />
             ) : null}
-            <FormLabel component="legend" sx={{ mt: 2 }}>
-              Role:
-            </FormLabel>
-            <RadioGroup row>
-              <FormControlLabel
-                onChange={(e) => {
-                  formik.values.roll = String(e.target.value);
-                  formik.setFieldTouched("roll");
-                }}
-                disabled={role === "student" ? true : false}
-                checked={teacherRadio}
-                onClick={() => {
-                  setTeacherRadio(true);
-                  setStudentRadio(false);
-                }}
-                value="teacher"
-                control={<Radio color="success" />}
-                label="Teacher"
-              />
-              <FormControlLabel
-                onChange={(e) => {
-                  formik.values.roll = String(e.target.value);
-                  formik.setFieldTouched("roll");
-                }}
-                disabled={role === "teacher" ? true : false}
-                checked={studentRadio}
-                onClick={() => {
-                  setStudentRadio(true);
-                  setTeacherRadio(false);
-                }}
-                value="student"
-                control={<Radio color="success" />}
-                label="Student"
-              />
-            </RadioGroup>
+
+            {role ? (
+              <Typography
+                variant="subtitle1"
+                mt={2}
+                // sx={{ display: "inline-block" }}
+              >
+                Role: &nbsp;
+                <strong
+                  style={{ color: "darkgreen", textTransform: "capitalize" }}
+                >
+                  {role}
+                </strong>
+              </Typography>
+            ) : (
+              <>
+                <FormLabel component="legend" sx={{ mt: 2 }}>
+                  Role:
+                </FormLabel>
+                <RadioGroup row>
+                  <FormControlLabel
+                    onChange={(e) => {
+                      formik.setFieldValue("roll", String(e.target.value));
+                      setTeacherRadio(true);
+                      setStudentRadio(false);
+                    }}
+                    disabled={role === "student" ? true : false}
+                    checked={teacherRadio}
+                    // onClick={() => {
+                    //   // formik.values.roll = "teacher";
+                    // }}
+                    value="teacher"
+                    control={<Radio color="success" />}
+                    label="Teacher"
+                  />
+
+                  <FormControlLabel
+                    onChange={(e) => {
+                      formik.setFieldValue("roll", String(e.target.value));
+                      setStudentRadio(true);
+                      setTeacherRadio(false);
+                    }}
+                    disabled={role === "teacher" ? true : false}
+                    checked={studentRadio}
+                    // onClick={() => {
+                    // }}
+                    value="student"
+                    control={<Radio color="success" />}
+                    label="Student"
+                  />
+                </RadioGroup>
+              </>
+            )}
             {formik.touched.roll && formik.errors.roll ? (
               <ValidationComp error={formik.errors.roll} />
             ) : null}
@@ -323,18 +348,19 @@ function AddUserDialog({ title, classesArray, role }) {
               handleClose();
               formik.resetForm();
               setClassState("Select Class");
-
-              if (role === "teacher") {
-                setTeacherRadio(true);
-                formik.values.roll = "teacher";
-              } else if (role === "student") {
-                setStudentRadio(true);
-                formik.values.roll = "student";
-              } else {
-                setStudentRadio(false);
-                setTeacherRadio(false);
-                formik.values.roll = "";
-              }
+              formik.setFieldValue("roll", String(role));
+              formik.setFieldValue("atClass", title ? String(title) : "");
+              // if (role === "teacher") {
+              //   setTeacherRadio(true);
+              //   formik.values.roll = "teacher";
+              // } else if (role === "student") {
+              //   setStudentRadio(true);
+              //   formik.values.roll = "student";
+              // } else {
+              //   setStudentRadio(false);
+              //   setTeacherRadio(false);
+              //   formik.values.roll = "";
+              // }
               // setStudentRadio(false);
               // setTeacherRadio(false);
             }}

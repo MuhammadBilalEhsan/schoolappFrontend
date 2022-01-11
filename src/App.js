@@ -134,6 +134,14 @@ const App = () => {
     }
   }, [nowLogin]);
 
+  const logOutFunction = () => {
+    localStorage.clear();
+    dispatch(logoutFunc());
+    setNowLogin(false);
+    setIsAdmin(false);
+    setAuth(false);
+  };
+
   useEffect(() => {
     let me = JSON.parse(localStorage.getItem("me"));
 
@@ -175,11 +183,7 @@ const App = () => {
     socket.on("CHANGE_IN_USER", (user) => {
       if (user._id === me?.id) {
         if (user.blocked) {
-          localStorage.clear();
-          dispatch(logoutFunc());
-          setNowLogin(false);
-          setIsAdmin(false);
-          setAuth(false);
+          logOutFunction();
         } else {
           dispatch(curUserFun(user));
           // setIsBlocked(user.blocked)
